@@ -12,7 +12,6 @@ concurrency:
 permissions:
   contents: read
   pull-requests: write
-  id-token: write
 
 jobs:
   review:
@@ -29,6 +28,7 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }} # use the workflow token directly; no OIDC exchange
           prompt: |
             Act as the reviewer agent defined in .claude/agents/reviewer.md. Review PR #${{ github.event.pull_request.number }}
             against CLAUDE.md and docs/spec.md (read by section). Post ONE comment with a verdict
@@ -39,4 +39,6 @@ jobs:
         if: ${{ failure() }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh pr comment ${{ github.event.pull_request.number }} --body "Automated review failed to run (not retried). Run /review locally. Run logs ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: gh pr comment "$PR_NUMBER" --body "Automated review failed to run (not retried). Run /review locally. Run logs $RUN_URL"
