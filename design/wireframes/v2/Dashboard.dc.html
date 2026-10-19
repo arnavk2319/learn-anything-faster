@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Dashboard</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&amp;family=Hanken+Grotesk:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          body {
+            margin: 0;
+            background: #e9efe7;
+          }
+          a {
+            color: #1f6f50;
+          }
+          a:hover {
+            color: #16543c;
+          }
+        </style>
+      </helmet>
+      <div
+        style="
+          width: 1280px;
+          height: 800px;
+          box-sizing: border-box;
+          background: #e9efe7;
+          color: #1d3b2a;
+          font-family: &quot;Hanken Grotesk&quot;, system-ui, sans-serif;
+          display: flex;
+          flex-direction: column;
+        "
+      >
+        <header
+          style="
+            height: 64px;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #cbd6cc;
+            background: #ffffff;
+          "
+        >
+          <div style="display: flex; align-items: center; gap: 40px">
+            <div
+              style="
+                font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+                font-weight: 700;
+                font-size: 22px;
+                letter-spacing: -0.3px;
+              "
+            >
+              <span
+                aria-hidden="true"
+                style="
+                  display: inline-block;
+                  width: 14px;
+                  height: 20px;
+                  border-radius: 4px;
+                  background: #f2c14e;
+                  border: 2px solid #1d3b2a;
+                  box-sizing: border-box;
+                  margin-right: 10px;
+                  vertical-align: -3px;
+                "
+              ></span
+              >[App name]
+            </div>
+            <nav style="display: flex; gap: 8px; font-size: 15px">
+              <a
+                href="Dashboard.dc.html"
+                style="
+                  padding: 8px 12px;
+                  border-radius: 6px;
+                  text-decoration: none;
+                  color: #1d3b2a;
+                  background: #e9efe7;
+                  font-weight: 500;
+                "
+                >Dashboard</a
+              >
+              <a
+                href="Path.dc.html"
+                style="padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #1d3b2a"
+                >Path</a
+              >
+              <a
+                href="Map.dc.html"
+                style="padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #1d3b2a"
+                >Map</a
+              >
+            </nav>
+          </div>
+          <div
+            style="
+              width: 36px;
+              height: 36px;
+              border-radius: 50%;
+              background: #cbd6cc;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 12px;
+              font-weight: 500;
+              color: #1d3b2a;
+            "
+          >
+            You
+          </div>
+        </header>
+        <main
+          style="
+            flex-grow: 1;
+            box-sizing: border-box;
+            padding: 28px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+          "
+        >
+          <div>
+            <h1
+              style="
+                font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+                margin: 0;
+                font-size: 28px;
+                font-weight: 600;
+              "
+            >
+              Welcome back
+            </h1>
+            <p style="margin: 4px 0 0; font-size: 15px; color: #4f6556">
+              AI engineering, ship a RAG feature at work
+            </p>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px">
+            <div
+              style="
+                grid-column: span 2;
+                background: #ffffff;
+                border: 2px solid #1f6f50;
+                border-radius: 12px;
+                padding: 22px 24px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 24px;
+              "
+            >
+              <div style="display: flex; flex-direction: column; gap: 6px">
+                <div style="font-size: 13px; color: #4f6556">Next up</div>
+                <div style="display: flex; gap: 10px; align-items: center">
+                  <span style="font-size: 22px; font-weight: 600">Sampling</span>
+                  <span
+                    style="
+                      font-size: 12px;
+                      padding: 4px 10px;
+                      border-radius: 999px;
+                      background: #ffffff;
+                      border: 1px dashed #4f6556;
+                      color: #1d3b2a;
+                    "
+                    >New</span
+                  >
+                </div>
+                <div style="font-size: 14px; color: #4f6556">
+                  Novice mode, ~1.5 hrs, picks up from your gap detector answer on temperature
+                </div>
+              </div>
+              <a
+                href="TutorNovice.dc.html"
+                style="
+                  flex-shrink: 0;
+                  display: inline-flex;
+                  align-items: center;
+                  justify-content: center;
+                  height: 50px;
+                  padding: 0 26px;
+                  box-sizing: border-box;
+                  background: #1d3b2a;
+                  color: #ffffff;
+                  border-radius: 8px;
+                  font-size: 15px;
+                  font-weight: 500;
+                  text-decoration: none;
+                "
+                >Continue learning</a
+              >
+            </div>
+            <div
+              style="
+                background: #ffffff;
+                border: 1px solid #cbd6cc;
+                border-radius: 12px;
+                padding: 22px 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <div style="font-size: 13px; color: #4f6556">Time saved</div>
+              <div style="font-size: 28px; font-weight: 600">~16 hrs</div>
+              <div style="font-size: 14px; color: #4f6556">
+                4 nodes skipped, plus shorter bridge sessions
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(3, minmax(0, 1fr));
+              gap: 20px;
+              flex-grow: 1;
+            "
+          >
+            <div
+              style="
+                grid-column: span 2;
+                background: #ffffff;
+                border: 1px solid #cbd6cc;
+                border-radius: 12px;
+                padding: 20px 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+              "
+            >
+              <div style="display: flex; justify-content: space-between; align-items: center">
+                <div style="font-size: 16px; font-weight: 600">Your map</div>
+                <a href="Map.dc.html" style="font-size: 14px">Open full map</a>
+              </div>
+              <sc-for list="{{ tiers }}" as="tier" hint-placeholder-count="4">
+                <div style="display: flex; gap: 10px; align-items: stretch">
+                  <div
+                    style="
+                      width: 96px;
+                      flex-shrink: 0;
+                      font-size: 13px;
+                      color: #4f6556;
+                      display: flex;
+                      align-items: center;
+                    "
+                  >
+                    {{ tier.name }}
+                  </div>
+                  <sc-for list="{{ tier.items }}" as="n" hint-placeholder-count="3">
+                    <div
+                      style="flex: 1 1 0; box-sizing: border-box; padding: 9px 10px; border-radius: 6px; font-size: 13px; line-height: 1.3; background: {{ n.bg }}; border: 1px {{ n.bs }} {{ n.bc }}; color: {{ n.fg }}"
+                    >
+                      {{ n.label }}
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 20px">
+              <div
+                style="
+                  background: #ffffff;
+                  border: 1px solid #cbd6cc;
+                  border-radius: 12px;
+                  padding: 20px 24px;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 10px;
+                "
+              >
+                <div style="display: flex; justify-content: space-between; align-items: center">
+                  <div style="font-size: 16px; font-weight: 600">Progress</div>
+                  <a href="Path.dc.html" style="font-size: 14px">View path</a>
+                </div>
+                <div style="font-size: 14px; color: #4f6556">1 of 8 nodes closed</div>
+                <div style="height: 8px; border-radius: 999px; background: #cbd6cc">
+                  <div
+                    style="height: 8px; width: 12.5%; border-radius: 999px; background: #1f6f50"
+                  ></div>
+                </div>
+                <div style="font-size: 14px; color: #4f6556">
+                  ~30 hrs left, finish around [DATE]
+                </div>
+              </div>
+              <div
+                style="
+                  flex-grow: 1;
+                  background: #ffffff;
+                  border: 1px solid #cbd6cc;
+                  border-radius: 12px;
+                  padding: 20px 24px;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 10px;
+                "
+              >
+                <div style="font-size: 16px; font-weight: 600">Recent</div>
+                <div style="font-size: 14px; display: flex; justify-content: space-between">
+                  <span>Closed Structured output</span><span style="color: #4f6556">3 of 3</span>
+                </div>
+                <div style="font-size: 14px; display: flex; justify-content: space-between">
+                  <span>Created account</span><span style="color: #4f6556">Today</span>
+                </div>
+                <div style="font-size: 14px; display: flex; justify-content: space-between">
+                  <span>Finished gap detector</span><span style="color: #4f6556">12 questions</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+      class Component extends DCLogic {
+        renderVals() {
+          const ST = {
+            known: { bg: '#DCEBDF', bs: 'solid', bc: '#1F6F50', fg: '#1D3B2A' },
+            bridge: { bg: '#F3EDD7', bs: 'solid', bc: '#8A6D1F', fg: '#1D3B2A' },
+            fresh: { bg: '#FFFFFF', bs: 'dashed', bc: '#4F6556', fg: '#1D3B2A' }
+          };
+          const t = (name, items) => ({ name: name, items: items.map((x) => Object.assign({ label: x[0] }, ST[x[1]])) });
+          return {
+            tiers: [
+              t('Foundations', [['Python', 'known'], ['NumPy / pandas', 'fresh'], ['Vector math', 'fresh']]),
+              t('LLM core', [['Tokens & context', 'known'], ['Sampling', 'fresh'], ['Structured output ✓', 'known']]),
+              t('Building', [['Tool calling', 'bridge'], ['Embeddings & RAG', 'fresh'], ['Agents', 'fresh']]),
+              t('Production', [['Evals', 'bridge'], ['Caching & streaming', 'known'], ['Deploy & observability', 'known']])
+            ]
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

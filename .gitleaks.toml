@@ -1,0 +1,16 @@
+# Secret scan config for gitleaks (local, CI and the weekly full-history scan).
+title = "learn-anything-faster"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Throwaway fixtures, example env template and placeholder emails in wireframes"
+paths = [
+  '''\.env\.example$''',
+  '''docker-compose\.test\.yml$''',
+  '''^tests/fixtures/''',
+  '''^tests/tools/''',
+  '''^design/wireframes/''',
+  '''pnpm-lock\.yaml$''',
+]

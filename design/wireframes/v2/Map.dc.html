@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Knowledge map</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&amp;family=Hanken+Grotesk:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          body {
+            margin: 0;
+            background: #e9efe7;
+          }
+          a {
+            color: #1f6f50;
+          }
+          a:hover {
+            color: #16543c;
+          }
+        </style>
+      </helmet>
+      <div
+        style="
+          width: 1280px;
+          height: 800px;
+          box-sizing: border-box;
+          background: #e9efe7;
+          color: #1d3b2a;
+          font-family: &quot;Hanken Grotesk&quot;, system-ui, sans-serif;
+          display: flex;
+          flex-direction: column;
+        "
+      >
+        <header
+          style="
+            height: 64px;
+            box-sizing: border-box;
+            padding: 0 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #cbd6cc;
+            background: #ffffff;
+          "
+        >
+          <a
+            href="Main.dc.html"
+            style="
+              font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+              font-weight: 700;
+              font-size: 22px;
+              letter-spacing: -0.3px;
+              color: #1d3b2a;
+              text-decoration: none;
+            "
+            ><span
+              aria-hidden="true"
+              style="
+                display: inline-block;
+                width: 14px;
+                height: 20px;
+                border-radius: 4px;
+                background: #f2c14e;
+                border: 2px solid #1d3b2a;
+                box-sizing: border-box;
+                margin-right: 10px;
+                vertical-align: -3px;
+              "
+            ></span
+            >[App name]</a
+          >
+          <div style="display: flex; gap: 12px; align-items: center; font-size: 14px">
+            <span
+              style="padding: 6px 12px; border-radius: 999px; background: #dcebdf; color: #1d3b2a"
+              >✓ Goal</span
+            >
+            <span style="color: #4f6556">—</span>
+            <span
+              style="padding: 6px 12px; border-radius: 999px; background: #dcebdf; color: #1d3b2a"
+              >✓ Gap detector</span
+            >
+            <span style="color: #4f6556">—</span>
+            <span
+              style="padding: 6px 12px; border-radius: 999px; background: #1d3b2a; color: #ffffff"
+              >3. Your map</span
+            >
+          </div>
+        </header>
+        <main
+          style="
+            flex-grow: 1;
+            box-sizing: border-box;
+            padding: 24px 48px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+          "
+        >
+          <div style="display: flex; justify-content: space-between; align-items: flex-end">
+            <div>
+              <h1
+                style="
+                  font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+                  margin: 0;
+                  font-size: 28px;
+                  font-weight: 600;
+                "
+              >
+                Your AI engineering map
+              </h1>
+              <p style="margin: 4px 0 0; font-size: 15px; color: #4f6556">
+                Goal: ship a RAG feature at work, 5 hrs/week
+              </p>
+            </div>
+            <div style="display: flex; gap: 18px; font-size: 13px; color: #4f6556">
+              <div style="display: flex; gap: 6px; align-items: center">
+                <span
+                  style="
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 3px;
+                    background: #dcebdf;
+                    border: 1px solid #1f6f50;
+                  "
+                ></span
+                >Known, skip
+              </div>
+              <div style="display: flex; gap: 6px; align-items: center">
+                <span
+                  style="
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 3px;
+                    background: #f3edd7;
+                    border: 1px solid #8a6d1f;
+                  "
+                ></span
+                >Bridges from SWE
+              </div>
+              <div style="display: flex; gap: 6px; align-items: center">
+                <span
+                  style="
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 3px;
+                    background: #ffffff;
+                    border: 1px dashed #4f6556;
+                  "
+                ></span
+                >New
+              </div>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px">
+            <div
+              style="
+                background: #ffffff;
+                border: 1px solid #cbd6cc;
+                border-radius: 12px;
+                padding: 14px 18px;
+              "
+            >
+              <div style="font-size: 26px; font-weight: 600; color: #1f6f50">4</div>
+              <div style="font-size: 14px; color: #4f6556">known, skipped</div>
+            </div>
+            <div
+              style="
+                background: #ffffff;
+                border: 1px solid #cbd6cc;
+                border-radius: 12px;
+                padding: 14px 18px;
+              "
+            >
+              <div style="font-size: 26px; font-weight: 600; color: #8a6d1f">3</div>
+              <div style="font-size: 14px; color: #4f6556">bridge from your SWE experience</div>
+            </div>
+            <div
+              style="
+                background: #ffffff;
+                border: 1px solid #cbd6cc;
+                border-radius: 12px;
+                padding: 14px 18px;
+              "
+            >
+              <div style="font-size: 26px; font-weight: 600">5</div>
+              <div style="font-size: 14px; color: #4f6556">new, full sessions</div>
+            </div>
+            <div
+              style="
+                background: #ffffff;
+                border: 1px solid #cbd6cc;
+                border-radius: 12px;
+                padding: 14px 18px;
+              "
+            >
+              <div style="font-size: 26px; font-weight: 600">~32 hrs</div>
+              <div style="font-size: 14px; color: #4f6556">≈ 6–7 weeks, from scratch ~55 hrs</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 24px; flex-grow: 1">
+            <div
+              style="
+                flex-grow: 1;
+                background: #ffffff;
+                border: 1px solid #cbd6cc;
+                border-radius: 12px;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+              "
+            >
+              <sc-for list="{{ tiers }}" as="tier" hint-placeholder-count="4">
+                <div style="display: flex; gap: 12px; align-items: stretch">
+                  <div
+                    style="
+                      width: 100px;
+                      flex-shrink: 0;
+                      font-size: 14px;
+                      color: #4f6556;
+                      display: flex;
+                      align-items: center;
+                    "
+                  >
+                    {{ tier.name }}
+                  </div>
+                  <sc-for list="{{ tier.items }}" as="n" hint-placeholder-count="3">
+                    <button
+                      type="button"
+                      onClick="{{ n.pick }}"
+                      aria-pressed="{{ n.pressed }}"
+                      style="flex: 1 1 0; text-align: left; font-family: inherit; cursor: pointer; box-sizing: border-box; padding: 10px 12px; border-radius: 8px; background: {{ n.bg }}; border: 1px {{ n.bs }} {{ n.bc }}; color: {{ n.fg }}; outline: {{ n.ol }}; outline-offset: 2px; display: flex; flex-direction: column; gap: 2px"
+                    >
+                      <span style="font-size: 15px; font-weight: 600">{{ n.label }}</span>
+                      <span style="font-size: 12px">{{ n.stateText }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </sc-for>
+            </div>
+            <aside
+              style="
+                width: 360px;
+                flex-shrink: 0;
+                background: #ffffff;
+                border: 1px solid #cbd6cc;
+                border-radius: 12px;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+              "
+            >
+              <div style="display: flex; justify-content: space-between; align-items: center">
+                <div style="font-size: 18px; font-weight: 600">{{ sel.label }}</div>
+                <span
+                  style="font-size: 12px; padding: 4px 10px; border-radius: 999px; background: {{ sel.bg }}; border: 1px {{ sel.bs }} {{ sel.bc }}; color: {{ sel.fg }}"
+                  >{{ sel.stateText }}</span
+                >
+              </div>
+              <div style="font-size: 14px; line-height: 1.55; color: #1d3b2a">{{ sel.why }}</div>
+              <div style="font-size: 14px; color: #4f6556">
+                <span style="font-weight: 600; color: #1d3b2a">Session:</span> {{ sel.mode }}
+              </div>
+              <div style="font-size: 14px; color: #4f6556">
+                <span style="font-weight: 600; color: #1d3b2a">Needs:</span> {{ sel.needs }}
+              </div>
+              <sc-if value="{{ sel.hasObj }}" hint-placeholder-val="{{ true }}">
+                <div style="font-size: 14px; font-weight: 600">What you'll learn</div>
+                <sc-for list="{{ sel.obj }}" as="o" hint-placeholder-count="3">
+                  <div style="font-size: 14px; color: #4f6556; display: flex; gap: 8px">
+                    <span>○</span><span>{{ o }}</span>
+                  </div>
+                </sc-for>
+              </sc-if>
+              <sc-if value="{{ sel.isKnown }}" hint-placeholder-val="{{ false }}">
+                <a href="Mastery.dc.html" style="font-size: 14px">Not sure? Test me anyway</a>
+              </sc-if>
+            </aside>
+          </div>
+        </main>
+        <footer
+          style="
+            height: 76px;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            margin-top: 18px;
+            padding: 0 48px;
+            background: #ffffff;
+            border-top: 1px solid #cbd6cc;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          "
+        >
+          <div style="font-size: 15px; color: #1d3b2a">
+            Save your map free and start your first tutor session.
+          </div>
+          <div style="display: flex; gap: 12px">
+            <a
+              href="Path.dc.html"
+              style="
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                height: 48px;
+                padding: 0 22px;
+                box-sizing: border-box;
+                background: #ffffff;
+                border: 1px solid #b9c7bd;
+                color: #1d3b2a;
+                border-radius: 8px;
+                font-size: 15px;
+                text-decoration: none;
+              "
+              >Preview my path</a
+            >
+            <a
+              href="Signup.dc.html"
+              style="
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                height: 48px;
+                padding: 0 24px;
+                box-sizing: border-box;
+                background: #1d3b2a;
+                color: #ffffff;
+                border-radius: 8px;
+                font-size: 15px;
+                font-weight: 500;
+                text-decoration: none;
+              "
+              >Save my map</a
+            >
+          </div>
+        </footer>
+      </div>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+      class Component extends DCLogic {
+        constructor(props) {
+          super(props);
+          this.state = { sel: 'Structured output' };
+        }
+        renderVals() {
+          const ST = {
+            known: { bg: '#DCEBDF', bs: 'solid', bc: '#1F6F50', fg: '#1D3B2A', stateText: 'Known, skip' },
+            bridge: { bg: '#F3EDD7', bs: 'solid', bc: '#8A6D1F', fg: '#1D3B2A', stateText: 'Bridge' },
+            fresh: { bg: '#FFFFFF', bs: 'dashed', bc: '#4F6556', fg: '#1D3B2A', stateText: 'New' }
+          };
+          const D = {
+            'Python': ['known', 'You listed Python and answered both Python probes correctly.', 'Skipped', 'Nothing', []],
+            'NumPy / pandas': ['fresh', 'No array or dataframe experience showed up in your answers.', 'Novice mode, ~4 hrs', 'Python', ['Arrays and vectorized operations', 'Loading and shaping data with dataframes']],
+            'Vector math': ['fresh', 'You missed the similarity question. Embeddings build on this.', 'Novice mode, ~3 hrs', 'NumPy / pandas', ['Vectors and dot products', 'Cosine similarity, intuitively']],
+            'Tokens & context': ['known', 'You estimated context usage and cost correctly.', 'Skipped', 'Nothing', []],
+            'Sampling': ['fresh', 'You predicted identical outputs at temperature 1.0.', 'Novice mode, ~1.5 hrs', 'Tokens & context (known)', ['Why the same prompt gives different outputs', 'Choosing a temperature for a task']],
+            'Structured output': ['bridge', 'Bridges from JSON Schema validation. You would fix parse failures with prompt wording alone, and missed validation and retry.', 'Gap mode, ~2 hrs', 'Tokens & context (known)', ['Schema-constrained output', 'Validate and retry on failure', 'When prompt-only JSON is acceptable']],
+            'Tool calling': ['bridge', 'Bridges from REST API design. You found the vague description but missed the missing required field.', 'Gap mode, ~3 hrs', 'Structured output', ['Writing tool definitions models use correctly', 'Handling tool results and errors']],
+            'Embeddings & RAG': ['fresh', 'You could not name causes of wrong answers when retrieval was correct.', 'Novice mode, ~8 hrs', 'Vector math, Structured output', ['Chunking and embedding documents', 'Retrieval and reranking', 'Grounding answers in retrieved context']],
+            'Agents': ['fresh', 'Builds on tool calling. Not probed directly.', 'Novice mode, ~6 hrs', 'Tool calling', ['Agent loops and stopping conditions', 'When not to use an agent']],
+            'Evals': ['bridge', 'Bridges from unit and regression testing. Good test design; missing scored, non-binary grading.', 'Gap mode, ~4 hrs', 'Structured output', ['Building an eval set', 'Scoring with rubrics and model graders', 'Running evals on every prompt change']],
+            'Caching & streaming': ['known', 'Covered by your production experience.', 'Skipped', 'Nothing', []],
+            'Deploy & observability': ['known', 'Covered by your production experience.', 'Skipped', 'Nothing', []]
+          };
+          const s = this.state;
+          const mk = (label) => {
+            const d = D[label];
+            const st = ST[d[0]];
+            return Object.assign({ label: label, why: d[1], mode: d[2], needs: d[3], obj: d[4], hasObj: d[4].length > 0, isKnown: d[0] === 'known',
+              ol: s.sel === label ? '3px solid #1D3B2A' : 'none', pressed: s.sel === label ? 'true' : 'false',
+              pick: () => this.setState({ sel: label }) }, st);
+          };
+          const rows = [
+            ['Foundations', ['Python', 'NumPy / pandas', 'Vector math']],
+            ['LLM core', ['Tokens & context', 'Sampling', 'Structured output']],
+            ['Building', ['Tool calling', 'Embeddings & RAG', 'Agents']],
+            ['Production', ['Evals', 'Caching & streaming', 'Deploy & observability']]
+          ];
+          return { tiers: rows.map((r) => ({ name: r[0], items: r[1].map(mk) })), sel: mk(s.sel) };
+        }
+      }
+    </script>
+  </body>
+</html>

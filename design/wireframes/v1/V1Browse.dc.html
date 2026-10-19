@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>v1 Browse roadmaps</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&amp;family=Hanken+Grotesk:wght@400;500;600&amp;display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          body {
+            margin: 0;
+            background: #e9efe7;
+          }
+          a {
+            color: #1f6f50;
+          }
+          a:hover {
+            color: #16543c;
+          }
+          :focus-visible {
+            outline: 3px solid #1f6f50;
+            outline-offset: 2px;
+          }
+        </style>
+      </helmet>
+      <div
+        style="
+          width: 1280px;
+          height: 800px;
+          box-sizing: border-box;
+          background: #e9efe7;
+          color: #1d3b2a;
+          font-family: &quot;Hanken Grotesk&quot;, system-ui, sans-serif;
+          display: flex;
+          flex-direction: column;
+        "
+      >
+        <header
+          style="
+            height: 72px;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            padding: 0 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          "
+        >
+          <a
+            href="V1Landing.dc.html"
+            style="
+              font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+              font-weight: 700;
+              font-size: 22px;
+              letter-spacing: -0.3px;
+              color: #1d3b2a;
+              text-decoration: none;
+            "
+            ><span
+              aria-hidden="true"
+              style="
+                display: inline-block;
+                width: 14px;
+                height: 20px;
+                border-radius: 4px;
+                background: #f2c14e;
+                border: 2px solid #1d3b2a;
+                box-sizing: border-box;
+                margin-right: 10px;
+                vertical-align: -3px;
+              "
+            ></span
+            >[App name]</a
+          >
+          <nav style="display: flex; gap: 28px; align-items: center; font-size: 15px">
+            <a
+              href="V1Browse.dc.html"
+              aria-current="page"
+              style="text-decoration: none; color: #1d3b2a; font-weight: 600"
+              >Browse roadmaps</a
+            >
+            <a href="V1Roadmap.dc.html" style="text-decoration: none; color: #1d3b2a"
+              >See an example</a
+            >
+          </nav>
+        </header>
+        <main
+          style="
+            flex-grow: 1;
+            box-sizing: border-box;
+            padding: 40px 64px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+          "
+        >
+          <div style="display: flex; justify-content: space-between; align-items: flex-end">
+            <div>
+              <h1
+                style="
+                  margin: 0;
+                  font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+                  font-weight: 600;
+                  font-size: 44px;
+                  letter-spacing: -0.8px;
+                "
+              >
+                Roadmaps
+              </h1>
+              <p style="margin: 8px 0 0; font-size: 17px; color: #4f6556">
+                Each one maps a move from one role to another. Curated and link-checked by hand.
+              </p>
+            </div>
+            <div
+              role="group"
+              aria-label="Filter"
+              style="
+                display: flex;
+                background: #ffffff;
+                border: 1px solid #cbd6cc;
+                border-radius: 10px;
+                padding: 4px;
+                gap: 4px;
+              "
+            >
+              <sc-for list="{{ filters }}" as="f" hint-placeholder-count="3">
+                <button
+                  type="button"
+                  onClick="{{ f.pick }}"
+                  aria-pressed="{{ f.pressed }}"
+                  style="font-family: inherit; cursor: pointer; height: 36px; padding: 0 14px; border-radius: 7px; border: none; font-size: 14px; font-weight: 500; background: {{ f.bg }}; color: {{ f.fg }}"
+                >
+                  {{ f.text }}
+                </button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="background: #ffffff; border-radius: 16px; overflow: hidden">
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 260px 260px 1fr 140px 180px;
+                padding: 14px 28px;
+                font-size: 13px;
+                color: #4f6556;
+                border-bottom: 1px solid #cbd6cc;
+              "
+            >
+              <span>From</span><span>To</span><span>Size</span><span>Status</span><span></span>
+            </div>
+            <sc-for list="{{ rows }}" as="r" hint-placeholder-count="5">
+              <div
+                style="display: grid; grid-template-columns: 260px 260px 1fr 140px 180px; align-items: center; padding: 0 28px 0 {{ r.padL }}px; height: 68px; border-bottom: 1px solid #E9EFE7; border-left: {{ r.bl }}"
+              >
+                <span style="font-size: 16px">{{ r.from }}</span>
+                <span
+                  style="
+                    font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+                    font-size: 18px;
+                    font-weight: 600;
+                  "
+                  >{{ r.to }}</span
+                >
+                <span style="font-size: 15px; color: #4f6556">{{ r.meta }}</span>
+                <span style="font-size: 14px; font-weight: 500; color: {{ r.statusFg }}"
+                  >{{ r.status }}</span
+                >
+                <span style="display: flex; justify-content: flex-end">
+                  <sc-if value="{{ r.live }}" hint-placeholder-val="{{ false }}">
+                    <a
+                      href="V1Roadmap.dc.html"
+                      style="
+                        display: inline-flex;
+                        align-items: center;
+                        height: 40px;
+                        padding: 0 18px;
+                        border-radius: 10px;
+                        background: #1d3b2a;
+                        color: #ffffff;
+                        text-decoration: none;
+                        font-size: 14px;
+                        font-weight: 600;
+                      "
+                      >Open roadmap</a
+                    >
+                  </sc-if>
+                  <sc-if value="{{ r.soon }}" hint-placeholder-val="{{ true }}">
+                    <button
+                      type="button"
+                      onClick="{{ r.notify }}"
+                      style="font-family: inherit; cursor: pointer; height: 40px; padding: 0 16px; border-radius: 10px; background: {{ r.nBg }}; border: 1px solid {{ r.nBc }}; color: {{ r.nFg }}; font-size: 14px; font-weight: 500"
+                    >
+                      {{ r.notifyText }}
+                    </button>
+                  </sc-if>
+                </span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; padding-top: 4px">
+            <span
+              style="
+                font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+                font-weight: 600;
+                font-size: 18px;
+                margin-right: 8px;
+              "
+              >Don't see your move?</span
+            >
+            <input
+              type="text"
+              aria-label="Your current role"
+              placeholder="Current role"
+              style="
+                width: 220px;
+                height: 44px;
+                box-sizing: border-box;
+                padding: 0 14px;
+                border-radius: 10px;
+                border: 1px solid #b9c7bd;
+                background: #ffffff;
+                font-family: inherit;
+                font-size: 15px;
+                color: #1d3b2a;
+              "
+            />
+            <span style="color: #4f6556">to</span>
+            <input
+              type="text"
+              aria-label="Your target role"
+              placeholder="Target role"
+              style="
+                width: 220px;
+                height: 44px;
+                box-sizing: border-box;
+                padding: 0 14px;
+                border-radius: 10px;
+                border: 1px solid #b9c7bd;
+                background: #ffffff;
+                font-family: inherit;
+                font-size: 15px;
+                color: #1d3b2a;
+              "
+            />
+            <button
+              type="button"
+              onClick="{{ ask }}"
+              style="
+                font-family: inherit;
+                cursor: pointer;
+                height: 44px;
+                padding: 0 18px;
+                border-radius: 10px;
+                border: none;
+                background: #1d3b2a;
+                color: #ffffff;
+                font-size: 15px;
+                font-weight: 600;
+              "
+            >
+              {{ askText }}
+            </button>
+            <span style="font-size: 14px; color: #4f6556"
+              >The most requested moves get mapped next.</span
+            >
+          </div>
+        </main>
+      </div>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+      class Component extends DCLogic {
+        constructor(props) {
+          super(props);
+          this.state = { filter: 'All', notified: {}, asked: false };
+        }
+        renderVals() {
+          const s = this.state;
+          const all = [
+            { from: 'Full-stack engineer', to: 'ML engineer', meta: '18 topics, 5 skipped for your role', live: true },
+            { from: 'Full-stack engineer', to: 'AI engineer', meta: 'Being curated', live: false },
+            { from: 'Backend engineer', to: 'MLOps engineer', meta: 'Being curated', live: false },
+            { from: 'Frontend engineer', to: 'Full-stack engineer', meta: 'Planned', live: false },
+            { from: 'Data analyst', to: 'Data scientist', meta: 'Planned', live: false }
+          ];
+          const filters = ['All', 'Live', 'Coming soon'].map((f) => {
+            const on = s.filter === f;
+            return { text: f, bg: on ? '#1D3B2A' : 'transparent', fg: on ? '#FFFFFF' : '#1D3B2A', pressed: on ? 'true' : 'false', pick: () => this.setState({ filter: f }) };
+          });
+          const rows = all.filter((c) => s.filter === 'All' || (s.filter === 'Live' ? c.live : !c.live)).map((c) => {
+            const key = c.from + c.to, done = !!s.notified[key];
+            return Object.assign({}, c, {
+              soon: !c.live, status: c.live ? 'Live' : 'Coming soon', statusFg: c.live ? '#1F6F50' : '#4F6556',
+              bl: c.live ? '4px solid #1F6F50' : '4px solid transparent', padL: 24,
+              notifyText: done ? 'You\'ll be notified' : 'Notify me',
+              nBg: done ? '#DCEBDF' : '#FFFFFF', nBc: done ? '#1F6F50' : '#B9C7BD', nFg: done ? '#1F6F50' : '#1D3B2A',
+              notify: () => { const n = Object.assign({}, s.notified); n[key] = true; this.setState({ notified: n }); }
+            });
+          });
+          return { filters: filters, rows: rows, askText: s.asked ? 'Requested' : 'Request it', ask: () => this.setState({ asked: true }) };
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+* text=auto eol=lf
+*.sh text eol=lf
+pnpm-lock.yaml -diff linguist-generated=true
+*.pdf binary
+*.png binary
+*.svg text

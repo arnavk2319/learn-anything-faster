@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tutor session, gap mode</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&amp;family=Hanken+Grotesk:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          body {
+            margin: 0;
+            background: #e9efe7;
+          }
+          a {
+            color: #1f6f50;
+          }
+          a:hover {
+            color: #16543c;
+          }
+        </style>
+      </helmet>
+      <div
+        style="
+          width: 1280px;
+          height: 800px;
+          box-sizing: border-box;
+          background: #e9efe7;
+          color: #1d3b2a;
+          font-family: &quot;Hanken Grotesk&quot;, system-ui, sans-serif;
+          display: flex;
+          flex-direction: column;
+        "
+      >
+        <header
+          style="
+            height: 64px;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #cbd6cc;
+            background: #ffffff;
+          "
+        >
+          <div style="display: flex; align-items: center; gap: 40px">
+            <div
+              style="
+                font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+                font-weight: 700;
+                font-size: 22px;
+                letter-spacing: -0.3px;
+              "
+            >
+              <span
+                aria-hidden="true"
+                style="
+                  display: inline-block;
+                  width: 14px;
+                  height: 20px;
+                  border-radius: 4px;
+                  background: #f2c14e;
+                  border: 2px solid #1d3b2a;
+                  box-sizing: border-box;
+                  margin-right: 10px;
+                  vertical-align: -3px;
+                "
+              ></span
+              >[App name]
+            </div>
+            <nav style="display: flex; gap: 8px; font-size: 15px">
+              <a
+                href="Dashboard.dc.html"
+                style="padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #1d3b2a"
+                >Dashboard</a
+              >
+              <a
+                href="Path.dc.html"
+                style="
+                  padding: 8px 12px;
+                  border-radius: 6px;
+                  text-decoration: none;
+                  color: #1d3b2a;
+                  background: #e9efe7;
+                  font-weight: 500;
+                "
+                >Path</a
+              >
+              <a
+                href="Map.dc.html"
+                style="padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #1d3b2a"
+                >Map</a
+              >
+            </nav>
+          </div>
+          <div
+            style="
+              width: 36px;
+              height: 36px;
+              border-radius: 50%;
+              background: #cbd6cc;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 12px;
+              font-weight: 500;
+              color: #1d3b2a;
+            "
+          >
+            You
+          </div>
+        </header>
+        <div style="flex-grow: 1; display: flex; min-height: 0">
+          <section
+            style="
+              flex-grow: 1;
+              box-sizing: border-box;
+              padding: 20px 32px;
+              display: flex;
+              flex-direction: column;
+              gap: 14px;
+              min-width: 0;
+            "
+          >
+            <div style="display: flex; justify-content: space-between; align-items: center">
+              <div style="font-size: 14px; color: #4f6556">
+                <a href="Path.dc.html" style="text-decoration: none">Path</a> / Structured output
+              </div>
+              <div style="font-size: 14px; color: #4f6556">
+                Gap mode, objective {{ objNum }} of 3
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px">
+              <sc-for list="{{ pills }}" as="p" hint-placeholder-count="5">
+                <button
+                  type="button"
+                  onClick="{{ p.go }}"
+                  style="font-family: inherit; cursor: pointer; flex: 1 1 0; height: 38px; border-radius: 8px; font-size: 14px; background: {{ p.bg }}; color: {{ p.fg }}; border: 1px solid {{ p.bc }}"
+                >
+                  {{ p.text }}
+                </button>
+              </sc-for>
+            </div>
+            <div
+              style="flex-grow: 1; display: flex; flex-direction: column; gap: 12px; min-height: 0"
+            >
+              <sc-for list="{{ msgs }}" as="m" hint-placeholder-count="2">
+                <sc-if value="{{ m.isTutor }}" hint-placeholder-val="{{ true }}">
+                  <div
+                    style="
+                      align-self: flex-start;
+                      max-width: 760px;
+                      display: flex;
+                      flex-direction: column;
+                      gap: 4px;
+                    "
+                  >
+                    <span style="font-size: 12px; color: #4f6556">{{ m.label }}</span>
+                    <div
+                      style="
+                        padding: 12px 16px;
+                        border-radius: 10px;
+                        background: #ffffff;
+                        border: 1px solid #cbd6cc;
+                        font-size: 15px;
+                        line-height: 1.55;
+                      "
+                    >
+                      {{ m.text }}
+                    </div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ m.isUser }}" hint-placeholder-val="{{ false }}">
+                  <div
+                    style="
+                      align-self: flex-end;
+                      max-width: 560px;
+                      padding: 12px 16px;
+                      border-radius: 10px;
+                      background: #dcebdf;
+                      color: #1d3b2a;
+                      font-size: 15px;
+                      line-height: 1.55;
+                    "
+                  >
+                    {{ m.text }}
+                  </div>
+                </sc-if>
+                <sc-if value="{{ m.isCode }}" hint-placeholder-val="{{ false }}">
+                  <pre
+                    style="
+                      align-self: stretch;
+                      margin: 0;
+                      padding: 14px 16px;
+                      border-radius: 8px;
+                      background: #1d3b2a;
+                      color: #e9efe7;
+                      font-family: &quot;IBM Plex Mono&quot;, monospace;
+                      font-size: 13px;
+                      line-height: 1.6;
+                      white-space: pre;
+                    "
+                  >
+{{ m.text }}</pre>
+                </sc-if>
+                <sc-if value="{{ m.isEditor }}" hint-placeholder-val="{{ false }}">
+                  <textarea
+                    aria-label="Your code"
+                    rows="7"
+                    style="
+                      box-sizing: border-box;
+                      padding: 14px 16px;
+                      border-radius: 8px;
+                      border: 1px solid #788b7c;
+                      background: #ffffff;
+                      font-family: &quot;IBM Plex Mono&quot;, monospace;
+                      font-size: 13px;
+                      line-height: 1.6;
+                      resize: none;
+                    "
+                  >
+{{ m.text }}</textarea>
+                </sc-if>
+              </sc-for>
+            </div>
+            <sc-if value="{{ notLast }}" hint-placeholder-val="{{ true }}">
+              <div
+                style="
+                  display: flex;
+                  gap: 10px;
+                  align-items: center;
+                  padding-top: 12px;
+                  border-top: 1px solid #cbd6cc;
+                "
+              >
+                <input
+                  type="text"
+                  aria-label="Your reply"
+                  placeholder="Type your answer or ask a question…"
+                  style="
+                    flex-grow: 1;
+                    height: 48px;
+                    box-sizing: border-box;
+                    padding: 0 14px;
+                    border-radius: 8px;
+                    border: 1px solid #788b7c;
+                    background: #ffffff;
+                    font-family: inherit;
+                    font-size: 15px;
+                  "
+                />
+                <button
+                  type="button"
+                  onClick="{{ hint }}"
+                  style="
+                    font-family: inherit;
+                    cursor: pointer;
+                    height: 48px;
+                    padding: 0 16px;
+                    border-radius: 8px;
+                    background: #ffffff;
+                    border: 1px solid #b9c7bd;
+                    color: #1d3b2a;
+                    font-size: 14px;
+                  "
+                >
+                  Hint ({{ hintsLeft }} left)
+                </button>
+                <button
+                  type="button"
+                  onClick="{{ next }}"
+                  style="
+                    font-family: inherit;
+                    cursor: pointer;
+                    height: 48px;
+                    padding: 0 22px;
+                    border-radius: 8px;
+                    background: #1d3b2a;
+                    border: none;
+                    color: #ffffff;
+                    font-size: 15px;
+                    font-weight: 500;
+                  "
+                >
+                  Continue
+                </button>
+              </div>
+            </sc-if>
+            <sc-if value="{{ isLast }}" hint-placeholder-val="{{ false }}">
+              <div
+                style="
+                  display: flex;
+                  gap: 12px;
+                  justify-content: flex-end;
+                  padding-top: 12px;
+                  border-top: 1px solid #cbd6cc;
+                "
+              >
+                <button
+                  type="button"
+                  onClick="{{ restart }}"
+                  style="
+                    font-family: inherit;
+                    cursor: pointer;
+                    height: 48px;
+                    padding: 0 18px;
+                    border-radius: 8px;
+                    background: #ffffff;
+                    border: 1px solid #b9c7bd;
+                    color: #1d3b2a;
+                    font-size: 14px;
+                  "
+                >
+                  Replay session
+                </button>
+                <a
+                  href="Mastery.dc.html"
+                  style="
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 48px;
+                    padding: 0 24px;
+                    box-sizing: border-box;
+                    background: #1d3b2a;
+                    color: #ffffff;
+                    border-radius: 8px;
+                    font-size: 15px;
+                    font-weight: 500;
+                    text-decoration: none;
+                  "
+                  >Start mastery check</a
+                >
+              </div>
+            </sc-if>
+          </section>
+          <aside
+            style="
+              width: 340px;
+              flex-shrink: 0;
+              box-sizing: border-box;
+              padding: 20px 24px;
+              background: #ffffff;
+              border-left: 1px solid #cbd6cc;
+              display: flex;
+              flex-direction: column;
+              gap: 16px;
+            "
+          >
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <div style="display: flex; justify-content: space-between; align-items: center">
+                <span style="font-size: 18px; font-weight: 600">Structured output</span>
+                <span
+                  style="
+                    font-size: 12px;
+                    padding: 4px 10px;
+                    border-radius: 999px;
+                    background: #f3edd7;
+                    border: 1px solid #8a6d1f;
+                    color: #1d3b2a;
+                  "
+                  >Bridge</span
+                >
+              </div>
+              <span style="font-size: 14px; color: #4f6556"
+                >Bridges from: JSON Schema validation</span
+              >
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <div style="font-size: 14px; font-weight: 600">Objectives</div>
+              <sc-for list="{{ objs }}" as="o" hint-placeholder-count="3">
+                <div
+                  style="display: flex; gap: 8px; font-size: 14px; line-height: 1.4; color: {{ o.fg }}"
+                >
+                  <span style="width: 16px; flex-shrink: 0">{{ o.mark }}</span
+                  ><span>{{ o.text }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                padding: 14px;
+                border-radius: 10px;
+                background: #e9efe7;
+              "
+            >
+              <div style="font-size: 14px; font-weight: 600">What the tutor knows about you</div>
+              <div style="font-size: 13px; color: #4f6556; line-height: 1.5">
+                Works in TypeScript and Python; validates API payloads daily.
+              </div>
+              <div style="font-size: 13px; color: #4f6556; line-height: 1.5">
+                Gap detector: fixed JSON parse failures with prompt wording only.
+              </div>
+              <div style="font-size: 13px; color: #4f6556; line-height: 1.5">
+                Known nearby: Tokens &amp; context.
+              </div>
+            </div>
+            <div style="margin-top: auto; display: flex; flex-direction: column; gap: 10px">
+              <a
+                href="Mastery.dc.html"
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  height: 46px;
+                  border-radius: 8px;
+                  background: #ffffff;
+                  border: 1px solid #1f6f50;
+                  color: #1f6f50;
+                  text-decoration: none;
+                  font-size: 15px;
+                  font-weight: 500;
+                "
+                >I know this — test me</a
+              >
+              <a href="#" style="font-size: 14px; text-align: center"
+                >Provider docs: structured outputs ↗</a
+              >
+            </div>
+          </aside>
+        </div>
+      </div>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+      class Component extends DCLogic {
+        constructor(props) {
+          super(props);
+          this.state = { phase: 0, hints: 0 };
+        }
+        renderVals() {
+          const s = this.state;
+          const T = (text) => ({ isTutor: true, isUser: false, isCode: false, isEditor: false, label: 'Tutor', text: text });
+          const U = (text) => ({ isTutor: false, isUser: true, isCode: false, isEditor: false, text: text });
+          const C = (text) => ({ isTutor: false, isUser: false, isCode: true, isEditor: false, text: text });
+          const E = (text) => ({ isTutor: false, isUser: false, isCode: false, isEditor: true, text: text });
+          const explainCode = `SCHEMA = {
+          "type": "object",
+          "properties": {
+              "sentiment": {"enum": ["positive", "negative", "neutral"]},
+              "confidence": {"type": "number"}
+          },
+          "required": ["sentiment", "confidence"]
+      }
+
+      result = call_llm(review, output_schema=SCHEMA)   # shape is guaranteed
+      assert 0 <= result["confidence"] <= 1            # business rule: still yours`;
+          const starter = `def get_sentiment(review):
+          result = call_llm(review, output_schema=SCHEMA)
+          # 1. validate business rules
+          # 2. on failure, retry once with the error in the prompt
+          # 3. give up cleanly after that
+      `;
+          const hintMsgs = [
+            T('Hint 1 of 3 (nudge): in your API code, where do range checks usually live besides the schema?'),
+            T('Hint 2 of 3 (targeted): you can add minimum/maximum to the schema, but most business rules still belong in your own validation layer after parsing.'),
+            T('Hint 3 of 3 (worked answer): add a range to the schema where you can, and always validate after parsing. On failure, retry once with the error message included.')
+          ];
+          const phases = [
+            { name: 'Anchor', msgs: [
+              T('In the gap detector, you said you would fix a 3% JSON parse-failure rate by adding "respond only in valid JSON" to the prompt. That helps, but it is a request, not a guarantee. This session closes that gap.'),
+              T('Quick question first: have you used your provider\'s structured-output or JSON-schema mode before?'),
+              U('No, just prompt instructions.')
+            ] },
+            { name: 'Explain', msgs: [
+              T('You already validate request bodies against a JSON Schema on your server. Structured output moves that schema to generation time: you send the schema with the request, and the response is constrained to match it.'),
+              C(explainCode),
+              T('Where the analogy breaks: the schema guarantees shape, not truth. A confident wrong label is still valid JSON.')
+            ] },
+            { name: 'Check', msgs: [
+              T('Check: the response matches your schema, but confidence comes back as 7.5. Which layer should catch this, and how?'),
+              U('The schema should have rejected it?')
+            ].concat(hintMsgs.slice(0, s.hints)) },
+            { name: 'Apply', msgs: [
+              T('Your turn. Write a wrapper that validates the parsed result and, on failure, retries once with the validation error included in the prompt.'),
+              E(starter),
+              T('Graded against the rubric: checks the range, retries once, includes the error, stops cleanly.')
+            ] },
+            { name: 'Mastery', msgs: [
+              T('All 3 objectives covered. Last step: 3 fresh questions you have not seen. Pass and this node moves from Bridge to Known on your map.')
+            ] }
+          ];
+          const pills = phases.map((p, i) => {
+            const done = i < s.phase, cur = i === s.phase;
+            return { text: (done ? '✓ ' : '') + p.name, bg: cur ? '#1F6F50' : (done ? '#DCEBDF' : '#FFFFFF'), fg: cur ? '#FFFFFF' : (done ? '#1D3B2A' : '#4F6556'), bc: cur ? '#1F6F50' : (done ? '#1F6F50' : '#CBD6CC'), go: () => this.setState({ phase: i }) };
+          });
+          const objTexts = ['Use schema-constrained output', 'Validate and retry on failure', 'Know when prompt-only JSON is acceptable'];
+          const doneCount = s.phase >= 4 ? 3 : (s.phase >= 3 ? 2 : (s.phase >= 2 ? 1 : 0));
+          const objs = objTexts.map((t, i) => ({ text: t, mark: i < doneCount ? '✓' : '○', fg: i < doneCount ? '#1F6F50' : '#1D3B2A' }));
+          return {
+            pills: pills,
+            msgs: phases[s.phase].msgs,
+            objs: objs,
+            objNum: String(Math.min(doneCount + 1, 3)),
+            notLast: s.phase < 4,
+            isLast: s.phase === 4,
+            hintsLeft: String(3 - s.hints),
+            next: () => this.setState({ phase: Math.min(s.phase + 1, 4) }),
+            hint: () => this.setState({ phase: 2, hints: Math.min(s.hints + 1, 3) }),
+            restart: () => this.setState({ phase: 0, hints: 0 })
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

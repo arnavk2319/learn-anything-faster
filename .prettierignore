@@ -1,0 +1,7 @@
+pnpm-lock.yaml
+.next
+node_modules
+docs/*.pdf
+test-results
+playwright-report
+logs

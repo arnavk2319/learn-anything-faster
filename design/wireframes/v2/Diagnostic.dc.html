@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Gap detector</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&amp;family=Hanken+Grotesk:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          body {
+            margin: 0;
+            background: #e9efe7;
+          }
+          a {
+            color: #1f6f50;
+          }
+          a:hover {
+            color: #16543c;
+          }
+        </style>
+      </helmet>
+      <div
+        style="
+          width: 1280px;
+          height: 800px;
+          box-sizing: border-box;
+          background: #e9efe7;
+          color: #1d3b2a;
+          font-family: &quot;Hanken Grotesk&quot;, system-ui, sans-serif;
+          display: flex;
+          flex-direction: column;
+        "
+      >
+        <header
+          style="
+            height: 64px;
+            box-sizing: border-box;
+            padding: 0 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #cbd6cc;
+            background: #ffffff;
+          "
+        >
+          <a
+            href="Main.dc.html"
+            style="
+              font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+              font-weight: 700;
+              font-size: 22px;
+              letter-spacing: -0.3px;
+              color: #1d3b2a;
+              text-decoration: none;
+            "
+            ><span
+              aria-hidden="true"
+              style="
+                display: inline-block;
+                width: 14px;
+                height: 20px;
+                border-radius: 4px;
+                background: #f2c14e;
+                border: 2px solid #1d3b2a;
+                box-sizing: border-box;
+                margin-right: 10px;
+                vertical-align: -3px;
+              "
+            ></span
+            >[App name]</a
+          >
+          <div style="display: flex; gap: 12px; align-items: center; font-size: 14px">
+            <span
+              style="padding: 6px 12px; border-radius: 999px; background: #dcebdf; color: #1d3b2a"
+              >✓ Goal</span
+            >
+            <span style="color: #4f6556">—</span>
+            <span
+              style="padding: 6px 12px; border-radius: 999px; background: #1d3b2a; color: #ffffff"
+              >2. Gap detector</span
+            >
+            <span style="color: #4f6556">—</span>
+            <span
+              style="
+                padding: 6px 12px;
+                border-radius: 999px;
+                background: #ffffff;
+                border: 1px solid #cbd6cc;
+                color: #4f6556;
+              "
+              >3. Your map</span
+            >
+          </div>
+        </header>
+        <div style="height: 6px; background: #cbd6cc">
+          <div style="height: 6px; background: #1F6F50; width: {{ pct }}%"></div>
+        </div>
+        <main
+          style="flex-grow: 1; box-sizing: border-box; padding: 28px 48px; display: flex; gap: 32px"
+        >
+          <section
+            style="
+              flex-grow: 1;
+              background: #ffffff;
+              border: 1px solid #cbd6cc;
+              border-radius: 12px;
+              padding: 28px 32px;
+              display: flex;
+              flex-direction: column;
+              gap: 18px;
+            "
+          >
+            <sc-if value="{{ inProgress }}" hint-placeholder-val="{{ true }}">
+              <div style="display: flex; justify-content: space-between; align-items: center">
+                <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                  <span
+                    style="font-size: 13px; padding: 4px 10px; border-radius: 999px; background: {{ q.probeBg }}; color: {{ q.probeFg }}"
+                    >{{ q.probe }}</span
+                  >
+                  <span
+                    style="
+                      font-size: 13px;
+                      padding: 4px 10px;
+                      border-radius: 999px;
+                      background: #e9efe7;
+                      color: #4f6556;
+                    "
+                    >{{ q.type }}</span
+                  >
+                  <span
+                    style="
+                      font-size: 13px;
+                      padding: 4px 10px;
+                      border-radius: 999px;
+                      background: #e9efe7;
+                      color: #4f6556;
+                    "
+                    >Node: {{ q.node }}</span
+                  >
+                </div>
+                <span style="font-size: 14px; color: #4f6556"
+                  >Question {{ q.num }} of 12, about {{ q.mins }} min left</span
+                >
+              </div>
+              <h2
+                style="
+                  font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+                  margin: 0;
+                  font-size: 22px;
+                  line-height: 1.4;
+                  font-weight: 600;
+                "
+              >
+                {{ q.prompt }}
+              </h2>
+              <sc-if value="{{ q.isPredict }}" hint-placeholder-val="{{ true }}">
+                <pre
+                  style="
+                    margin: 0;
+                    padding: 16px 18px;
+                    border-radius: 8px;
+                    background: #1d3b2a;
+                    color: #e9efe7;
+                    font-family: &quot;IBM Plex Mono&quot;, monospace;
+                    font-size: 14px;
+                    line-height: 1.6;
+                    white-space: pre;
+                  "
+                >
+{{ q.code }}</pre>
+                <label for="pred" style="font-size: 15px; font-weight: 600">Your prediction</label>
+                <input
+                  id="pred"
+                  type="text"
+                  placeholder="e.g. The same color three times, because…"
+                  style="
+                    height: 48px;
+                    box-sizing: border-box;
+                    padding: 0 14px;
+                    border-radius: 8px;
+                    border: 1px solid #788b7c;
+                    font-family: inherit;
+                    font-size: 15px;
+                  "
+                />
+              </sc-if>
+              <sc-if value="{{ q.isBug }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size: 14px; color: #4f6556">
+                  Click the line you'd change first.
+                </div>
+                <div
+                  style="
+                    border-radius: 8px;
+                    background: #1d3b2a;
+                    padding: 10px 0;
+                    display: flex;
+                    flex-direction: column;
+                  "
+                >
+                  <sc-for list="{{ bugLines }}" as="ln" hint-placeholder-count="11">
+                    <button
+                      type="button"
+                      onClick="{{ ln.pick }}"
+                      aria-pressed="{{ ln.pressed }}"
+                      style="display: flex; gap: 16px; text-align: left; border: none; cursor: pointer; padding: 3px 18px; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.5; background: {{ ln.bg }}; color: {{ ln.fg }}"
+                    >
+                      <span style="width: 20px; color: #b9c7bd">{{ ln.no }}</span>
+                      <span style="white-space: pre">{{ ln.code }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+                <input
+                  type="text"
+                  aria-label="Why would you change it?"
+                  placeholder="Why would you change it?"
+                  style="
+                    height: 44px;
+                    box-sizing: border-box;
+                    padding: 0 14px;
+                    border-radius: 8px;
+                    border: 1px solid #788b7c;
+                    font-family: inherit;
+                    font-size: 15px;
+                  "
+                />
+              </sc-if>
+              <sc-if value="{{ q.isExplain }}" hint-placeholder-val="{{ false }}">
+                <label for="explain" style="font-size: 15px; font-weight: 600"
+                  >Your answer (a few sentences is plenty)</label
+                >
+                <textarea
+                  id="explain"
+                  rows="6"
+                  placeholder="{{ q.placeholder }}"
+                  style="
+                    box-sizing: border-box;
+                    padding: 12px 14px;
+                    border-radius: 8px;
+                    border: 1px solid #788b7c;
+                    font-family: inherit;
+                    font-size: 15px;
+                    line-height: 1.5;
+                    resize: none;
+                  "
+                ></textarea>
+              </sc-if>
+              <div
+                style="
+                  margin-top: auto;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  gap: 16px;
+                "
+              >
+                <span style="font-size: 13px; color: #4f6556; max-width: 460px"
+                  >{{ q.adaptive }}</span
+                >
+                <div style="display: flex; gap: 12px">
+                  <button
+                    type="button"
+                    onClick="{{ next }}"
+                    style="
+                      font-family: inherit;
+                      cursor: pointer;
+                      height: 48px;
+                      padding: 0 20px;
+                      border-radius: 8px;
+                      background: #ffffff;
+                      border: 1px solid #b9c7bd;
+                      color: #1d3b2a;
+                      font-size: 15px;
+                    "
+                  >
+                    I don't know this yet
+                  </button>
+                  <button
+                    type="button"
+                    onClick="{{ next }}"
+                    style="
+                      font-family: inherit;
+                      cursor: pointer;
+                      height: 48px;
+                      padding: 0 24px;
+                      border-radius: 8px;
+                      background: #1d3b2a;
+                      border: none;
+                      color: #ffffff;
+                      font-size: 15px;
+                      font-weight: 500;
+                    "
+                  >
+                    Submit answer
+                  </button>
+                </div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ done }}" hint-placeholder-val="{{ false }}">
+              <div
+                style="
+                  margin: auto;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  gap: 16px;
+                  text-align: center;
+                  max-width: 520px;
+                "
+              >
+                <div
+                  style="
+                    width: 56px;
+                    height: 56px;
+                    border-radius: 50%;
+                    background: #dcebdf;
+                    color: #1d3b2a;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 26px;
+                  "
+                >
+                  ✓
+                </div>
+                <h2
+                  style="
+                    font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+                    margin: 0;
+                    font-size: 26px;
+                    font-weight: 600;
+                  "
+                >
+                  Gap detector complete
+                </h2>
+                <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #4f6556">
+                  12 questions answered. We skipped 5 more because your answers already showed you
+                  knew those areas.
+                </p>
+                <div style="display: flex; gap: 12px">
+                  <a
+                    href="Map.dc.html"
+                    style="
+                      display: inline-flex;
+                      align-items: center;
+                      justify-content: center;
+                      height: 52px;
+                      padding: 0 28px;
+                      box-sizing: border-box;
+                      background: #1d3b2a;
+                      color: #ffffff;
+                      border-radius: 8px;
+                      font-size: 16px;
+                      font-weight: 500;
+                      text-decoration: none;
+                    "
+                    >See my map</a
+                  >
+                  <button
+                    type="button"
+                    onClick="{{ restart }}"
+                    style="
+                      font-family: inherit;
+                      cursor: pointer;
+                      height: 52px;
+                      padding: 0 20px;
+                      border-radius: 8px;
+                      background: #ffffff;
+                      border: 1px solid #b9c7bd;
+                      color: #1d3b2a;
+                      font-size: 15px;
+                    "
+                  >
+                    Replay demo
+                  </button>
+                </div>
+              </div>
+            </sc-if>
+          </section>
+          <aside
+            style="width: 320px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px"
+          >
+            <div
+              style="
+                background: #ffffff;
+                border: 1px solid #cbd6cc;
+                border-radius: 12px;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+              "
+            >
+              <div style="font-size: 15px; font-weight: 600">What we're checking</div>
+              <sc-for list="{{ tiers }}" as="t" hint-placeholder-count="4">
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    font-size: 14px;
+                  "
+                >
+                  <span>{{ t.name }}</span>
+                  <span
+                    style="font-size: 12px; padding: 3px 8px; border-radius: 999px; background: {{ t.bg }}; color: {{ t.fg }}"
+                    >{{ t.status }}</span
+                  >
+                </div>
+              </sc-for>
+            </div>
+            <div
+              style="
+                background: #ffffff;
+                border: 1px solid #cbd6cc;
+                border-radius: 12px;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+              "
+            >
+              <div style="font-size: 15px; font-weight: 600">Adaptive</div>
+              <div style="font-size: 14px; color: #4f6556; line-height: 1.5">
+                Questions skipped so far because of your answers:
+              </div>
+              <div style="font-size: 32px; font-weight: 600">{{ skipped }}</div>
+            </div>
+            <div style="padding: 0 4px; font-size: 13px; color: #4f6556; line-height: 1.5">
+              Two kinds of questions: transfer probes check SWE skills that bridge into AI
+              engineering; track probes check genuinely new material.
+            </div>
+          </aside>
+        </main>
+      </div>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+      class Component extends DCLogic {
+        constructor(props) {
+          super(props);
+          this.state = { step: 0, done: false, bugLine: -1 };
+        }
+        renderVals() {
+          const s = this.state;
+          const transfer = { probeBg: '#F3EDD7', probeFg: '#1D3B2A' };
+          const track = { probeBg: '#DCEBDF', probeFg: '#1D3B2A' };
+          const questions = [
+            Object.assign({ probe: 'Track probe', type: 'Predict the output', node: 'Sampling', num: 3, mins: 8,
+              prompt: 'This runs three times. What will the three printed lines look like, and why?',
+              code: `for i in range(3):
+          r = client.messages.create(
+              model=MODEL, max_tokens=10,
+              temperature=1.0,
+              messages=[{"role": "user", "content": "Name one color"}])
+          print(r.content[0].text)`,
+              adaptive: 'A strong answer here skips 2 follow-up questions on sampling.', isPredict: true, isBug: false, isExplain: false }, track),
+            Object.assign({ probe: 'Transfer probe, REST APIs → tool calling', type: 'Spot the bug', node: 'Tool calling', num: 6, mins: 6,
+              prompt: 'The model keeps calling get_order with customer IDs instead of order IDs. Which line would you change first?',
+              adaptive: 'Tests whether your API design instincts carry over to tool definitions.', isPredict: false, isBug: true, isExplain: false }, transfer),
+            Object.assign({ probe: 'Track probe', type: 'Explain', node: 'Embeddings & RAG', num: 9, mins: 3,
+              prompt: 'Retrieval returns the right document, but the final answer is still wrong. Name two likely causes.',
+              placeholder: 'Think about what happens between retrieval and generation…',
+              adaptive: 'A weak answer marks RAG and its children as new, with no more RAG questions.', isPredict: false, isBug: false, isExplain: true }, track),
+            Object.assign({ probe: 'Transfer probe, unit tests → evals', type: 'Explain', node: 'Evals', num: 12, mins: 1,
+              prompt: 'You changed a system prompt. How would you know it is better, and not just different?',
+              placeholder: 'How would you test this the way you test code?',
+              adaptive: 'Last question. Your map is built from all of your answers.', isPredict: false, isBug: false, isExplain: true }, transfer)
+          ];
+          const code = ['{', '  "name": "get_order",', '  "description": "Gets order",', '  "input_schema": {', '    "type": "object",', '    "properties": {', '      "id": { "type": "string" }', '    }', '  }', '}'];
+          const bugLines = code.map((c, i) => ({
+            no: String(i + 1), code: c,
+            bg: s.bugLine === i ? '#F2C14E' : 'transparent',
+            fg: s.bugLine === i ? '#1D3B2A' : '#E9EFE7',
+            pressed: s.bugLine === i ? 'true' : 'false',
+            pick: () => this.setState({ bugLine: i })
+          }));
+          const statusSets = [
+            ['Checked', 'In progress', 'Up next', 'Up next'],
+            ['Checked', 'Checked', 'In progress', 'Up next'],
+            ['Checked', 'Checked', 'In progress', 'Up next'],
+            ['Checked', 'Checked', 'Checked', 'In progress']
+          ];
+          const statuses = s.done ? ['Checked', 'Checked', 'Checked', 'Checked'] : statusSets[s.step];
+          const col = { 'Checked': ['#DCEBDF', '#1D3B2A'], 'In progress': ['#DCEBDF', '#1D3B2A'], 'Up next': ['#E9EFE7', '#4F6556'] };
+          const tiers = ['Foundations', 'LLM core', 'Building', 'Production'].map((n, i) => ({ name: n, status: statuses[i], bg: col[statuses[i]][0], fg: col[statuses[i]][1] }));
+          return {
+            q: questions[s.step],
+            bugLines: bugLines,
+            tiers: tiers,
+            inProgress: !s.done,
+            done: s.done,
+            skipped: s.done ? 5 : [2, 3, 4, 5][s.step],
+            pct: s.done ? 100 : [25, 50, 75, 95][s.step],
+            next: () => { if (s.step < 3) { this.setState({ step: s.step + 1, bugLine: -1 }); } else { this.setState({ done: true }); } },
+            restart: () => this.setState({ step: 0, done: false, bugLine: -1 })
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

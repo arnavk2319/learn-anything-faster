@@ -1,0 +1,49 @@
+{
+  "name": "learn-anything-faster",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.1.3",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "typecheck": "tsc -p tsconfig.json && pnpm -r --no-bail typecheck",
+    "lint": "eslint . --max-warnings=0",
+    "format": "prettier --write .",
+    "test": "vitest run --reporter=dot --passWithNoTests",
+    "test:integration": "vitest run --reporter=dot --passWithNoTests --config vitest.integration.config.ts",
+    "test:security": "vitest run --reporter=dot --passWithNoTests --config vitest.security.config.ts",
+    "test:tools": "vitest run --reporter=dot --passWithNoTests --config vitest.tools.config.ts",
+    "test:data": "vitest run --reporter=dot --passWithNoTests --config vitest.data.config.ts",
+    "db:test:up": "docker compose -f docker-compose.test.yml up -d --wait",
+    "db:test:down": "docker compose -f docker-compose.test.yml down",
+    "e2e": "playwright test --reporter=line",
+    "e2e:smoke": "playwright test --reporter=line --grep @smoke",
+    "e2e:ui": "playwright test --ui",
+    "uicheck": "tsx scripts/uicheck.ts",
+    "content:validate": "tsx scripts/content-validate.ts",
+    "content:seed": "tsx scripts/content-seed.ts",
+    "budget": "tsx scripts/budget-report.ts",
+    "verify": "tsx scripts/verify.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.64.1",
+    "@types/node": "26.6.5",
+    "@types/pg": "8.23.1",
+    "drizzle-kit": "0.31.11",
+    "eslint": "10.13.0",
+    "eslint-config-next": "16.4.2",
+    "pg": "8.23.1",
+    "prettier": "3.9.10",
+    "prettier-plugin-tailwindcss": "0.8.1",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.2",
+    "vitest": "5.0.5",
+    "yaml": "2.9.1",
+    "zod": "4.6.7"
+  }
+}

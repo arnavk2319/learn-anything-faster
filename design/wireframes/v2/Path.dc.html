@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Your path</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&amp;family=Hanken+Grotesk:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          body {
+            margin: 0;
+            background: #e9efe7;
+          }
+          a {
+            color: #1f6f50;
+          }
+          a:hover {
+            color: #16543c;
+          }
+        </style>
+      </helmet>
+      <div
+        style="
+          width: 1280px;
+          height: 800px;
+          box-sizing: border-box;
+          background: #e9efe7;
+          color: #1d3b2a;
+          font-family: &quot;Hanken Grotesk&quot;, system-ui, sans-serif;
+          display: flex;
+          flex-direction: column;
+        "
+      >
+        <header
+          style="
+            height: 64px;
+            box-sizing: border-box;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #cbd6cc;
+            background: #ffffff;
+          "
+        >
+          <div style="display: flex; align-items: center; gap: 40px">
+            <div
+              style="
+                font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+                font-weight: 700;
+                font-size: 22px;
+                letter-spacing: -0.3px;
+              "
+            >
+              <span
+                aria-hidden="true"
+                style="
+                  display: inline-block;
+                  width: 14px;
+                  height: 20px;
+                  border-radius: 4px;
+                  background: #f2c14e;
+                  border: 2px solid #1d3b2a;
+                  box-sizing: border-box;
+                  margin-right: 10px;
+                  vertical-align: -3px;
+                "
+              ></span
+              >[App name]
+            </div>
+            <nav style="display: flex; gap: 8px; font-size: 15px">
+              <a
+                href="Dashboard.dc.html"
+                style="padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #1d3b2a"
+                >Dashboard</a
+              >
+              <a
+                href="Path.dc.html"
+                style="
+                  padding: 8px 12px;
+                  border-radius: 6px;
+                  text-decoration: none;
+                  color: #1d3b2a;
+                  background: #e9efe7;
+                  font-weight: 500;
+                "
+                >Path</a
+              >
+              <a
+                href="Map.dc.html"
+                style="padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #1d3b2a"
+                >Map</a
+              >
+            </nav>
+          </div>
+          <div
+            style="
+              width: 36px;
+              height: 36px;
+              border-radius: 50%;
+              background: #cbd6cc;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 12px;
+              font-weight: 500;
+              color: #1d3b2a;
+            "
+          >
+            You
+          </div>
+        </header>
+        <main
+          style="
+            flex-grow: 1;
+            box-sizing: border-box;
+            padding: 24px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+          "
+        >
+          <div style="display: flex; justify-content: space-between; align-items: flex-end">
+            <div>
+              <h1
+                style="
+                  font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+                  margin: 0;
+                  font-size: 28px;
+                  font-weight: 600;
+                "
+              >
+                Your path, AI engineering
+              </h1>
+              <p style="margin: 4px 0 0; font-size: 15px; color: #4f6556">
+                8 nodes, ~32 hrs, finish around [DATE] at 5 hrs/week
+              </p>
+            </div>
+            <a href="Goal.dc.html" style="font-size: 14px">Change goal or pace</a>
+          </div>
+          <div style="display: flex; gap: 24px; flex-grow: 1">
+            <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 8px">
+              <sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+                <div
+                  style="height: 64px; box-sizing: border-box; padding: 0 16px; border-radius: 10px; background: {{ r.cardBg }}; border: 1px solid {{ r.cardBc }}; display: flex; align-items: center; gap: 16px"
+                >
+                  <div
+                    style="
+                      width: 30px;
+                      height: 30px;
+                      flex-shrink: 0;
+                      border-radius: 50%;
+                      background: #e9efe7;
+                      color: #4f6556;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      font-size: 14px;
+                      font-weight: 500;
+                    "
+                  >
+                    {{ r.num }}
+                  </div>
+                  <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px">
+                    <span style="font-size: 16px; font-weight: 600; color: {{ r.nameFg }}"
+                      >{{ r.name }}</span
+                    >
+                    <span style="font-size: 13px; color: #4f6556">{{ r.needs }}</span>
+                  </div>
+                  <span
+                    style="width: 64px; text-align: center; font-size: 12px; padding: 4px 0; border-radius: 999px; background: {{ r.bBg }}; border: 1px {{ r.bBs }} {{ r.bBc }}; color: {{ r.bFg }}"
+                    >{{ r.badge }}</span
+                  >
+                  <span style="width: 150px; font-size: 14px; color: #4f6556">{{ r.mode }}</span>
+                  <div style="width: 116px; display: flex; justify-content: flex-end">
+                    <sc-if value="{{ r.isNext }}" hint-placeholder-val="{{ false }}">
+                      <a
+                        href="{{ r.href }}"
+                        style="
+                          display: inline-flex;
+                          align-items: center;
+                          justify-content: center;
+                          height: 40px;
+                          padding: 0 18px;
+                          box-sizing: border-box;
+                          background: #1d3b2a;
+                          color: #ffffff;
+                          border-radius: 8px;
+                          font-size: 14px;
+                          font-weight: 500;
+                          text-decoration: none;
+                        "
+                        >Start</a
+                      >
+                    </sc-if>
+                    <sc-if value="{{ r.isAvail }}" hint-placeholder-val="{{ false }}">
+                      <a
+                        href="{{ r.href }}"
+                        style="
+                          display: inline-flex;
+                          align-items: center;
+                          justify-content: center;
+                          height: 40px;
+                          padding: 0 18px;
+                          box-sizing: border-box;
+                          background: #ffffff;
+                          border: 1px solid #b9c7bd;
+                          color: #1d3b2a;
+                          border-radius: 8px;
+                          font-size: 14px;
+                          text-decoration: none;
+                        "
+                        >Start</a
+                      >
+                    </sc-if>
+                    <sc-if value="{{ r.isLocked }}" hint-placeholder-val="{{ true }}">
+                      <span style="font-size: 13px; color: #4f6556">Locked</span>
+                    </sc-if>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <aside
+              style="width: 320px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px"
+            >
+              <div
+                style="
+                  background: #ffffff;
+                  border: 1px solid #cbd6cc;
+                  border-radius: 12px;
+                  padding: 20px;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 12px;
+                "
+              >
+                <div style="font-size: 15px; font-weight: 600">Skipped: you already know these</div>
+                <sc-for list="{{ skipped }}" as="k" hint-placeholder-count="4">
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      font-size: 14px;
+                    "
+                  >
+                    <span style="display: flex; gap: 8px; align-items: center"
+                      ><span
+                        style="
+                          width: 10px;
+                          height: 10px;
+                          border-radius: 3px;
+                          background: #dcebdf;
+                          border: 1px solid #1f6f50;
+                        "
+                      ></span
+                      >{{ k.name }}</span
+                    >
+                    <a href="Mastery.dc.html" style="font-size: 13px">Test me</a>
+                  </div>
+                </sc-for>
+                <div
+                  style="
+                    border-top: 1px solid #cbd6cc;
+                    padding-top: 10px;
+                    font-size: 14px;
+                    color: #4f6556;
+                  "
+                >
+                  ~16 hrs skipped
+                </div>
+              </div>
+              <div
+                style="
+                  background: #ffffff;
+                  border: 1px solid #cbd6cc;
+                  border-radius: 12px;
+                  padding: 20px;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 8px;
+                "
+              >
+                <div style="font-size: 15px; font-weight: 600">Two session types</div>
+                <div style="font-size: 14px; color: #4f6556; line-height: 1.5">
+                  <span style="font-weight: 600; color: #1d3b2a">Gap mode</span> for bridge nodes:
+                  starts from what you got wrong and uses what you already know.
+                </div>
+                <div style="font-size: 14px; color: #4f6556; line-height: 1.5">
+                  <span style="font-weight: 600; color: #1d3b2a">Novice mode</span> for new nodes:
+                  worked examples first, then you take over.
+                </div>
+              </div>
+            </aside>
+          </div>
+        </main>
+      </div>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+      class Component extends DCLogic {
+        renderVals() {
+          const B = { badge: 'Bridge', bBg: '#F3EDD7', bBs: 'solid', bBc: '#8A6D1F', bFg: '#1D3B2A' };
+          const N = { badge: 'New', bBg: '#FFFFFF', bBs: 'dashed', bBc: '#4F6556', bFg: '#1D3B2A' };
+          const row = (num, name, kind, mode, needs, status, href) => Object.assign({
+            num: String(num), name: name, mode: mode, needs: needs, href: href || '',
+            isNext: status === 'next', isAvail: status === 'avail', isLocked: status === 'locked',
+            cardBg: status === 'next' ? '#FFFFFF' : (status === 'locked' ? '#E9EFE7' : '#FFFFFF'),
+            cardBc: status === 'next' ? '#1F6F50' : '#CBD6CC',
+            nameFg: status === 'locked' ? '#4F6556' : '#1D3B2A'
+          }, kind === 'b' ? B : N);
+          return {
+            rows: [
+              row(1, 'Structured output', 'b', 'Gap mode, ~2 hrs', 'Up next, bridges from JSON Schema', 'next', 'Tutor.dc.html'),
+              row(2, 'Sampling', 'n', 'Novice mode, ~1.5 hrs', 'Available now', 'avail', 'TutorNovice.dc.html'),
+              row(3, 'NumPy / pandas', 'n', 'Novice mode, ~4 hrs', 'Available now', 'avail', 'TutorNovice.dc.html'),
+              row(4, 'Tool calling', 'b', 'Gap mode, ~3 hrs', 'Needs Structured output', 'locked'),
+              row(5, 'Evals', 'b', 'Gap mode, ~4 hrs', 'Needs Structured output', 'locked'),
+              row(6, 'Vector math', 'n', 'Novice mode, ~3 hrs', 'Needs NumPy / pandas', 'locked'),
+              row(7, 'Embeddings & RAG', 'n', 'Novice mode, ~8 hrs', 'Needs Vector math, Structured output', 'locked'),
+              row(8, 'Agents', 'n', 'Novice mode, ~6 hrs', 'Needs Tool calling', 'locked')
+            ],
+            skipped: [{ name: 'Python' }, { name: 'Tokens & context' }, { name: 'Caching & streaming' }, { name: 'Deploy & observability' }]
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

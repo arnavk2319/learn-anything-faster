@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Goal setup</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&amp;family=Hanken+Grotesk:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          body {
+            margin: 0;
+            background: #e9efe7;
+          }
+          a {
+            color: #1f6f50;
+          }
+          a:hover {
+            color: #16543c;
+          }
+        </style>
+      </helmet>
+      <div
+        style="
+          width: 1280px;
+          height: 800px;
+          box-sizing: border-box;
+          background: #e9efe7;
+          color: #1d3b2a;
+          font-family: &quot;Hanken Grotesk&quot;, system-ui, sans-serif;
+          display: flex;
+          flex-direction: column;
+        "
+      >
+        <header
+          style="
+            height: 64px;
+            box-sizing: border-box;
+            padding: 0 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #cbd6cc;
+            background: #ffffff;
+          "
+        >
+          <a
+            href="Main.dc.html"
+            style="
+              font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+              font-weight: 700;
+              font-size: 22px;
+              letter-spacing: -0.3px;
+              color: #1d3b2a;
+              text-decoration: none;
+            "
+            ><span
+              aria-hidden="true"
+              style="
+                display: inline-block;
+                width: 14px;
+                height: 20px;
+                border-radius: 4px;
+                background: #f2c14e;
+                border: 2px solid #1d3b2a;
+                box-sizing: border-box;
+                margin-right: 10px;
+                vertical-align: -3px;
+              "
+            ></span
+            >[App name]</a
+          >
+          <div style="display: flex; gap: 12px; align-items: center; font-size: 14px">
+            <span
+              style="padding: 6px 12px; border-radius: 999px; background: #1d3b2a; color: #ffffff"
+              >1. Goal</span
+            >
+            <span style="color: #4f6556">—</span>
+            <span
+              style="
+                padding: 6px 12px;
+                border-radius: 999px;
+                background: #ffffff;
+                border: 1px solid #cbd6cc;
+                color: #4f6556;
+              "
+              >2. Gap detector</span
+            >
+            <span style="color: #4f6556">—</span>
+            <span
+              style="
+                padding: 6px 12px;
+                border-radius: 999px;
+                background: #ffffff;
+                border: 1px solid #cbd6cc;
+                color: #4f6556;
+              "
+              >3. Your map</span
+            >
+          </div>
+        </header>
+        <main
+          style="
+            flex-grow: 1;
+            box-sizing: border-box;
+            padding: 32px 48px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+          "
+        >
+          <div>
+            <h1
+              style="
+                font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+                margin: 0;
+                font-size: 30px;
+                font-weight: 600;
+              "
+            >
+              Set your goal
+            </h1>
+            <p style="margin: 6px 0 0; font-size: 16px; color: #4f6556">
+              This shapes your skill graph and which questions the gap detector asks.
+            </p>
+          </div>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(2, minmax(0, 1fr));
+              gap: 40px;
+              flex-grow: 1;
+            "
+          >
+            <div style="display: flex; flex-direction: column; gap: 20px">
+              <div style="display: flex; flex-direction: column; gap: 10px">
+                <div style="font-size: 16px; font-weight: 600">
+                  What do you want to be able to do?
+                </div>
+                <sc-for list="{{ tracks }}" as="tr" hint-placeholder-count="3">
+                  <button
+                    type="button"
+                    onClick="{{ tr.pick }}"
+                    aria-pressed="{{ tr.pressed }}"
+                    style="text-align: left; font-family: inherit; cursor: pointer; padding: 14px 16px; border-radius: 10px; background: {{ tr.bg }}; border: 1px solid {{ tr.bc }}; display: flex; justify-content: space-between; align-items: center; gap: 16px"
+                  >
+                    <span style="display: flex; flex-direction: column; gap: 4px">
+                      <span style="font-size: 16px; font-weight: 600; color: #1d3b2a"
+                        >{{ tr.title }}</span
+                      >
+                      <span style="font-size: 14px; color: #4f6556">{{ tr.sub }}</span>
+                    </span>
+                    <span
+                      style="
+                        font-size: 12px;
+                        white-space: nowrap;
+                        padding: 4px 8px;
+                        border-radius: 999px;
+                        background: #e9efe7;
+                        color: #4f6556;
+                      "
+                      >{{ tr.tag }}</span
+                    >
+                  </button>
+                </sc-for>
+                <sc-if value="{{ isMl }}" hint-placeholder-val="{{ false }}">
+                  <div
+                    style="
+                      padding: 12px 14px;
+                      border-radius: 8px;
+                      background: #f3edd7;
+                      color: #1d3b2a;
+                      font-size: 14px;
+                      line-height: 1.5;
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      gap: 12px;
+                    "
+                  >
+                    <span
+                      >The ML engineering track isn't live yet. Join the waitlist and we'll tell you
+                      when it opens.</span
+                    >
+                    <button
+                      type="button"
+                      style="
+                        font-family: inherit;
+                        font-size: 14px;
+                        padding: 8px 12px;
+                        border-radius: 6px;
+                        border: 1px solid #8a6d1f;
+                        background: #ffffff;
+                        color: #1d3b2a;
+                        cursor: pointer;
+                        white-space: nowrap;
+                      "
+                    >
+                      Join waitlist
+                    </button>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ isUnsure }}" hint-placeholder-val="{{ false }}">
+                  <div
+                    style="
+                      padding: 12px 14px;
+                      border-radius: 8px;
+                      background: #dcebdf;
+                      color: #1d3b2a;
+                      font-size: 14px;
+                      line-height: 1.5;
+                    "
+                  >
+                    AI engineering = building products on top of existing models (APIs, RAG,
+                    agents). ML engineering = training and deploying your own models, with more
+                    math. Most SWEs shipping AI features at work want AI engineering, so we
+                    recommend starting there.
+                  </div>
+                </sc-if>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 8px">
+                <label for="outcome" style="font-size: 16px; font-weight: 600"
+                  >Your outcome, in one line</label
+                >
+                <input
+                  id="outcome"
+                  type="text"
+                  value="Ship a RAG feature at work"
+                  style="
+                    height: 48px;
+                    box-sizing: border-box;
+                    padding: 0 14px;
+                    border-radius: 8px;
+                    border: 1px solid #788b7c;
+                    background: #ffffff;
+                    font-family: inherit;
+                    font-size: 16px;
+                    color: #1d3b2a;
+                  "
+                />
+                <div style="font-size: 13px; color: #4f6556">
+                  Examples: pass AI engineer interviews, add an LLM feature to my side project
+                </div>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 22px">
+              <div style="display: flex; flex-direction: column; gap: 10px">
+                <div style="font-size: 16px; font-weight: 600">What do you already work with?</div>
+                <div style="font-size: 14px; color: #4f6556">
+                  We use this to find what transfers. Pick all that apply.
+                </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px">
+                  <sc-for list="{{ chips }}" as="c" hint-placeholder-count="9">
+                    <button
+                      type="button"
+                      onClick="{{ c.toggle }}"
+                      aria-pressed="{{ c.pressed }}"
+                      style="font-family: inherit; cursor: pointer; height: 40px; padding: 0 14px; border-radius: 999px; font-size: 14px; background: {{ c.bg }}; border: 1px solid {{ c.bc }}; color: {{ c.fg }}"
+                    >
+                      {{ c.text }}
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  gap: 16px;
+                  padding: 14px 16px;
+                  border-radius: 10px;
+                  background: #ffffff;
+                  border: 1px solid #cbd6cc;
+                "
+              >
+                <div style="display: flex; flex-direction: column; gap: 4px">
+                  <span style="font-size: 15px; font-weight: 600"
+                    >I'm completely new to this stack</span
+                  >
+                  <span style="font-size: 13px; color: #4f6556"
+                    >Skips track questions and only probes what transfers from your
+                    experience.</span
+                  >
+                </div>
+                <button
+                  type="button"
+                  onClick="{{ toggleNew }}"
+                  aria-pressed="{{ isNew }}"
+                  aria-label="I'm completely new to this stack"
+                  style="flex-shrink: 0; width: 52px; height: 30px; border-radius: 999px; border: none; cursor: pointer; padding: 3px; display: flex; justify-content: {{ knobSide }}; background: {{ trackBg }}"
+                >
+                  <span
+                    style="width: 24px; height: 24px; border-radius: 50%; background: #ffffff"
+                  ></span>
+                </button>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 10px">
+                <div style="font-size: 16px; font-weight: 600">
+                  Hours per week you can give this
+                </div>
+                <div style="display: flex; gap: 8px">
+                  <sc-for list="{{ hours }}" as="h" hint-placeholder-count="4">
+                    <button
+                      type="button"
+                      onClick="{{ h.pick }}"
+                      aria-pressed="{{ h.pressed }}"
+                      style="font-family: inherit; cursor: pointer; width: 72px; height: 44px; border-radius: 8px; font-size: 15px; background: {{ h.bg }}; border: 1px solid {{ h.bc }}; color: {{ h.fg }}"
+                    >
+                      {{ h.text }}
+                    </button>
+                  </sc-for>
+                </div>
+                <div style="font-size: 13px; color: #4f6556">
+                  Used to estimate your finish date. You can change it later.
+                </div>
+              </div>
+              <div
+                style="
+                  margin-top: auto;
+                  display: flex;
+                  justify-content: flex-end;
+                  align-items: center;
+                  gap: 16px;
+                "
+              >
+                <span style="font-size: 14px; color: #4f6556">About 10 minutes, no signup</span>
+                <a
+                  href="Diagnostic.dc.html"
+                  style="
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 52px;
+                    padding: 0 28px;
+                    box-sizing: border-box;
+                    background: #1d3b2a;
+                    color: #ffffff;
+                    border-radius: 8px;
+                    font-size: 16px;
+                    font-weight: 500;
+                    text-decoration: none;
+                  "
+                  >Start gap detector</a
+                >
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+      class Component extends DCLogic {
+        constructor(props) {
+          super(props);
+          this.state = { track: 'ai', stack: ['JavaScript / TypeScript', 'Python', 'SQL', 'REST APIs', 'Docker', 'Used an LLM API'], isNew: false, hours: '5' };
+        }
+        renderVals() {
+          const s = this.state;
+          const on = { bg: '#F2C14E', bc: '#1D3B2A', fg: '#1D3B2A' };
+          const off = { bg: '#FFFFFF', bc: '#B9C7BD', fg: '#1D3B2A' };
+          const trackDefs = [
+            { id: 'ai', title: 'Build LLM-powered features', sub: 'AI engineering: prompting, structured output, tool calling, RAG, agents, evals', tag: 'Available' },
+            { id: 'ml', title: 'Train and deploy models', sub: 'ML engineering: math foundations, training loops, MLOps', tag: 'Waitlist' },
+            { id: 'unsure', title: 'Not sure yet', sub: 'We explain the difference and recommend one', tag: 'Help me pick' }
+          ];
+          const tracks = trackDefs.map((t) => {
+            const sel = s.track === t.id;
+            return Object.assign({}, t, { bg: sel ? on.bg : off.bg, bc: sel ? on.bc : '#CBD6CC', pressed: sel ? 'true' : 'false', pick: () => this.setState({ track: t.id }) });
+          });
+          const allChips = ['JavaScript / TypeScript', 'Python', 'Java', 'Go', 'C#', 'SQL', 'REST APIs', 'Docker', 'Used an LLM API'];
+          const chips = allChips.map((c) => {
+            const sel = s.stack.indexOf(c) !== -1;
+            const st = sel ? on : off;
+            return { text: (sel ? '✓ ' : '') + c, bg: st.bg, bc: st.bc, fg: st.fg, pressed: sel ? 'true' : 'false', toggle: () => this.setState({ stack: sel ? s.stack.filter((x) => x !== c) : s.stack.concat([c]) }) };
+          });
+          const hours = ['3', '5', '10', '15+'].map((h) => {
+            const sel = s.hours === h;
+            const st = sel ? on : off;
+            return { text: h, bg: st.bg, bc: st.bc, fg: st.fg, pressed: sel ? 'true' : 'false', pick: () => this.setState({ hours: h }) };
+          });
+          return {
+            tracks: tracks,
+            chips: chips,
+            hours: hours,
+            isMl: s.track === 'ml',
+            isUnsure: s.track === 'unsure',
+            isNew: s.isNew ? 'true' : 'false',
+            knobSide: s.isNew ? 'flex-end' : 'flex-start',
+            trackBg: s.isNew ? '#1F6F50' : '#B9C7BD',
+            toggleNew: () => this.setState({ isNew: !s.isNew })
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

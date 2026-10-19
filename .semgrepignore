@@ -1,0 +1,11 @@
+# Semgrep: skip generated, vendored and non-code paths
+node_modules/
+.next/
+pnpm-lock.yaml
+test-results/
+playwright-report/
+coverage/
+design/wireframes/
+docs/
+logs/
+tests/fixtures/

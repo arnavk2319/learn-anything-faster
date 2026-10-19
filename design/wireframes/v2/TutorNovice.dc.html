@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tutor session, novice mode</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&amp;family=Hanken+Grotesk:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          body {
+            margin: 0;
+            background: #e9efe7;
+          }
+          a {
+            color: #1f6f50;
+          }
+          a:hover {
+            color: #16543c;
+          }
+        </style>
+      </helmet>
+      <div
+        style="
+          width: 1280px;
+          height: 800px;
+          box-sizing: border-box;
+          background: #e9efe7;
+          color: #1d3b2a;
+          font-family: &quot;Hanken Grotesk&quot;, system-ui, sans-serif;
+          display: flex;
+          flex-direction: column;
+        "
+      >
+        <header
+          style="
+            height: 64px;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #cbd6cc;
+            background: #ffffff;
+          "
+        >
+          <div style="display: flex; align-items: center; gap: 40px">
+            <div
+              style="
+                font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+                font-weight: 700;
+                font-size: 22px;
+                letter-spacing: -0.3px;
+              "
+            >
+              <span
+                aria-hidden="true"
+                style="
+                  display: inline-block;
+                  width: 14px;
+                  height: 20px;
+                  border-radius: 4px;
+                  background: #f2c14e;
+                  border: 2px solid #1d3b2a;
+                  box-sizing: border-box;
+                  margin-right: 10px;
+                  vertical-align: -3px;
+                "
+              ></span
+              >[App name]
+            </div>
+            <nav style="display: flex; gap: 8px; font-size: 15px">
+              <a
+                href="Dashboard.dc.html"
+                style="padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #1d3b2a"
+                >Dashboard</a
+              >
+              <a
+                href="Path.dc.html"
+                style="
+                  padding: 8px 12px;
+                  border-radius: 6px;
+                  text-decoration: none;
+                  color: #1d3b2a;
+                  background: #e9efe7;
+                  font-weight: 500;
+                "
+                >Path</a
+              >
+              <a
+                href="Map.dc.html"
+                style="padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #1d3b2a"
+                >Map</a
+              >
+            </nav>
+          </div>
+          <div
+            style="
+              width: 36px;
+              height: 36px;
+              border-radius: 50%;
+              background: #cbd6cc;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 12px;
+              font-weight: 500;
+              color: #1d3b2a;
+            "
+          >
+            You
+          </div>
+        </header>
+        <div style="flex-grow: 1; display: flex; min-height: 0">
+          <section
+            style="
+              flex-grow: 1;
+              box-sizing: border-box;
+              padding: 20px 32px;
+              display: flex;
+              flex-direction: column;
+              gap: 14px;
+              min-width: 0;
+            "
+          >
+            <div style="display: flex; justify-content: space-between; align-items: center">
+              <div style="font-size: 14px; color: #4f6556">
+                <a href="Path.dc.html" style="text-decoration: none">Path</a> / Sampling
+              </div>
+              <div style="font-size: 14px; color: #4f6556">Novice mode, objective 1 of 2</div>
+            </div>
+            <div style="display: flex; gap: 8px">
+              <sc-for list="{{ pills }}" as="p" hint-placeholder-count="5">
+                <button
+                  type="button"
+                  onClick="{{ p.go }}"
+                  style="font-family: inherit; cursor: pointer; flex: 1 1 0; height: 38px; border-radius: 8px; font-size: 14px; background: {{ p.bg }}; color: {{ p.fg }}; border: 1px solid {{ p.bc }}"
+                >
+                  {{ p.text }}
+                </button>
+              </sc-for>
+            </div>
+            <div
+              style="flex-grow: 1; display: flex; flex-direction: column; gap: 14px; min-height: 0"
+            >
+              <sc-if value="{{ isWhy }}" hint-placeholder-val="{{ true }}">
+                <div
+                  style="
+                    background: #ffffff;
+                    border: 1px solid #cbd6cc;
+                    border-radius: 12px;
+                    padding: 24px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 14px;
+                    max-width: 780px;
+                  "
+                >
+                  <div style="font-size: 20px; font-weight: 600">Why does this exist?</div>
+                  <div style="font-size: 16px; line-height: 1.6">
+                    Send an LLM the same prompt twice and you can get two different answers. That's
+                    by design: the model picks each next token by sampling from a probability
+                    distribution. Temperature controls how adventurous that sampling is.
+                  </div>
+                  <div
+                    style="
+                      padding: 14px 16px;
+                      border-radius: 8px;
+                      background: #f3edd7;
+                      color: #1d3b2a;
+                      font-size: 15px;
+                      line-height: 1.55;
+                    "
+                  >
+                    <span style="font-weight: 600">Closest thing you already know:</span> a random
+                    seed in your tests. The difference is that here you tune how much randomness you
+                    get, not just whether it repeats.
+                  </div>
+                  <div style="font-size: 15px; line-height: 1.6; color: #4f6556">
+                    Why you care: extraction and classification want low temperature (consistent),
+                    brainstorming wants higher (varied).
+                  </div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ isCodeStep }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size: 15px; line-height: 1.5; max-width: 780px">{{ intro }}</div>
+                <div
+                  style="
+                    border-radius: 10px;
+                    background: #1d3b2a;
+                    padding: 12px 0;
+                    display: flex;
+                    flex-direction: column;
+                  "
+                >
+                  <sc-for list="{{ lines }}" as="ln" hint-placeholder-count="9">
+                    <div
+                      style="
+                        display: flex;
+                        align-items: center;
+                        gap: 16px;
+                        padding: 2px 18px;
+                        min-height: 26px;
+                      "
+                    >
+                      <span
+                        style="
+                          width: 18px;
+                          flex-shrink: 0;
+                          color: #b9c7bd;
+                          font-family: &quot;IBM Plex Mono&quot;, monospace;
+                          font-size: 13px;
+                        "
+                        >{{ ln.no }}</span
+                      >
+                      <sc-if value="{{ ln.showInput }}" hint-placeholder-val="{{ false }}">
+                        <span
+                          style="
+                            display: flex;
+                            align-items: center;
+                            gap: 0;
+                            font-family: &quot;IBM Plex Mono&quot;, monospace;
+                            font-size: 13px;
+                            color: #e9efe7;
+                            white-space: pre;
+                          "
+                          >{{ ln.pre }}<input
+                            type="text"
+                            aria-label="{{ ln.aria }}"
+                            placeholder="fill in"
+                            style="
+                              width: 200px;
+                              height: 24px;
+                              box-sizing: border-box;
+                              padding: 0 8px;
+                              border-radius: 4px;
+                              border: 1px dashed #f2c14e;
+                              background: #1d3b2a;
+                              color: #f3edd7;
+                              font-family: &quot;IBM Plex Mono&quot;, monospace;
+                              font-size: 13px;
+                            "
+                        /></span>
+                      </sc-if>
+                      <sc-if value="{{ ln.showCode }}" hint-placeholder-val="{{ true }}">
+                        <span
+                          style="
+                            width: 520px;
+                            flex-shrink: 0;
+                            font-family: &quot;IBM Plex Mono&quot;, monospace;
+                            font-size: 13px;
+                            color: #e9efe7;
+                            white-space: pre;
+                          "
+                          >{{ ln.code }}</span
+                        >
+                      </sc-if>
+                      <sc-if value="{{ ln.showNote }}" hint-placeholder-val="{{ false }}">
+                        <span style="font-size: 13px; color: #f2c14e">← {{ ln.note }}</span>
+                      </sc-if>
+                    </div>
+                  </sc-for>
+                </div>
+                <div
+                  style="
+                    padding: 12px 16px;
+                    border-radius: 8px;
+                    background: #ffffff;
+                    border: 1px solid #cbd6cc;
+                    font-family: &quot;IBM Plex Mono&quot;, monospace;
+                    font-size: 13px;
+                    line-height: 1.6;
+                    white-space: pre-line;
+                  "
+                >
+                  {{ output }}
+                </div>
+              </sc-if>
+              <sc-if value="{{ isYourTurn }}" hint-placeholder-val="{{ false }}">
+                <div
+                  style="
+                    background: #ffffff;
+                    border: 1px solid #cbd6cc;
+                    border-radius: 12px;
+                    padding: 20px 24px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                  "
+                >
+                  <div style="font-size: 18px; font-weight: 600">Your turn</div>
+                  <div style="font-size: 15px; line-height: 1.55">
+                    Write a function that asks the same question 5 times at temperature 1.0 and
+                    returns the most common answer. (This is a simple self-consistency check.)
+                  </div>
+                </div>
+                <textarea
+                  aria-label="Your code"
+                  rows="10"
+                  style="
+                    box-sizing: border-box;
+                    padding: 14px 16px;
+                    border-radius: 8px;
+                    border: 1px solid #788b7c;
+                    background: #ffffff;
+                    font-family: &quot;IBM Plex Mono&quot;, monospace;
+                    font-size: 13px;
+                    line-height: 1.6;
+                    resize: none;
+                  "
+                >
+def most_common_answer(prompt):
+    # use ask() from the worked example
+</textarea>
+                <div style="font-size: 13px; color: #4f6556">
+                  Graded against the rubric: calls ask() 5 times at 1.0, counts answers, returns the
+                  top one. Stuck? The Hint button shows the next step, never the whole answer at
+                  once.
+                </div>
+              </sc-if>
+              <sc-if value="{{ isMastery }}" hint-placeholder-val="{{ false }}">
+                <div
+                  style="
+                    background: #ffffff;
+                    border: 1px solid #cbd6cc;
+                    border-radius: 12px;
+                    padding: 24px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 14px;
+                    max-width: 700px;
+                  "
+                >
+                  <div style="font-size: 20px; font-weight: 600">Ready for the mastery check</div>
+                  <div style="font-size: 15px; line-height: 1.6">
+                    3 fresh questions on sampling. Pass and Sampling moves from New to Known. Miss
+                    one and we note which objective to revisit in your next session.
+                  </div>
+                  <a
+                    href="Mastery.dc.html"
+                    style="
+                      align-self: flex-start;
+                      display: inline-flex;
+                      align-items: center;
+                      justify-content: center;
+                      height: 48px;
+                      padding: 0 24px;
+                      box-sizing: border-box;
+                      background: #1d3b2a;
+                      color: #ffffff;
+                      border-radius: 8px;
+                      font-size: 15px;
+                      font-weight: 500;
+                      text-decoration: none;
+                    "
+                    >Start mastery check</a
+                  >
+                </div>
+              </sc-if>
+            </div>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding-top: 12px;
+                border-top: 1px solid #cbd6cc;
+              "
+            >
+              <button
+                type="button"
+                onClick="{{ back }}"
+                style="
+                  font-family: inherit;
+                  cursor: pointer;
+                  height: 46px;
+                  padding: 0 18px;
+                  border-radius: 8px;
+                  background: #ffffff;
+                  border: 1px solid #b9c7bd;
+                  color: #1d3b2a;
+                  font-size: 14px;
+                "
+              >
+                Back
+              </button>
+              <div style="display: flex; gap: 10px">
+                <button
+                  type="button"
+                  style="
+                    font-family: inherit;
+                    cursor: pointer;
+                    height: 46px;
+                    padding: 0 16px;
+                    border-radius: 8px;
+                    background: #ffffff;
+                    border: 1px solid #b9c7bd;
+                    color: #1d3b2a;
+                    font-size: 14px;
+                  "
+                >
+                  Ask the tutor
+                </button>
+                <button
+                  type="button"
+                  onClick="{{ next }}"
+                  style="
+                    font-family: inherit;
+                    cursor: pointer;
+                    height: 46px;
+                    padding: 0 22px;
+                    border-radius: 8px;
+                    background: #1d3b2a;
+                    border: none;
+                    color: #ffffff;
+                    font-size: 15px;
+                    font-weight: 500;
+                  "
+                >
+                  {{ nextLabel }}
+                </button>
+              </div>
+            </div>
+          </section>
+          <aside
+            style="
+              width: 340px;
+              flex-shrink: 0;
+              box-sizing: border-box;
+              padding: 20px 24px;
+              background: #ffffff;
+              border-left: 1px solid #cbd6cc;
+              display: flex;
+              flex-direction: column;
+              gap: 16px;
+            "
+          >
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <div style="display: flex; justify-content: space-between; align-items: center">
+                <span style="font-size: 18px; font-weight: 600">Sampling</span>
+                <span
+                  style="
+                    font-size: 12px;
+                    padding: 4px 10px;
+                    border-radius: 999px;
+                    background: #ffffff;
+                    border: 1px dashed #4f6556;
+                    color: #1d3b2a;
+                  "
+                  >New</span
+                >
+              </div>
+              <span style="font-size: 14px; color: #4f6556"
+                >Novice mode: worked example first, then the blanks grow until you write it
+                yourself.</span
+              >
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <div style="font-size: 14px; font-weight: 600">Objectives</div>
+              <div style="display: flex; gap: 8px; font-size: 14px">
+                <span style="width: 16px">○</span><span>Explain why outputs vary run to run</span>
+              </div>
+              <div style="display: flex; gap: 8px; font-size: 14px">
+                <span style="width: 16px">○</span><span>Choose a temperature for a task</span>
+              </div>
+            </div>
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                padding: 14px;
+                border-radius: 10px;
+                background: #e9efe7;
+              "
+            >
+              <div style="font-size: 14px; font-weight: 600">What the tutor knows about you</div>
+              <div style="font-size: 13px; color: #4f6556; line-height: 1.5">
+                Gap detector: predicted identical outputs at temperature 1.0.
+              </div>
+              <div style="font-size: 13px; color: #4f6556; line-height: 1.5">
+                Comfortable with Python and testing, so examples use both.
+              </div>
+            </div>
+            <div style="margin-top: auto; display: flex; flex-direction: column; gap: 10px">
+              <a
+                href="Mastery.dc.html"
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  height: 46px;
+                  border-radius: 8px;
+                  background: #ffffff;
+                  border: 1px solid #1f6f50;
+                  color: #1f6f50;
+                  text-decoration: none;
+                  font-size: 15px;
+                  font-weight: 500;
+                "
+                >I know this — test me</a
+              >
+              <a href="#" style="font-size: 14px; text-align: center"
+                >Provider docs: sampling parameters ↗</a
+              >
+            </div>
+          </aside>
+        </div>
+      </div>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+      class Component extends DCLogic {
+        constructor(props) {
+          super(props);
+          this.state = { step: 0 };
+        }
+        renderVals() {
+          const s = this.state;
+          const names = ['Why it exists', 'Worked example', 'Fill the gaps', 'Your turn', 'Mastery'];
+          const pills = names.map((n, i) => {
+            const done = i < s.step, cur = i === s.step;
+            return { text: (done ? '✓ ' : '') + n, bg: cur ? '#1F6F50' : (done ? '#DCEBDF' : '#FFFFFF'), fg: cur ? '#FFFFFF' : (done ? '#1D3B2A' : '#4F6556'), bc: cur ? '#1F6F50' : (done ? '#1F6F50' : '#CBD6CC'), go: () => this.setState({ step: i }) };
+          });
+          const src = [
+            { code: 'def ask(prompt, temperature):', note: 'wrap the call so you can vary one thing' },
+            { code: '    r = client.messages.create(', note: '' },
+            { code: '        model=MODEL, max_tokens=20,', note: '' },
+            { code: '        temperature=temperature,', note: '0 = consistent, higher = more varied', blank: true, pre: '        temperature=' },
+            { code: '        messages=[{"role": "user", "content": prompt}])', note: '' },
+            { code: '    return r.content[0].text', note: 'the text of the reply' },
+            { code: '', note: '' },
+            { code: 'for t in [0.0, 1.0]:', note: 'same prompt, two settings', blank: true, pre: 'for t in ' },
+            { code: '    print(t, [ask("Name one color", t) for _ in range(3)])', note: 'three runs each: compare the spread' }
+          ];
+          const fading = s.step === 2;
+          const lines = src.map((l, i) => ({
+            no: String(i + 1), code: l.code, note: l.note, pre: l.pre || '', aria: 'Fill in line ' + (i + 1),
+            showInput: fading && !!l.blank,
+            showCode: !(fading && l.blank),
+            showNote: s.step === 1 && l.note !== ''
+          }));
+          return {
+            pills: pills,
+            lines: lines,
+            isWhy: s.step === 0,
+            isCodeStep: s.step === 1 || s.step === 2,
+            isYourTurn: s.step === 3,
+            isMastery: s.step === 4,
+            intro: s.step === 1 ? 'Read it top to bottom. Each note explains one decision. This version is complete.' : 'Same example, with two pieces removed. Fill them in from memory, then check against the output below.',
+            output: 'Example output (yours will vary):\n0.0  ["Blue", "Blue", "Blue"]\n1.0  ["Teal", "Crimson", "Blue"]',
+            nextLabel: s.step === 4 ? 'Restart demo' : 'Next',
+            next: () => this.setState({ step: s.step === 4 ? 0 : s.step + 1 }),
+            back: () => this.setState({ step: Math.max(0, s.step - 1) })
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

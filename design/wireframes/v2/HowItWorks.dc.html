@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>How it works</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&amp;family=Hanken+Grotesk:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          body {
+            margin: 0;
+            background: #e9efe7;
+          }
+          a {
+            color: #1f6f50;
+          }
+          a:hover {
+            color: #16543c;
+          }
+        </style>
+      </helmet>
+      <div
+        style="
+          width: 1280px;
+          height: 1900px;
+          box-sizing: border-box;
+          background: #e9efe7;
+          color: #1d3b2a;
+          font-family: &quot;Hanken Grotesk&quot;, system-ui, sans-serif;
+          display: flex;
+          flex-direction: column;
+        "
+      >
+        <header
+          style="
+            height: 64px;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            padding: 0 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #cbd6cc;
+            background: #ffffff;
+          "
+        >
+          <a
+            href="Main.dc.html"
+            style="
+              font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+              font-weight: 700;
+              font-size: 22px;
+              letter-spacing: -0.3px;
+              color: #1d3b2a;
+              text-decoration: none;
+            "
+            ><span
+              aria-hidden="true"
+              style="
+                display: inline-block;
+                width: 14px;
+                height: 20px;
+                border-radius: 4px;
+                background: #f2c14e;
+                border: 2px solid #1d3b2a;
+                box-sizing: border-box;
+                margin-right: 10px;
+                vertical-align: -3px;
+              "
+            ></span
+            >[App name]</a
+          >
+          <nav style="display: flex; gap: 32px; align-items: center; font-size: 15px">
+            <a
+              href="HowItWorks.dc.html"
+              style="
+                text-decoration: none;
+                color: #1d3b2a;
+                font-weight: 600;
+                border-bottom: 2px solid #1f6f50;
+                padding-bottom: 2px;
+              "
+              >How it works</a
+            >
+            <a href="Paywall.dc.html" style="text-decoration: none; color: #1d3b2a">Pricing</a>
+            <a href="Signup.dc.html" style="text-decoration: none; color: #1d3b2a">Log in</a>
+          </nav>
+        </header>
+        <main
+          style="
+            flex-grow: 1;
+            box-sizing: border-box;
+            padding: 56px 48px 48px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              gap: 16px;
+              align-items: center;
+              text-align: center;
+            "
+          >
+            <h1
+              style="
+                font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+                margin: 0;
+                font-size: 44px;
+                line-height: 1.15;
+                font-weight: 600;
+                letter-spacing: -0.5px;
+                max-width: 820px;
+              "
+            >
+              Most courses teach you everything. We find what you already know and teach only the
+              rest.
+            </h1>
+            <p
+              style="margin: 0; font-size: 18px; line-height: 1.6; color: #4f6556; max-width: 700px"
+            >
+              Five steps, from your first question to proving you've learned it. Here's what happens
+              at each one.
+            </p>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              gap: 48px;
+              align-items: center;
+              background: #ffffff;
+              border: 1px solid #cbd6cc;
+              border-radius: 16px;
+              padding: 32px 36px;
+            "
+          >
+            <div
+              style="width: 480px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px"
+            >
+              <div style="font-size: 14px; color: #4f6556">Step 1, about a minute</div>
+              <h2
+                style="
+                  font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+                  margin: 0;
+                  font-size: 26px;
+                  font-weight: 600;
+                "
+              >
+                Set your goal
+              </h2>
+              <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #4f6556">
+                Pick a track, say what you want to be able to do, and tell us what you already work
+                with. Your existing stack is how we find what transfers.
+              </p>
+            </div>
+            <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 12px">
+              <div
+                style="
+                  padding: 12px 14px;
+                  border-radius: 8px;
+                  border: 1px solid #1f6f50;
+                  background: #dcebdf;
+                  font-size: 15px;
+                  color: #1d3b2a;
+                  font-weight: 500;
+                "
+              >
+                Build LLM-powered features
+              </div>
+              <div
+                style="
+                  padding: 12px 14px;
+                  border-radius: 8px;
+                  border: 1px solid #b9c7bd;
+                  font-size: 15px;
+                  color: #4f6556;
+                "
+              >
+                Outcome: ship a RAG feature at work
+              </div>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px">
+                <span
+                  style="
+                    padding: 8px 12px;
+                    border-radius: 999px;
+                    font-size: 14px;
+                    background: #dcebdf;
+                    border: 1px solid #1f6f50;
+                    color: #1d3b2a;
+                  "
+                  >✓ TypeScript</span
+                >
+                <span
+                  style="
+                    padding: 8px 12px;
+                    border-radius: 999px;
+                    font-size: 14px;
+                    background: #dcebdf;
+                    border: 1px solid #1f6f50;
+                    color: #1d3b2a;
+                  "
+                  >✓ Python</span
+                >
+                <span
+                  style="
+                    padding: 8px 12px;
+                    border-radius: 999px;
+                    font-size: 14px;
+                    background: #dcebdf;
+                    border: 1px solid #1f6f50;
+                    color: #1d3b2a;
+                  "
+                  >✓ REST APIs</span
+                >
+                <span
+                  style="
+                    padding: 8px 12px;
+                    border-radius: 999px;
+                    font-size: 14px;
+                    background: #ffffff;
+                    border: 1px solid #b9c7bd;
+                    color: #1d3b2a;
+                  "
+                  >Go</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              gap: 48px;
+              align-items: center;
+              background: #ffffff;
+              border: 1px solid #cbd6cc;
+              border-radius: 16px;
+              padding: 32px 36px;
+            "
+          >
+            <div
+              style="width: 480px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px"
+            >
+              <div style="font-size: 14px; color: #4f6556">
+                Step 2, about 10 minutes, free, no signup
+              </div>
+              <h2
+                style="
+                  font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+                  margin: 0;
+                  font-size: 26px;
+                  font-weight: 600;
+                "
+              >
+                Run the gap detector
+              </h2>
+              <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #4f6556">
+                Real developer questions, not multiple choice trivia: predict the output, spot the
+                bug, explain it in a sentence. It adapts as you go, so a strong answer skips the
+                follow-ups and "I don't know this yet" moves you on instantly.
+              </p>
+            </div>
+            <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 10px">
+              <div style="display: flex; gap: 8px">
+                <span
+                  style="
+                    font-size: 13px;
+                    padding: 4px 10px;
+                    border-radius: 999px;
+                    background: #f3edd7;
+                    color: #1d3b2a;
+                  "
+                  >Transfer probe: checks what carries over</span
+                >
+                <span
+                  style="
+                    font-size: 13px;
+                    padding: 4px 10px;
+                    border-radius: 999px;
+                    background: #dcebdf;
+                    color: #1d3b2a;
+                  "
+                  >Track probe: checks new material</span
+                >
+              </div>
+              <pre
+                style="
+                  margin: 0;
+                  padding: 14px 16px;
+                  border-radius: 8px;
+                  background: #1d3b2a;
+                  color: #e9efe7;
+                  font-family: &quot;IBM Plex Mono&quot;, monospace;
+                  font-size: 13px;
+                  line-height: 1.6;
+                  white-space: pre;
+                "
+              >
+{{ sampleCode }}</pre>
+              <div style="font-size: 14px; color: #4f6556">
+                Q: This runs three times. What prints, and why?
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              gap: 48px;
+              align-items: center;
+              background: #ffffff;
+              border: 1px solid #cbd6cc;
+              border-radius: 16px;
+              padding: 32px 36px;
+            "
+          >
+            <div
+              style="width: 480px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px"
+            >
+              <div style="font-size: 14px; color: #4f6556">Step 3, instant</div>
+              <h2
+                style="
+                  font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+                  margin: 0;
+                  font-size: 26px;
+                  font-weight: 600;
+                "
+              >
+                See your map
+              </h2>
+              <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #4f6556">
+                Every topic in the track, sorted three ways. Click any topic to see exactly which
+                answer put it there, and how long closing it should take.
+              </p>
+            </div>
+            <div
+              style="
+                flex-grow: 1;
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 12px;
+              "
+            >
+              <div
+                style="
+                  padding: 14px;
+                  border-radius: 8px;
+                  background: #dcebdf;
+                  border: 1px solid #1f6f50;
+                  color: #1d3b2a;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 4px;
+                "
+              >
+                <span style="font-size: 15px; font-weight: 600">Known</span
+                ><span style="font-size: 13px">Skipped. Test yourself anytime.</span>
+              </div>
+              <div
+                style="
+                  padding: 14px;
+                  border-radius: 8px;
+                  background: #f3edd7;
+                  border: 1px solid #8a6d1f;
+                  color: #1d3b2a;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 4px;
+                "
+              >
+                <span style="font-size: 15px; font-weight: 600">Bridge</span
+                ><span style="font-size: 13px">Builds on a skill you have. Short sessions.</span>
+              </div>
+              <div
+                style="
+                  padding: 14px;
+                  border-radius: 8px;
+                  background: #ffffff;
+                  border: 1px dashed #4f6556;
+                  color: #1d3b2a;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 4px;
+                "
+              >
+                <span style="font-size: 15px; font-weight: 600">New</span
+                ><span style="font-size: 13px">Taught from scratch, example first.</span>
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              gap: 48px;
+              align-items: center;
+              background: #ffffff;
+              border: 1px solid #cbd6cc;
+              border-radius: 16px;
+              padding: 32px 36px;
+            "
+          >
+            <div
+              style="width: 480px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px"
+            >
+              <div style="font-size: 14px; color: #4f6556">Step 4, at your pace</div>
+              <h2
+                style="
+                  font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+                  margin: 0;
+                  font-size: 26px;
+                  font-weight: 600;
+                "
+              >
+                Learn only the gaps
+              </h2>
+              <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #4f6556">
+                A tutor teaches one topic at a time, in the order the prerequisites need. It
+                remembers what you know and what you got wrong, so it never re-explains the basics.
+                Already know it? Skip straight to the test.
+              </p>
+            </div>
+            <div
+              style="
+                flex-grow: 1;
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+              "
+            >
+              <div
+                style="
+                  padding: 16px;
+                  border-radius: 10px;
+                  border: 1px solid #8a6d1f;
+                  background: #f3edd7;
+                  color: #1d3b2a;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 6px;
+                "
+              >
+                <span style="font-size: 15px; font-weight: 600">Gap mode, for bridge topics</span>
+                <span style="font-size: 13px; line-height: 1.5"
+                  >Starts from your actual mistake, connects it to what you know, then shows where
+                  the analogy breaks.</span
+                >
+              </div>
+              <div
+                style="
+                  padding: 16px;
+                  border-radius: 10px;
+                  border: 1px dashed #4f6556;
+                  background: #ffffff;
+                  color: #1d3b2a;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 6px;
+                "
+              >
+                <span style="font-size: 15px; font-weight: 600">Novice mode, for new topics</span>
+                <span style="font-size: 13px; line-height: 1.5"
+                  >A worked example first, then the same example with blanks, then you write it
+                  yourself.</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              gap: 48px;
+              align-items: center;
+              background: #ffffff;
+              border: 1px solid #cbd6cc;
+              border-radius: 16px;
+              padding: 32px 36px;
+            "
+          >
+            <div
+              style="width: 480px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px"
+            >
+              <div style="font-size: 14px; color: #4f6556">Step 5, a few minutes per topic</div>
+              <h2
+                style="
+                  font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+                  margin: 0;
+                  font-size: 26px;
+                  font-weight: 600;
+                "
+              >
+                Prove it, then move on
+              </h2>
+              <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #4f6556">
+                Each topic ends with fresh questions you haven't seen. Pass and it turns Known on
+                your map, which unlocks what comes next. Miss one and the tutor picks up exactly
+                there next time.
+              </p>
+            </div>
+            <div
+              style="
+                flex-grow: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 14px;
+                font-size: 15px;
+              "
+            >
+              <span
+                style="
+                  padding: 8px 14px;
+                  border-radius: 999px;
+                  background: #f3edd7;
+                  border: 1px solid #8a6d1f;
+                  color: #1d3b2a;
+                "
+                >Bridge</span
+              >
+              <span style="color: #4f6556">→ mastery check →</span>
+              <span
+                style="
+                  padding: 8px 14px;
+                  border-radius: 999px;
+                  background: #dcebdf;
+                  border: 1px solid #1f6f50;
+                  color: #1d3b2a;
+                "
+                >Known</span
+              >
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px">
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <div style="font-size: 16px; font-weight: 600">What if I know nothing yet?</div>
+              <div style="font-size: 14px; color: #4f6556; line-height: 1.55">
+                Turn on "completely new" in step 1. We check what transfers from your experience,
+                and every topic runs in novice mode.
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <div style="font-size: 16px; font-weight: 600">Which tracks are available?</div>
+              <div style="font-size: 14px; color: #4f6556; line-height: 1.55">
+                AI engineering today. ML engineering is on the waitlist.
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <div style="font-size: 16px; font-weight: 600">How long does it take?</div>
+              <div style="font-size: 14px; color: #4f6556; line-height: 1.55">
+                Depends on your map. You get a personal estimate and finish date right after the gap
+                detector.
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <div style="font-size: 16px; font-weight: 600">What's free?</div>
+              <div style="font-size: 14px; color: #4f6556; line-height: 1.55">
+                The gap detector, your map, your path and your first tutor session.
+                <a href="Paywall.dc.html">See pricing</a>
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="
+              margin-top: auto;
+              background: #ffffff;
+              border: 1px solid #cbd6cc;
+              border-radius: 16px;
+              padding: 28px 36px;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <div style="display: flex; flex-direction: column; gap: 4px">
+              <div style="font-size: 22px; font-weight: 600">Find out what you can skip</div>
+              <div style="font-size: 15px; color: #4f6556">About 10 minutes, no signup</div>
+            </div>
+            <a
+              href="Goal.dc.html"
+              style="
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                height: 52px;
+                padding: 0 28px;
+                box-sizing: border-box;
+                background: #1d3b2a;
+                color: #ffffff;
+                border-radius: 8px;
+                font-size: 16px;
+                font-weight: 500;
+                text-decoration: none;
+              "
+              >Start the free gap detector</a
+            >
+          </div>
+        </main>
+      </div>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1900}}'>
+      class Component extends DCLogic {
+        renderVals() {
+          return {
+            sampleCode: `for i in range(3):
+          r = client.messages.create(model=MODEL, temperature=1.0,
+              messages=[{"role": "user", "content": "Name one color"}])
+          print(r.content[0].text)`
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

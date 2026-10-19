@@ -1,0 +1,68 @@
+# --- dependencies & build output
+node_modules/
+.pnpm-store/
+.next/
+out/
+dist/
+build/
+.turbo/
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+
+# --- environment & secrets (never commit; .env.example is the template)
+.env
+.env.*
+!.env.example
+secrets/
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+credentials.json
+service-account*.json
+.npmrc.local
+
+# --- test, coverage & scan artifacts
+coverage/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+.eslintcache
+.prettiercache
+*.sarif
+semgrep-results.*
+gitleaks-report.*
+
+# --- local agent working record (plans, tickets, decisions, status, logs, spend). Local only.
+logs/
+docs/status.md
+docs/backlog.md
+docs/tickets/
+docs/decisions/
+docs/ops/
+docs/*.pdf
+# Claude Code local state, worktrees and personal settings
+.claude/settings.local.json
+.claude/worktrees/
+.claude/projects/
+CLAUDE.local.md
+
+# --- local database data
+*.sqlite
+*.db
+pgdata/
+apps/web/db/.local/
+
+# --- OS & editor
+.DS_Store
+Thumbs.db
+*.log
+*.swp
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json

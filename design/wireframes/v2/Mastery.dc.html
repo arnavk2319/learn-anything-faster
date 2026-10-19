@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Mastery check</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&amp;family=Hanken+Grotesk:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          body {
+            margin: 0;
+            background: #e9efe7;
+          }
+          a {
+            color: #1f6f50;
+          }
+          a:hover {
+            color: #16543c;
+          }
+        </style>
+      </helmet>
+      <div
+        style="
+          width: 1280px;
+          height: 800px;
+          box-sizing: border-box;
+          background: #e9efe7;
+          color: #1d3b2a;
+          font-family: &quot;Hanken Grotesk&quot;, system-ui, sans-serif;
+          display: flex;
+          flex-direction: column;
+        "
+      >
+        <header
+          style="
+            height: 64px;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #cbd6cc;
+            background: #ffffff;
+          "
+        >
+          <div style="display: flex; align-items: center; gap: 40px">
+            <div
+              style="
+                font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+                font-weight: 700;
+                font-size: 22px;
+                letter-spacing: -0.3px;
+              "
+            >
+              <span
+                aria-hidden="true"
+                style="
+                  display: inline-block;
+                  width: 14px;
+                  height: 20px;
+                  border-radius: 4px;
+                  background: #f2c14e;
+                  border: 2px solid #1d3b2a;
+                  box-sizing: border-box;
+                  margin-right: 10px;
+                  vertical-align: -3px;
+                "
+              ></span
+              >[App name]
+            </div>
+            <nav style="display: flex; gap: 8px; font-size: 15px">
+              <a
+                href="Dashboard.dc.html"
+                style="padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #1d3b2a"
+                >Dashboard</a
+              >
+              <a
+                href="Path.dc.html"
+                style="
+                  padding: 8px 12px;
+                  border-radius: 6px;
+                  text-decoration: none;
+                  color: #1d3b2a;
+                  background: #e9efe7;
+                  font-weight: 500;
+                "
+                >Path</a
+              >
+              <a
+                href="Map.dc.html"
+                style="padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #1d3b2a"
+                >Map</a
+              >
+            </nav>
+          </div>
+          <div
+            style="
+              width: 36px;
+              height: 36px;
+              border-radius: 50%;
+              background: #cbd6cc;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 12px;
+              font-weight: 500;
+              color: #1d3b2a;
+            "
+          >
+            You
+          </div>
+        </header>
+        <main
+          style="flex-grow: 1; box-sizing: border-box; padding: 24px 40px; display: flex; gap: 32px"
+        >
+          <section style="flex-grow: 1; display: flex; flex-direction: column; gap: 14px">
+            <div>
+              <h1
+                style="
+                  font-family: &quot;Familjen Grotesk&quot;, sans-serif;
+                  margin: 0;
+                  font-size: 26px;
+                  font-weight: 600;
+                "
+              >
+                Mastery check, Structured output
+              </h1>
+              <p style="margin: 4px 0 0; font-size: 15px; color: #4f6556">
+                3 questions you haven't seen. Get at least 2 right to move this node to Known.
+              </p>
+            </div>
+            <sc-for list="{{ qs }}" as="q" hint-placeholder-count="3">
+              <fieldset
+                style="
+                  margin: 0;
+                  border: 1px solid #cbd6cc;
+                  border-radius: 12px;
+                  background: #ffffff;
+                  padding: 8px 16px 12px;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 6px;
+                "
+              >
+                <legend style="padding: 0 6px; font-size: 13px; color: #4f6556">
+                  Question {{ q.num }}
+                </legend>
+                <div style="font-size: 16px; font-weight: 600">{{ q.text }}</div>
+                <sc-for list="{{ q.opts }}" as="o" hint-placeholder-count="3">
+                  <button
+                    type="button"
+                    onClick="{{ o.pick }}"
+                    aria-pressed="{{ o.pressed }}"
+                    style="text-align: left; font-family: inherit; cursor: pointer; min-height: 36px; padding: 6px 12px; border-radius: 8px; font-size: 14px; background: {{ o.bg }}; border: 1px solid {{ o.bc }}; color: {{ o.fg }}"
+                  >
+                    {{ o.label }}
+                  </button>
+                </sc-for>
+              </fieldset>
+            </sc-for>
+          </section>
+          <aside
+            style="width: 360px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px"
+          >
+            <sc-if value="{{ notSubmitted }}" hint-placeholder-val="{{ true }}">
+              <div
+                style="
+                  background: #ffffff;
+                  border: 1px solid #cbd6cc;
+                  border-radius: 12px;
+                  padding: 20px;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 12px;
+                "
+              >
+                <div style="font-size: 16px; font-weight: 600">{{ answeredText }}</div>
+                <div style="font-size: 14px; color: #4f6556; line-height: 1.5">
+                  These are graded instantly. Open-ended answers in the tutor are graded against a
+                  rubric instead.
+                </div>
+                <button
+                  type="button"
+                  onClick="{{ submit }}"
+                  style="
+                    font-family: inherit;
+                    cursor: pointer;
+                    height: 48px;
+                    border-radius: 8px;
+                    background: #1d3b2a;
+                    border: none;
+                    color: #ffffff;
+                    font-size: 15px;
+                    font-weight: 500;
+                  "
+                >
+                  Submit answers
+                </button>
+                <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}">
+                  <div role="alert" style="font-size: 13px; color: #a8321e">
+                    Answer all 3 questions first.
+                  </div>
+                </sc-if>
+              </div>
+            </sc-if>
+            <sc-if value="{{ submitted }}" hint-placeholder-val="{{ false }}">
+              <div
+                style="
+                  background: #ffffff;
+                  border: 1px solid #cbd6cc;
+                  border-radius: 12px;
+                  padding: 20px;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 14px;
+                "
+              >
+                <div style="font-size: 30px; font-weight: 600">{{ score }} of 3</div>
+                <div style="display: flex; align-items: center; gap: 10px; font-size: 14px">
+                  <span
+                    style="
+                      padding: 4px 10px;
+                      border-radius: 999px;
+                      background: #f3edd7;
+                      border: 1px solid #8a6d1f;
+                      color: #1d3b2a;
+                    "
+                    >Bridge</span
+                  >
+                  <span>→</span>
+                  <span
+                    style="padding: 4px 10px; border-radius: 999px; background: {{ resBg }}; border: 1px solid {{ resBc }}; color: {{ resFg }}"
+                    >{{ resLabel }}</span
+                  >
+                </div>
+                <div style="font-size: 14px; line-height: 1.5; color: #1d3b2a">{{ resText }}</div>
+                <div
+                  style="
+                    padding: 12px;
+                    border-radius: 8px;
+                    background: #e9efe7;
+                    font-size: 13px;
+                    line-height: 1.5;
+                    color: #4f6556;
+                  "
+                >
+                  <span style="font-weight: 600; color: #1d3b2a">Tutor memory updated:</span> {{
+                  memText }}
+                </div>
+                <a
+                  href="Paywall.dc.html"
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 48px;
+                    border-radius: 8px;
+                    background: #1d3b2a;
+                    color: #ffffff;
+                    text-decoration: none;
+                    font-size: 15px;
+                    font-weight: 500;
+                  "
+                  >Next: Sampling</a
+                >
+                <div style="display: flex; justify-content: space-between; font-size: 14px">
+                  <a href="Path.dc.html">Back to path</a>
+                  <button
+                    type="button"
+                    onClick="{{ reset }}"
+                    style="
+                      font-family: inherit;
+                      cursor: pointer;
+                      border: none;
+                      background: none;
+                      padding: 0;
+                      color: #1f6f50;
+                      font-size: 14px;
+                    "
+                  >
+                    Replay demo
+                  </button>
+                </div>
+              </div>
+            </sc-if>
+          </aside>
+        </main>
+      </div>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+      class Component extends DCLogic {
+        constructor(props) {
+          super(props);
+          this.state = { answers: {}, submitted: false, error: false };
+        }
+        renderVals() {
+          const s = this.state;
+          const defs = [
+            { text: 'The response matches your schema. Is it correct?', opts: ['Yes. The schema guarantees correctness', 'Not necessarily. Values still need business-rule checks', 'Only if temperature is 0'], correct: 1 },
+            { text: 'What is the best response to a validation failure?', opts: ['Retry once with the error included in the prompt', 'Silently drop the record', 'Raise the temperature and retry'], correct: 0 },
+            { text: 'When is prompt-only "respond in JSON" acceptable?', opts: ['Never', 'Prototypes where occasional failures are handled', 'Always, if the prompt is clear enough'], correct: 1 }
+          ];
+          let score = 0;
+          const qs = defs.map((d, qi) => {
+            const chosen = s.answers[qi];
+            if (chosen === d.correct) score++;
+            return { num: String(qi + 1), text: d.text, opts: d.opts.map((label, oi) => {
+              let bg = '#FFFFFF', bc = '#CBD6CC', fg = '#1D3B2A', suffix = '';
+              if (!s.submitted && chosen === oi) { bg = '#F2C14E'; bc = '#1D3B2A'; fg = '#1D3B2A'; }
+              if (s.submitted && oi === d.correct) { bg = '#DCEBDF'; bc = '#1F6F50'; fg = '#1D3B2A'; suffix = '  ✓ correct'; }
+              if (s.submitted && chosen === oi && oi !== d.correct) { bg = '#F8E5E0'; bc = '#A8321E'; fg = '#6B1F12'; suffix = '  ✗ your answer'; }
+              return { label: label + suffix, bg: bg, bc: bc, fg: fg, pressed: chosen === oi ? 'true' : 'false',
+                pick: () => { if (!s.submitted) { const a = Object.assign({}, s.answers); a[qi] = oi; this.setState({ answers: a, error: false }); } } };
+            }) };
+          });
+          const count = Object.keys(s.answers).length;
+          const pass = score >= 2;
+          return {
+            qs: qs,
+            notSubmitted: !s.submitted,
+            submitted: s.submitted,
+            error: s.error,
+            answeredText: count + ' of 3 answered',
+            score: String(score),
+            resLabel: pass ? 'Known' : 'Still Bridge',
+            resBg: pass ? '#DCEBDF' : '#F3EDD7', resBc: pass ? '#1F6F50' : '#8A6D1F', resFg: pass ? '#1D3B2A' : '#1D3B2A',
+            resText: pass ? 'Structured output is now Known on your map. Tool calling and Evals are unlocked.' : 'Close. We will revisit the objective you missed at the start of your next session on this node.',
+            memText: pass ? 'can validate and retry structured output; watch for trusting schema shape as correctness.' : 'still treats schema-valid output as correct; revisit before Tool calling.',
+            submit: () => { if (count < 3) { this.setState({ error: true }); } else { this.setState({ submitted: true, error: false }); } },
+            reset: () => this.setState({ answers: {}, submitted: false, error: false })
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

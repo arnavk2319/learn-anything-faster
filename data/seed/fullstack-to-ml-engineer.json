@@ -1,0 +1,790 @@
+{
+  "_note": "Sample data taken from the v1 roadmap wireframe. Resource URLs are deliberately null and status is 'proposed': a person must find, verify and approve every link before it is served (see DESIGN.md and the architecture doc). Coursera items are audit-free with a paid certificate; check before setting is_free.",
+  "roles": [
+    {
+      "id": "full-stack-engineer",
+      "name": "Full-stack engineer",
+      "status": "live"
+    },
+    {
+      "id": "ml-engineer",
+      "name": "ML engineer",
+      "status": "live"
+    },
+    {
+      "id": "ai-engineer",
+      "name": "AI engineer",
+      "status": "coming_soon"
+    },
+    {
+      "id": "backend-engineer",
+      "name": "Backend engineer",
+      "status": "coming_soon"
+    },
+    {
+      "id": "mlops-engineer",
+      "name": "MLOps engineer",
+      "status": "coming_soon"
+    },
+    {
+      "id": "frontend-engineer",
+      "name": "Frontend engineer",
+      "status": "coming_soon"
+    },
+    {
+      "id": "data-analyst",
+      "name": "Data analyst",
+      "status": "coming_soon"
+    },
+    {
+      "id": "data-scientist",
+      "name": "Data scientist",
+      "status": "coming_soon"
+    }
+  ],
+  "areas": [
+    {
+      "id": "math-foundations",
+      "name": "Math foundations",
+      "order": 0
+    },
+    {
+      "id": "python-for-ml",
+      "name": "Python for ML",
+      "order": 1
+    },
+    {
+      "id": "classical-ml",
+      "name": "Classical ML",
+      "order": 2
+    },
+    {
+      "id": "deep-learning",
+      "name": "Deep learning",
+      "order": 3
+    },
+    {
+      "id": "mlops",
+      "name": "MLOps",
+      "order": 4
+    },
+    {
+      "id": "general-engineering",
+      "name": "General engineering",
+      "order": 99
+    }
+  ],
+  "topics": [
+    {
+      "id": "linear-algebra",
+      "name": "Linear algebra",
+      "area": "math-foundations",
+      "why": "Vectors and matrices are how models represent data and weights.",
+      "est_hours": 3
+    },
+    {
+      "id": "calculus-basics",
+      "name": "Calculus basics",
+      "area": "math-foundations",
+      "why": "Training is minimizing a loss, which runs on derivatives.",
+      "est_hours": 3
+    },
+    {
+      "id": "probability-stats",
+      "name": "Probability & stats",
+      "area": "math-foundations",
+      "why": "Every model output is a probability; evaluation is statistics.",
+      "est_hours": 4
+    },
+    {
+      "id": "numpy",
+      "name": "NumPy",
+      "area": "python-for-ml",
+      "why": "The array library everything else in ML is built on.",
+      "est_hours": 2
+    },
+    {
+      "id": "pandas",
+      "name": "pandas",
+      "area": "python-for-ml",
+      "why": "Loading, cleaning and shaping datasets before training.",
+      "est_hours": 1.5
+    },
+    {
+      "id": "matplotlib",
+      "name": "Matplotlib",
+      "area": "python-for-ml",
+      "why": "Plotting data and training curves to see what is happening.",
+      "est_hours": 0.5
+    },
+    {
+      "id": "supervised-learning",
+      "name": "Supervised learning",
+      "area": "classical-ml",
+      "why": "The train / validate / test loop every later topic builds on.",
+      "est_hours": 2
+    },
+    {
+      "id": "regression",
+      "name": "Regression",
+      "area": "classical-ml",
+      "why": "Predicting numbers, and the simplest model to learn training on.",
+      "est_hours": 2
+    },
+    {
+      "id": "classification",
+      "name": "Classification",
+      "area": "classical-ml",
+      "why": "Predicting categories, the most common ML task in products.",
+      "est_hours": 2
+    },
+    {
+      "id": "model-evaluation",
+      "name": "Model evaluation",
+      "area": "classical-ml",
+      "why": "Knowing whether a model is good, beyond accuracy.",
+      "est_hours": 2
+    },
+    {
+      "id": "feature-engineering",
+      "name": "Feature engineering",
+      "area": "classical-ml",
+      "why": "Turning raw data into inputs a model can learn from.",
+      "est_hours": 2
+    },
+    {
+      "id": "neural-networks",
+      "name": "Neural networks",
+      "area": "deep-learning",
+      "why": "The building block of modern ML: layers of weighted sums and activations.",
+      "est_hours": 3
+    },
+    {
+      "id": "backprop-training",
+      "name": "Backprop & training",
+      "area": "deep-learning",
+      "why": "How networks actually learn, and why training fails.",
+      "est_hours": 3
+    },
+    {
+      "id": "cnns",
+      "name": "CNNs",
+      "area": "deep-learning",
+      "why": "Networks for images and other grid-shaped data.",
+      "est_hours": 2
+    },
+    {
+      "id": "transformers",
+      "name": "Transformers",
+      "area": "deep-learning",
+      "why": "The architecture behind today's language models.",
+      "est_hours": 3
+    },
+    {
+      "id": "experiment-tracking",
+      "name": "Experiment tracking",
+      "area": "mlops",
+      "why": "Comparing runs and reproducing your best model.",
+      "est_hours": 1.5
+    },
+    {
+      "id": "model-serving",
+      "name": "Model serving",
+      "area": "mlops",
+      "why": "Putting a model behind an API, reusing your web skills.",
+      "est_hours": 2
+    },
+    {
+      "id": "model-monitoring",
+      "name": "Model monitoring",
+      "area": "mlops",
+      "why": "Catching drift and silent failures in production.",
+      "est_hours": 1.5
+    },
+    {
+      "id": "python-basics",
+      "name": "Python basics",
+      "area": "general-engineering",
+      "why": "Part of everyday software engineering work.",
+      "est_hours": null
+    },
+    {
+      "id": "git",
+      "name": "Git",
+      "area": "general-engineering",
+      "why": "Part of everyday software engineering work.",
+      "est_hours": null
+    },
+    {
+      "id": "rest-apis",
+      "name": "REST APIs",
+      "area": "general-engineering",
+      "why": "Part of everyday software engineering work.",
+      "est_hours": null
+    },
+    {
+      "id": "docker",
+      "name": "Docker",
+      "area": "general-engineering",
+      "why": "Part of everyday software engineering work.",
+      "est_hours": null
+    },
+    {
+      "id": "sql",
+      "name": "SQL",
+      "area": "general-engineering",
+      "why": "Part of everyday software engineering work.",
+      "est_hours": null
+    }
+  ],
+  "topic_edges": [
+    {
+      "topic_id": "calculus-basics",
+      "prerequisite_id": "linear-algebra"
+    },
+    {
+      "topic_id": "pandas",
+      "prerequisite_id": "numpy"
+    },
+    {
+      "topic_id": "matplotlib",
+      "prerequisite_id": "numpy"
+    },
+    {
+      "topic_id": "supervised-learning",
+      "prerequisite_id": "probability-stats"
+    },
+    {
+      "topic_id": "supervised-learning",
+      "prerequisite_id": "pandas"
+    },
+    {
+      "topic_id": "regression",
+      "prerequisite_id": "supervised-learning"
+    },
+    {
+      "topic_id": "classification",
+      "prerequisite_id": "regression"
+    },
+    {
+      "topic_id": "model-evaluation",
+      "prerequisite_id": "classification"
+    },
+    {
+      "topic_id": "feature-engineering",
+      "prerequisite_id": "model-evaluation"
+    },
+    {
+      "topic_id": "neural-networks",
+      "prerequisite_id": "classification"
+    },
+    {
+      "topic_id": "neural-networks",
+      "prerequisite_id": "calculus-basics"
+    },
+    {
+      "topic_id": "backprop-training",
+      "prerequisite_id": "neural-networks"
+    },
+    {
+      "topic_id": "cnns",
+      "prerequisite_id": "backprop-training"
+    },
+    {
+      "topic_id": "transformers",
+      "prerequisite_id": "backprop-training"
+    },
+    {
+      "topic_id": "experiment-tracking",
+      "prerequisite_id": "model-evaluation"
+    },
+    {
+      "topic_id": "model-serving",
+      "prerequisite_id": "experiment-tracking"
+    },
+    {
+      "topic_id": "model-monitoring",
+      "prerequisite_id": "model-serving"
+    },
+    {
+      "topic_id": "numpy",
+      "prerequisite_id": "python-basics"
+    },
+    {
+      "topic_id": "model-serving",
+      "prerequisite_id": "rest-apis"
+    },
+    {
+      "topic_id": "model-serving",
+      "prerequisite_id": "docker"
+    }
+  ],
+  "role_topics": [
+    {
+      "role_id": "ml-engineer",
+      "topic_id": "linear-algebra",
+      "kind": "requires"
+    },
+    {
+      "role_id": "ml-engineer",
+      "topic_id": "calculus-basics",
+      "kind": "requires"
+    },
+    {
+      "role_id": "ml-engineer",
+      "topic_id": "probability-stats",
+      "kind": "requires"
+    },
+    {
+      "role_id": "ml-engineer",
+      "topic_id": "numpy",
+      "kind": "requires"
+    },
+    {
+      "role_id": "ml-engineer",
+      "topic_id": "pandas",
+      "kind": "requires"
+    },
+    {
+      "role_id": "ml-engineer",
+      "topic_id": "matplotlib",
+      "kind": "requires"
+    },
+    {
+      "role_id": "ml-engineer",
+      "topic_id": "supervised-learning",
+      "kind": "requires"
+    },
+    {
+      "role_id": "ml-engineer",
+      "topic_id": "regression",
+      "kind": "requires"
+    },
+    {
+      "role_id": "ml-engineer",
+      "topic_id": "classification",
+      "kind": "requires"
+    },
+    {
+      "role_id": "ml-engineer",
+      "topic_id": "model-evaluation",
+      "kind": "requires"
+    },
+    {
+      "role_id": "ml-engineer",
+      "topic_id": "feature-engineering",
+      "kind": "requires"
+    },
+    {
+      "role_id": "ml-engineer",
+      "topic_id": "neural-networks",
+      "kind": "requires"
+    },
+    {
+      "role_id": "ml-engineer",
+      "topic_id": "backprop-training",
+      "kind": "requires"
+    },
+    {
+      "role_id": "ml-engineer",
+      "topic_id": "cnns",
+      "kind": "requires"
+    },
+    {
+      "role_id": "ml-engineer",
+      "topic_id": "transformers",
+      "kind": "requires"
+    },
+    {
+      "role_id": "ml-engineer",
+      "topic_id": "experiment-tracking",
+      "kind": "requires"
+    },
+    {
+      "role_id": "ml-engineer",
+      "topic_id": "model-serving",
+      "kind": "requires"
+    },
+    {
+      "role_id": "ml-engineer",
+      "topic_id": "model-monitoring",
+      "kind": "requires"
+    },
+    {
+      "role_id": "ml-engineer",
+      "topic_id": "python-basics",
+      "kind": "requires"
+    },
+    {
+      "role_id": "ml-engineer",
+      "topic_id": "git",
+      "kind": "requires"
+    },
+    {
+      "role_id": "ml-engineer",
+      "topic_id": "rest-apis",
+      "kind": "requires"
+    },
+    {
+      "role_id": "ml-engineer",
+      "topic_id": "docker",
+      "kind": "requires"
+    },
+    {
+      "role_id": "ml-engineer",
+      "topic_id": "sql",
+      "kind": "requires"
+    },
+    {
+      "role_id": "full-stack-engineer",
+      "topic_id": "python-basics",
+      "kind": "covers"
+    },
+    {
+      "role_id": "full-stack-engineer",
+      "topic_id": "git",
+      "kind": "covers"
+    },
+    {
+      "role_id": "full-stack-engineer",
+      "topic_id": "rest-apis",
+      "kind": "covers"
+    },
+    {
+      "role_id": "full-stack-engineer",
+      "topic_id": "docker",
+      "kind": "covers"
+    },
+    {
+      "role_id": "full-stack-engineer",
+      "topic_id": "sql",
+      "kind": "covers"
+    }
+  ],
+  "resources": [
+    {
+      "id": "linear-algebra-ytla",
+      "topic_id": "linear-algebra",
+      "type": "youtube",
+      "title": "3Blue1Brown: Essence of linear algebra",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "linear-algebra-m4ml",
+      "topic_id": "linear-algebra",
+      "type": "coursera",
+      "title": "Mathematics for Machine Learning",
+      "url": null,
+      "is_free": false,
+      "status": "proposed"
+    },
+    {
+      "id": "probability-stats-sq",
+      "topic_id": "probability-stats",
+      "type": "youtube",
+      "title": "StatQuest",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "probability-stats-m4ml",
+      "topic_id": "probability-stats",
+      "type": "coursera",
+      "title": "Mathematics for Machine Learning",
+      "url": null,
+      "is_free": false,
+      "status": "proposed"
+    },
+    {
+      "id": "calculus-basics-m4ml",
+      "topic_id": "calculus-basics",
+      "type": "coursera",
+      "title": "Mathematics for Machine Learning",
+      "url": null,
+      "is_free": false,
+      "status": "proposed"
+    },
+    {
+      "id": "calculus-basics-yt3b",
+      "topic_id": "calculus-basics",
+      "type": "youtube",
+      "title": "3Blue1Brown: Neural networks series",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "numpy-npq",
+      "topic_id": "numpy",
+      "type": "docs",
+      "title": "NumPy quickstart",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "numpy-d2l",
+      "topic_id": "numpy",
+      "type": "book",
+      "title": "Dive into Deep Learning",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "pandas-pd10",
+      "topic_id": "pandas",
+      "type": "docs",
+      "title": "10 minutes to pandas",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "matplotlib-mpl",
+      "topic_id": "matplotlib",
+      "type": "docs",
+      "title": "Matplotlib tutorials",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "supervised-learning-mls",
+      "topic_id": "supervised-learning",
+      "type": "coursera",
+      "title": "Machine Learning Specialization",
+      "url": null,
+      "is_free": false,
+      "status": "proposed"
+    },
+    {
+      "id": "supervised-learning-gmlcc",
+      "topic_id": "supervised-learning",
+      "type": "course",
+      "title": "Google Machine Learning Crash Course",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "regression-mls",
+      "topic_id": "regression",
+      "type": "coursera",
+      "title": "Machine Learning Specialization",
+      "url": null,
+      "is_free": false,
+      "status": "proposed"
+    },
+    {
+      "id": "regression-sq",
+      "topic_id": "regression",
+      "type": "youtube",
+      "title": "StatQuest",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "regression-skl",
+      "topic_id": "regression",
+      "type": "docs",
+      "title": "scikit-learn user guide",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "classification-mls",
+      "topic_id": "classification",
+      "type": "coursera",
+      "title": "Machine Learning Specialization",
+      "url": null,
+      "is_free": false,
+      "status": "proposed"
+    },
+    {
+      "id": "classification-sq",
+      "topic_id": "classification",
+      "type": "youtube",
+      "title": "StatQuest",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "classification-skl",
+      "topic_id": "classification",
+      "type": "docs",
+      "title": "scikit-learn user guide",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "model-evaluation-sq",
+      "topic_id": "model-evaluation",
+      "type": "youtube",
+      "title": "StatQuest",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "model-evaluation-skl",
+      "topic_id": "model-evaluation",
+      "type": "docs",
+      "title": "scikit-learn user guide",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "feature-engineering-gmlcc",
+      "topic_id": "feature-engineering",
+      "type": "course",
+      "title": "Google Machine Learning Crash Course",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "feature-engineering-skl",
+      "topic_id": "feature-engineering",
+      "type": "docs",
+      "title": "scikit-learn user guide",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "neural-networks-yt3b",
+      "topic_id": "neural-networks",
+      "type": "youtube",
+      "title": "3Blue1Brown: Neural networks series",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "neural-networks-dls",
+      "topic_id": "neural-networks",
+      "type": "coursera",
+      "title": "Deep Learning Specialization",
+      "url": null,
+      "is_free": false,
+      "status": "proposed"
+    },
+    {
+      "id": "neural-networks-d2l",
+      "topic_id": "neural-networks",
+      "type": "book",
+      "title": "Dive into Deep Learning",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "backprop-training-yt3b",
+      "topic_id": "backprop-training",
+      "type": "youtube",
+      "title": "3Blue1Brown: Neural networks series",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "backprop-training-dls",
+      "topic_id": "backprop-training",
+      "type": "coursera",
+      "title": "Deep Learning Specialization",
+      "url": null,
+      "is_free": false,
+      "status": "proposed"
+    },
+    {
+      "id": "backprop-training-d2l",
+      "topic_id": "backprop-training",
+      "type": "book",
+      "title": "Dive into Deep Learning",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "cnns-dls",
+      "topic_id": "cnns",
+      "type": "coursera",
+      "title": "Deep Learning Specialization",
+      "url": null,
+      "is_free": false,
+      "status": "proposed"
+    },
+    {
+      "id": "cnns-d2l",
+      "topic_id": "cnns",
+      "type": "book",
+      "title": "Dive into Deep Learning",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "transformers-d2l",
+      "topic_id": "transformers",
+      "type": "book",
+      "title": "Dive into Deep Learning",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "transformers-dls",
+      "topic_id": "transformers",
+      "type": "coursera",
+      "title": "Deep Learning Specialization",
+      "url": null,
+      "is_free": false,
+      "status": "proposed"
+    },
+    {
+      "id": "experiment-tracking-mlflow",
+      "topic_id": "experiment-tracking",
+      "type": "docs",
+      "title": "MLflow documentation",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "experiment-tracking-mwml",
+      "topic_id": "experiment-tracking",
+      "type": "blog",
+      "title": "Made With ML: MLOps lessons",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "model-serving-mwml",
+      "topic_id": "model-serving",
+      "type": "blog",
+      "title": "Made With ML: MLOps lessons",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    },
+    {
+      "id": "model-monitoring-mwml",
+      "topic_id": "model-monitoring",
+      "type": "blog",
+      "title": "Made With ML: MLOps lessons",
+      "url": null,
+      "is_free": true,
+      "status": "proposed"
+    }
+  ]
+}
