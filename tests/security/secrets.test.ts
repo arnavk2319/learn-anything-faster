@@ -32,6 +32,8 @@ const ALLOW = new Set([
   "design/wireframes/v2/Signup.dc.html",
 ]);
 const ALLOW_PREFIX = ["tests/fixtures/", "tests/tools/"];
+// Exact throwaway strings (local/CI service-container Postgres) that are exempt in any file.
+const FAKE_VALUES = ["postgres://postgres:postgres@localhost"];
 
 describe("no secrets or emails in repository text files", () => {
   it("scans files and finds none", () => {
@@ -45,7 +47,9 @@ describe("no secrets or emails in repository text files", () => {
         if (!st.isFile() || st.size > 2_000_000) continue;
         const buf = readFileSync(abs);
         if (buf.subarray(0, 8000).includes(0)) continue; // binary
-        const kind = findSensitive(buf.toString("utf8"));
+        const kind = findSensitive(
+          FAKE_VALUES.reduce((s, v) => s.replaceAll(v, ""), buf.toString("utf8")),
+        );
         if (kind) hits.push(`${relative(ROOT, abs)}: ${kind}`);
       } catch {
         // file vanished between listing and read

@@ -7,6 +7,7 @@ const steps: [string, string[]][] = [
   ["unit", ["test"]],
   ["integration", ["test:integration"]],
   ["tools", ["test:tools"]],
+  ["security", ["test:security"]],
   ["data", ["test:data"]],
   ["content:validate", ["content:validate"]],
 ];
