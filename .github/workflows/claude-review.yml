@@ -1,0 +1,44 @@
+name: claude-review
+
+# Advisory only: never blocks merge. 0 retries, capped turns. Needs the ANTHROPIC_API_KEY secret.
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+
+concurrency:
+  group: claude-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    if: ${{ github.event.pull_request.draft == false && github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with: { fetch-depth: 0 }
+      - name: Review (headless reviewer agent)
+        if: ${{ env.ANTHROPIC_API_KEY != '' }}
+        uses: anthropics/claude-code-action@5eb090f3c3afd701a0672cd32981197ca27688f6 # v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }} # use the workflow token directly; no OIDC exchange
+          prompt: |
+            Act as the reviewer agent defined in .claude/agents/reviewer.md. Review PR #${{ github.event.pull_request.number }}
+            against CLAUDE.md and docs/spec.md (read by section). Post ONE comment with a verdict
+            (approve | changes-requested) and at most 10 numbered findings with file:line.
+            Read-only: do not push or edit anything.
+          claude_args: --max-turns 10
+      - name: Comment on failure (no retry)
+        if: ${{ failure() }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: gh pr comment "$PR_NUMBER" --body "Automated review failed to run (not retried). Run /review locally. Run logs $RUN_URL"

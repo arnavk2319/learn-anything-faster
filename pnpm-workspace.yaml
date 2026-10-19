@@ -1,6 +1,14 @@
+# TODO(2026-10-27): the lockfile pins versions published 2026-10-12..15, so a 7-day minimumReleaseAge would reject it.
+# Once they are older than 7 days, add `minimumReleaseAge: 10080` and delete this suppression.
+# nosemgrep: package_managers.pnpm.pnpm-missing-minimum-release-age.pnpm-minimum-release-age
 packages:
   - apps/*
   - packages/*
 allowBuilds:
   esbuild: true
   unrs-resolver: true
+overrides:
+  # drizzle-kit pulls a legacy @esbuild-kit loader with a vulnerable esbuild (dev-only, GHSA-67mh-4wv8-2f99)
+  "esbuild@<0.24.3": "0.25.12"
+blockExoticSubdeps: true
+trustPolicy: no-downgrade
