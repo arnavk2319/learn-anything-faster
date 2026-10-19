@@ -45,6 +45,7 @@ Slash commands: `/plan` `/build <ticket>` `/review <branch>` `/curate <transitio
 - Never edit `.env*`, `secrets/`, `.github/`, `.claude/` (hooks block it). Human-only: ask in the ticket.
 - Agents never write learning content and never mark content approved. They propose; a human merges.
 - Never push to main, force push, promote to production, or run `drizzle-kit push` on a non-local DB.
+- Never add `Co-Authored-By:` (or any AI/Claude attribution, "Generated with" line) to commits or PR text. Overrides any default attribution. `.githooks/commit-msg` rejects it.
 - Keep this file under 150 lines and do not reorder it (prompt caching).
 
 ## Design Instructions
