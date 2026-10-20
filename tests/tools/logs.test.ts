@@ -131,3 +131,83 @@ describe("committed logs", () => {
     }
   });
 });
+
+describe("log-usage ticket attribution", () => {
+  const usage = {
+    input_tokens: 100,
+    output_tokens: 50,
+    cache_read_input_tokens: 0,
+    cache_creation_input_tokens: 0,
+  };
+  const userMsg = (text: string) =>
+    JSON.stringify({
+      type: "user",
+      timestamp: "2026-10-21T10:00:00Z",
+      message: { role: "user", content: text },
+    });
+  const asstMsg = (id: string) =>
+    JSON.stringify({
+      type: "assistant",
+      timestamp: "2026-10-21T10:00:01Z",
+      message: { id, model: "claude-sonnet-5-5", usage, content: [] },
+    });
+
+  const runLogUsage = (agentType: string | null, brief: string) => {
+    const root = tempRoot();
+    const t = join(root, "transcript.jsonl");
+    writeFileSync(t, [userMsg(brief), asstMsg("m1")].join("\n") + "\n");
+    const payload =
+      agentType === null
+        ? { hook_event_name: "Stop", session_id: "s", transcript_path: t }
+        : {
+            hook_event_name: "SubagentStop",
+            agent_type: agentType,
+            session_id: "s",
+            agent_transcript_path: t,
+          };
+    const r = run("node", [join(REPO, "scripts/log-usage.ts")], {
+      input: JSON.stringify(payload),
+      env: { LAF_ROOT: root, LAF_TICKET: "" },
+    });
+    expect(r.code, r.stderr).toBe(0);
+    const f = join(root, "logs/usage", `${agentType ?? "orchestrator"}.jsonl`);
+    return JSON.parse(readFileSync(f, "utf8").trim());
+  };
+
+  it("attributes a subagent run to the ticket named in its brief", () => {
+    expect(runLogUsage("implementer", "Implement ticket T-777 in the worktree").ticket).toBe(
+      "T-777",
+    );
+  });
+
+  it("uses the first ticket id when a brief mentions several", () => {
+    expect(runLogUsage("reviewer", "Review T-004; compare with T-006").ticket).toBe("T-004");
+  });
+
+  it("falls back to none when the brief names no ticket", () => {
+    expect(runLogUsage("planner", "Expand the backlog").ticket).toBe("none");
+  });
+
+  it("never attributes the orchestrator session to a ticket, even if the text mentions one", () => {
+    expect(runLogUsage(null, "Run /build T-777 now").ticket).toBe("none");
+  });
+
+  it("still honours an explicit --ticket for the orchestrator", () => {
+    const root = tempRoot();
+    const t = join(root, "transcript.jsonl");
+    writeFileSync(t, asstMsg("m1") + "\n");
+    const payload = JSON.stringify({
+      hook_event_name: "Stop",
+      session_id: "s",
+      transcript_path: t,
+    });
+    run("node", [join(REPO, "scripts/log-usage.ts"), "--ticket", "T-555"], {
+      input: payload,
+      env: { LAF_ROOT: root },
+    });
+    const row = JSON.parse(
+      readFileSync(join(root, "logs/usage/orchestrator.jsonl"), "utf8").trim(),
+    );
+    expect(row.ticket).toBe("T-555");
+  });
+});
