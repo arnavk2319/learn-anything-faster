@@ -5,3 +5,4 @@ docs/*.pdf
 test-results
 playwright-report
 logs
+worktrees

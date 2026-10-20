@@ -66,12 +66,13 @@ Slash commands: `/plan` `/build <ticket>` `/review <branch>` `/curate <transitio
    `docs/status.md`; at 100% stop, write a budget report into the ticket, and wait.
 3. Pick the next ticket whose depends_on are done and whose status is `approved`.
 4. One subagent per stage. Pass the ticket path and spec IDs, never pasted files or whole docs.
-5. At most 2 implementers in parallel, each in its own worktree and branch `t-<id>-<slug>`.
+5. At most 2 implementers in parallel, each in its own worktree at `worktrees/t-<id>-<slug>` (inside the repo, gitignored; never outside it) on branch `t-<id>-<slug>`.
 6. After each stage update the ticket status, `docs/status.md`, and the logs.
 7. A stage that fails twice on the same ticket stops: report the error, tokens spent, a proposed next step.
 8. Use the cheapest model that can do the stage (sonnet default; haiku for lookups). Upgrades need human approval.
 9. Stop at every gate (1 tickets, 2 design, 3 UI check, 4 merge, 5 release). Never skip one to save time.
 10. The orchestrator never writes feature code. It routes, enforces budgets and keeps the record.
+11. At every gate, show the human the actual changes (diff, schema, ADR text, ticket table, or the files) in the same message as the approval ask, not just a summary or a path.
 
 ## Subagents (`.claude/agents/`)
 
