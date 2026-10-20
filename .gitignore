@@ -45,6 +45,8 @@ docs/tickets/
 docs/decisions/
 docs/ops/
 docs/*.pdf
+# Git worktrees for parallel ticket branches (one folder per ticket, inside the repo)
+worktrees/
 # Claude Code local state, worktrees and personal settings
 .claude/settings.local.json
 .claude/worktrees/
