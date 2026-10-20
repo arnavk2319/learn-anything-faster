@@ -1,9 +1,9 @@
 import { defineConfig } from "drizzle-kit";
 
-// Schema lands in T-004. Never run drizzle-kit push against a non-local database.
+// Run from the repo root (pnpm db:generate). Only `generate` is used; migrations are applied by db/migrate.ts.
 export default defineConfig({
   dialect: "postgresql",
-  schema: "./db/schema.ts",
-  out: "./db/migrations",
-  dbCredentials: { url: process.env.DATABASE_URL ?? "" },
+  schema: "./apps/web/db/schema.ts",
+  out: "./apps/web/db/migrations",
+  dbCredentials: { url: process.env.DATABASE_URL_UNPOOLED ?? process.env.DATABASE_URL ?? "" },
 });
