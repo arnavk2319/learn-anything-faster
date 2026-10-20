@@ -1,7 +1,6 @@
 // SubagentStop / Stop hook: append token use and cost to logs/usage/<agent>.jsonl and the ticket.
 // Reads hook JSON on stdin. Logs only the delta since the last call for the same transcript.
 import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 import {
@@ -100,20 +99,33 @@ export function totalsFromTranscript(path: string): { totals: Totals; model: str
   return { totals: t, model };
 }
 
-function currentTicket(): string {
+/** First ticket id (T-123) named in the transcript's opening user message(s), i.e. the delegation brief. */
+export function ticketFromTranscript(path: string): string | null {
+  const lines = readFileSync(path, "utf8").split("\n");
+  for (const line of lines.slice(0, 40)) {
+    if (!line.trim()) continue;
+    try {
+      const o = JSON.parse(line) as { type?: string; message?: { content?: unknown } };
+      if (o.type !== "user") continue;
+      const m = /\bT-\d{3}\b/.exec(JSON.stringify(o.message?.content ?? ""));
+      if (m) return m[0];
+    } catch {
+      // skip non-JSON lines
+    }
+  }
+  return null;
+}
+
+/**
+ * Which ticket a run's spend belongs to. Explicit --ticket / LAF_TICKET wins. A subagent's brief names its
+ * ticket. The orchestrator session spans many tickets and the checked-out branch says nothing about which
+ * one it is working on, so it is never attributed from the branch (it stays "none").
+ */
+function currentTicket(agent: string, transcript: string): string {
   const a = arg("ticket") ?? process.env.LAF_TICKET;
   if (a) return a;
-  try {
-    const br = execFileSync("git", ["branch", "--show-current"], {
-      cwd: root(),
-      encoding: "utf8",
-    }).trim();
-    const m = /^t-(\d{3})-/.exec(br);
-    if (m) return `T-${m[1]}`;
-  } catch {
-    // not a git repo or no branch
-  }
-  return "none";
+  if (agent === "orchestrator") return "none";
+  return ticketFromTranscript(transcript) ?? "none";
 }
 
 function bumpTicket(ticket: string): void {
@@ -161,7 +173,7 @@ function main(): void {
   writeFileSync(stateFile, JSON.stringify(totals));
   if (d.turns <= 0) return;
 
-  const ticket = currentTicket();
+  const ticket = currentTicket(agent, transcript);
   const stage = arg("stage") ?? STAGES[agent] ?? "unknown";
   const all = readUsage();
   const entry: UsageEntry & { unusual?: boolean } = {
