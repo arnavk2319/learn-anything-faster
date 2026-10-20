@@ -17,6 +17,8 @@
     "test:security": "vitest run --reporter=dot --passWithNoTests --config vitest.security.config.ts",
     "test:tools": "vitest run --reporter=dot --passWithNoTests --config vitest.tools.config.ts",
     "test:data": "vitest run --reporter=dot --passWithNoTests --config vitest.data.config.ts",
+    "db:generate": "drizzle-kit generate --config apps/web/drizzle.config.ts",
+    "db:migrate": "tsx apps/web/db/migrate.ts",
     "db:test:up": "docker compose -f docker-compose.test.yml up -d --wait",
     "db:test:down": "docker compose -f docker-compose.test.yml down",
     "e2e": "playwright test --reporter=line",

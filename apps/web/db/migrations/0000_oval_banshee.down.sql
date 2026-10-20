@@ -1,0 +1,12 @@
+DROP TABLE IF EXISTS "resource_suggestions";
+DROP TABLE IF EXISTS "transition_requests";
+DROP TABLE IF EXISTS "resources";
+DROP TABLE IF EXISTS "role_topics";
+DROP TABLE IF EXISTS "topic_edges";
+DROP TABLE IF EXISTS "topics";
+DROP TABLE IF EXISTS "roles";
+DROP TYPE IF EXISTS "request_kind";
+DROP TYPE IF EXISTS "resource_status";
+DROP TYPE IF EXISTS "resource_type";
+DROP TYPE IF EXISTS "role_topic_kind";
+DROP TYPE IF EXISTS "role_status";
