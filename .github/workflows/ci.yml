@@ -2,6 +2,9 @@ name: ci
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+  push:
+    branches: [mvp] # catches semantic conflicts between PRs that were each green on their own
   workflow_dispatch:
 
 concurrency:
@@ -48,6 +51,29 @@ jobs:
       - run: pnpm test:security
       - run: pnpm test:data
       - run: pnpm content:validate
+
+  # Required check: migration-approval. Migration changes need the migration-approved label (human only).
+  migration-approval:
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PR: ${{ github.event.pull_request.number }}
+      BASE: ${{ github.event.pull_request.base.ref }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with: { fetch-depth: 0 }
+      - run: |
+          changed=$(git diff --name-only "origin/$BASE...HEAD" -- apps/web/db/migrations)
+          [ -z "$changed" ] && { echo "no migration changes"; exit 0; }
+          if gh pr view "$PR" --json labels --jq '.labels[].name' | grep -qx migration-approved; then
+            echo "migration-approved label present"; exit 0
+          fi
+          echo "Migration files changed without the migration-approved label:"; echo "$changed"; exit 1
 
   # Required check: secrets
   secrets:

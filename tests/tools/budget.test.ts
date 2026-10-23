@@ -22,7 +22,11 @@ describe("budget math", () => {
   it("matches the spec defaults", () => {
     expect(b.ticket_usd).toEqual({ S: 1.5, M: 4, L: 8 });
     expect([b.run.usd, b.run.turns, b.curator_run_usd, b.day_usd, b.week_usd]).toEqual([
-      2, 40, 10, 15, 60,
+      2,
+      40,
+      10,
+      25,
+      75, // day/week raised for the fast-lane window (ADR-0008); spec default is 15/60
     ]);
   });
   it("median and ISO week", () => {
@@ -76,12 +80,12 @@ describe("guard-budget on a dummy ticket", () => {
   it("stops on the daily cap across tickets", () => {
     const root = tempRoot();
     writeUsage(root, "implementer", [
-      { ts: "2026-10-21T08:00:00Z", ticket: "T-001", cost_usd: 8 },
-      { ts: "2026-10-21T09:00:00Z", ticket: "T-002", cost_usd: 7 },
+      { ts: "2026-10-21T08:00:00Z", ticket: "T-001", cost_usd: 13 },
+      { ts: "2026-10-21T09:00:00Z", ticket: "T-002", cost_usd: 12 },
     ]);
     const r = guard(root, "T-003");
     expect(r.code).toBe(2);
-    expect(r.stderr).toMatch(/day: \$15\.00 of \$15\.00/);
+    expect(r.stderr).toMatch(/day: \$25\.00 of \$25\.00/);
   });
 
   it("ignores spend from other days for the daily cap", () => {
