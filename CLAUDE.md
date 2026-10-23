@@ -99,3 +99,16 @@ One answer is capped at 30k tokens; if more is needed, say what you would read a
 
 Hooks block agent edits to `.claude/`, `.github/`, `.env*`. To change them yourself, start Claude Code with
 `LAF_ALLOW_PROTECTED=1` or edit the files directly.
+
+## Fast lane (current mode, ADR-0008; overrides conflicting rules above until the human says "switch to full flow")
+
+- Trunk is `mvp` (main = production, human-only). Branch `t-<id>-<slug>` off `mvp`, PR into `mvp`, enable auto-merge
+  (`gh pr merge --auto --squash`); it merges when CI is green. Never merge by hand, never target `main`. Conventional commit titles.
+- Gates: 1+2 are one upfront approval; no per-PR reviewer; Gate 3 is milestones M1 (after T-007), M2 (after T-010), M3
+  (after T-011, T-013, T-014): stop, post the preview URL plus a 5-line "what to try", wait. Gate 4 is auto into `mvp`; the
+  human approves only `mvp -> main` (rebase-and-merge). No Gate 5.
+- One session per wave: W1 T-005 + T-014 (T-008 after T-005), W2 T-007, W3 T-009 + T-010 then T-016, W4 T-011 + T-013.
+  Each wave starts from `docs/status.md`, then branches off the latest `mvp`.
+- A PR touching `apps/web/db/migrations/` needs the human's `migration-approved` label. Migrating the Neon `mvp` DB is parked.
+- Day/week caps are $25/$75 for this window. Graph view is the default everywhere (D2). Deferred tickets: T-012, T-015, T-017,
+  T-018, T-019, T-021, T-023, Turnstile, PostHog. Keyboard-focusable graph nodes stay in T-010's criteria.
