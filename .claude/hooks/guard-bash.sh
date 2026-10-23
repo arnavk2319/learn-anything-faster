@@ -10,12 +10,23 @@ root=${CLAUDE_PROJECT_DIR:-$(pwd)}
 block() { echo "guard-bash: blocked: $1" >&2; exit 2; }
 has() { grep -Eiq -- "$1" <<<"$cmd"; }
 
-if has '(^|[;&|[:space:]])git[[:space:]]+push\b'; then
+if has '(^|[;&|[:space:]])git([[:space:]]+-C[[:space:]]+[^[:space:]]+)*[[:space:]]+push\b'; then
   has '(--force|--force-with-lease|[[:space:]]-f([[:space:]]|$)|[[:space:]]\+[^[:space:]]+)' && block "force push"
-  has 'git[[:space:]]+push[^;&|]*[[:space:]:/](main|master)([[:space:]]|$)' && block "push to main"
-  branch=${LAF_BRANCH:-$(git -C "$root" branch --show-current 2>/dev/null)}
+  has 'git([[:space:]]+-C[[:space:]]+[^[:space:]]+)*[[:space:]]+push[^;&|]*[[:space:]:/](main|master)([[:space:]]|$)' && block "push to main"
+  # Branch of the checkout the push runs in: the hook cwd, then a leading `cd <dir> &&`, then `git -C <dir>`.
+  cwd=$(jq -r '.cwd // empty' <<<"$in")
+  dir=${cwd:-$root}
+  cd_to=$(sed -nE 's/^[[:space:]]*cd[[:space:]]+([^;&|[:space:]]+)[[:space:]]*(&&|;).*/\1/p' <<<"$cmd" | head -1)
+  c_to=$(sed -nE 's/.*git[[:space:]]+-C[[:space:]]+([^[:space:]]+).*/\1/p' <<<"$cmd" | head -1)
+  branch=${LAF_BRANCH:-$(cd "$dir" 2>/dev/null && cd "${cd_to:-.}" 2>/dev/null && git -C "${c_to:-.}" branch --show-current 2>/dev/null)}
   case "$branch" in main | master) block "push while on $branch" ;; esac
 fi
+
+# Agents only enable auto-merge on PRs into mvp; they never merge directly or target main.
+if has '(^|[;&|[:space:]])gh[[:space:]]+pr[[:space:]]+merge\b'; then
+  has '--auto' || block "gh pr merge without --auto (agents only enable auto-merge)"
+fi
+has '(^|[;&|[:space:]])gh[[:space:]]+pr[[:space:]]+create\b[^;&|]*--base[[:space:]=]+(main|master)\b' && block "PR into main (human opens mvp -> main)"
 
 has 'vercel[^;&|]*--prod\b' && block "vercel --prod (agents never promote)"
 has 'vercel[^;&|]*[[:space:]]promote\b' && block "vercel promote"

@@ -3,6 +3,7 @@ name: claude-review
 # Advisory only: never blocks merge. 0 retries, capped turns. Needs the ANTHROPIC_API_KEY secret.
 on:
   pull_request:
+    branches: [main] # fast lane (ADR-0008): one review over the mvp -> main diff, not per PR
     types: [opened, synchronize, ready_for_review]
 
 concurrency:
