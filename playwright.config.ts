@@ -14,8 +14,14 @@ export default defineConfig({
   webServer: process.env.BASE_URL
     ? undefined
     : {
-        command: `pnpm dev -- --port ${port}`,
+        command: `pnpm dev --port ${port}`,
         url: `http://localhost:${port}`,
         reuseExistingServer: true,
+        env: {
+          DATABASE_URL:
+            process.env.DATABASE_URL_TEST ??
+            "postgres://postgres:postgres@localhost:54329/laf_test",
+          FORM_RATE_LIMIT: "1000",
+        },
       },
 });
