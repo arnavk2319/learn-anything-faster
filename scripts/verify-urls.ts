@@ -30,7 +30,9 @@ let bad = 0;
 let total = 0;
 
 for (const f of files) {
-  const items = (parse(readFileSync(f, "utf8")) ?? []) as Res[];
+  // resources/<topic-id>.yaml is `{ topic, resources: [...] }` (T-005 schema); also accept a bare list.
+  const doc = parse(readFileSync(f, "utf8")) as Res[] | { resources?: Res[] } | null;
+  const items = (Array.isArray(doc) ? doc : (doc?.resources ?? [])) as Res[];
   for (const r of items) {
     if (!r.url) continue;
     total++;
