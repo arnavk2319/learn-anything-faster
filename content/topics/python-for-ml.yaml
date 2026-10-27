@@ -1,0 +1,20 @@
+area: python-for-ml
+topics:
+  - id: numpy
+    name: NumPy
+    why: Array maths is the base layer under pandas, scikit-learn and PyTorch.
+    est_hours: 8
+    learn_first:
+      - python-basics
+  - id: pandas
+    name: pandas
+    why: Standard tool for loading, cleaning and reshaping tabular data before modelling.
+    est_hours: 10
+    learn_first:
+      - numpy
+  - id: matplotlib
+    name: Matplotlib basics
+    why: Plotting data and training curves is how you debug models.
+    est_hours: 5
+    learn_first:
+      - numpy

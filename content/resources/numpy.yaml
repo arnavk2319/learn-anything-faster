@@ -1,0 +1,23 @@
+topic: numpy
+resources:
+  - id: numpy-absolute-beginners
+    type: docs
+    title: "NumPy: the absolute basics for beginners"
+    url: https://numpy.org/doc/stable/user/absolute_beginners.html
+    is_free: true
+    status: proposed
+    source_note: Official NumPy beginner guide.
+  - id: numpy-learn
+    type: docs
+    title: NumPy - Learn
+    url: https://numpy.org/learn/
+    is_free: true
+    status: proposed
+    source_note: Official NumPy index of tutorials and books.
+  - id: numpy-cs231n-tutorial
+    type: article
+    title: Python Numpy Tutorial (with Jupyter and Colab)
+    url: https://cs231n.github.io/python-numpy-tutorial/
+    is_free: true
+    status: proposed
+    source_note: Stanford CS231n tutorial; short, aimed at engineers learning NumPy.

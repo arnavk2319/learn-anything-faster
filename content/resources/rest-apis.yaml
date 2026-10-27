@@ -1,0 +1,23 @@
+topic: rest-apis
+resources:
+  - id: rest-apis-mdn-rest
+    type: docs
+    title: REST - Glossary | MDN
+    url: https://developer.mozilla.org/en-US/docs/Glossary/REST
+    is_free: true
+    status: proposed
+    source_note: MDN reference definition.
+  - id: rest-apis-mdn-http
+    type: docs
+    title: Overview of HTTP | MDN
+    url: https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview
+    is_free: true
+    status: proposed
+    source_note: MDN guide to the underlying protocol.
+  - id: rest-apis-restfulapi-net
+    type: article
+    title: "What is REST?: REST API Tutorial"
+    url: https://restfulapi.net/
+    is_free: true
+    status: proposed
+    source_note: Widely referenced REST tutorial site.

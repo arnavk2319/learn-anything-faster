@@ -1,0 +1,23 @@
+topic: classification
+resources:
+  - id: classification-google-crash-course
+    type: course
+    title: Classification | Machine Learning | Google for Developers
+    url: https://developers.google.com/machine-learning/crash-course/classification
+    is_free: true
+    status: proposed
+    source_note: Module of Google's Machine Learning Crash Course.
+  - id: classification-islr
+    type: book
+    title: An Introduction to Statistical Learning
+    url: https://www.statlearning.com/
+    is_free: true
+    status: proposed
+    source_note: Standard textbook with classification chapters; free PDF.
+  - id: classification-coursera-ng
+    type: coursera
+    title: Machine Learning Specialization
+    url: https://www.coursera.org/specializations/machine-learning-introduction
+    is_free: false
+    status: proposed
+    source_note: Andrew Ng's course covers logistic regression and classification.

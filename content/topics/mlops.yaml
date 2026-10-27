@@ -1,0 +1,24 @@
+area: mlops
+topics:
+  - id: experiment-tracking
+    name: Experiment tracking
+    why: Reproducibility; logging params, metrics and artifacts across many training runs.
+    est_hours: 6
+    learn_first:
+      - model-evaluation
+      - git
+  - id: model-serving
+    name: Model serving
+    why: Turns a trained model into an API; builds directly on your REST and Docker skills.
+    est_hours: 10
+    learn_first:
+      - rest-apis
+      - docker
+      - model-evaluation
+  - id: model-monitoring
+    name: Model monitoring
+    why: Models degrade as data drifts, so production needs drift and quality checks.
+    est_hours: 8
+    learn_first:
+      - model-serving
+      - probability-statistics

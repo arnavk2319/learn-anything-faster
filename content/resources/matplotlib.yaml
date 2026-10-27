@@ -1,0 +1,30 @@
+topic: matplotlib
+resources:
+  - id: matplotlib-quick-start
+    type: docs
+    title: Quick start guide
+    url: https://matplotlib.org/stable/users/explain/quick_start.html
+    is_free: true
+    status: proposed
+    source_note: Official Matplotlib quick start.
+  - id: matplotlib-tutorials
+    type: docs
+    title: Tutorials - Matplotlib documentation
+    url: https://matplotlib.org/stable/tutorials/index.html
+    is_free: true
+    status: proposed
+    source_note: Official tutorials index for going further.
+  - id: matplotlib-kaggle-dataviz
+    type: course
+    title: Learn Data Visualization Tutorials | Kaggle
+    url: https://www.kaggle.com/learn/data-visualization
+    is_free: true
+    status: proposed
+    source_note: Short hands-on course; uses seaborn on top of Matplotlib.
+  - id: matplotlib-python-data-science-handbook
+    type: book
+    title: Visualization with Matplotlib
+    url: https://jakevdp.github.io/PythonDataScienceHandbook/04.00-introduction-to-matplotlib.html
+    is_free: true
+    status: proposed
+    source_note: Free book chapter on Matplotlib.

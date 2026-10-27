@@ -1,0 +1,38 @@
+area: classical-ml
+topics:
+  - id: supervised-learning-basics
+    name: Supervised learning basics
+    why: Core framing (features, labels, train/test, loss) that all later ML builds on.
+    est_hours: 15
+    learn_first:
+      - numpy
+      - pandas
+      - probability-statistics
+  - id: regression
+    name: Regression
+    why: Simplest supervised task and the first place gradient-based fitting shows up.
+    est_hours: 10
+    learn_first:
+      - supervised-learning-basics
+      - linear-algebra
+      - calculus-gradients
+  - id: classification
+    name: Classification
+    why: Most production ML is classification; introduces logistic regression, decision boundaries and class metrics.
+    est_hours: 12
+    learn_first:
+      - supervised-learning-basics
+      - probability-statistics
+  - id: model-evaluation
+    name: Model evaluation
+    why: Overfitting, validation and metrics decide whether a model is actually any good.
+    est_hours: 10
+    learn_first:
+      - supervised-learning-basics
+  - id: feature-engineering
+    name: Feature engineering
+    why: Input representation often matters more than model choice in classical ML.
+    est_hours: 10
+    learn_first:
+      - pandas
+      - model-evaluation
