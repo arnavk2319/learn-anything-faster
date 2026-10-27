@@ -1,0 +1,30 @@
+topic: model-monitoring
+resources:
+  - id: model-monitoring-made-with-ml
+    type: course
+    title: Monitoring Machine Learning Systems - Made With ML
+    url: https://madewithml.com/courses/mlops/monitoring/
+    is_free: true
+    status: proposed
+    source_note: Lesson in a free MLOps course.
+  - id: model-monitoring-evidently
+    type: docs
+    title: What is Evidently?
+    url: https://docs.evidentlyai.com/introduction
+    is_free: true
+    status: proposed
+    source_note: Official docs for an open-source drift and quality monitoring library.
+  - id: model-monitoring-rules-of-ml
+    type: article
+    title: Rules of Machine Learning | Google for Developers
+    url: https://developers.google.com/machine-learning/guides/rules-of-ml
+    is_free: true
+    status: proposed
+    source_note: Google's best-practices guide for production ML.
+  - id: model-monitoring-coursera-mlep
+    type: coursera
+    title: Machine Learning in Production
+    url: https://www.coursera.org/specializations/machine-learning-engineering-for-production-mlops
+    is_free: false
+    status: proposed
+    source_note: DeepLearning.AI MLOps specialization; covers deployment and monitoring.

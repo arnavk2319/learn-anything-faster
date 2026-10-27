@@ -1,0 +1,30 @@
+topic: docker
+resources:
+  - id: docker-get-started
+    type: docs
+    title: Get started | Docker Docs
+    url: https://docs.docker.com/get-started/
+    is_free: true
+    status: proposed
+    source_note: Official Docker getting-started guide.
+  - id: docker-what-is-a-container
+    type: docs
+    title: What is a container?
+    url: https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-a-container/
+    is_free: true
+    status: proposed
+    source_note: Official Docker concepts page.
+  - id: docker-dockerfile-overview
+    type: docs
+    title: Dockerfile overview
+    url: https://docs.docker.com/build/concepts/dockerfile/
+    is_free: true
+    status: proposed
+    source_note: Official docs on building images.
+  - id: docker-compose-quickstart
+    type: docs
+    title: Docker Compose Quickstart
+    url: https://docs.docker.com/compose/gettingstarted/
+    is_free: true
+    status: proposed
+    source_note: Official docs for multi-container setups.

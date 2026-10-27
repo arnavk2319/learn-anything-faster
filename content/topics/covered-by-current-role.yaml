@@ -1,0 +1,27 @@
+area: covered-by-current-role
+topics:
+  - id: python-basics
+    name: Python basics
+    why: Language of ML; a full-stack engineer already programs, so only syntax and idioms are new.
+    est_hours: 10
+    learn_first: []
+  - id: git
+    name: Git
+    why: Version control, assumed by every ML workflow.
+    est_hours: 3
+    learn_first: []
+  - id: rest-apis
+    name: REST APIs
+    why: Prerequisite for serving models over HTTP.
+    est_hours: 4
+    learn_first: []
+  - id: docker
+    name: Docker
+    why: Standard packaging for deploying models.
+    est_hours: 5
+    learn_first: []
+  - id: sql
+    name: SQL
+    why: Training data usually lives in relational stores.
+    est_hours: 6
+    learn_first: []

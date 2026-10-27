@@ -1,0 +1,29 @@
+- role: full-stack-engineer
+  requires: []
+  covers:
+    - python-basics
+    - git
+    - rest-apis
+    - docker
+    - sql
+- role: ml-engineer
+  requires:
+    - linear-algebra
+    - probability-statistics
+    - calculus-gradients
+    - numpy
+    - pandas
+    - matplotlib
+    - supervised-learning-basics
+    - regression
+    - classification
+    - model-evaluation
+    - feature-engineering
+    - neural-networks
+    - backpropagation-training
+    - cnns
+    - transformers
+    - experiment-tracking
+    - model-serving
+    - model-monitoring
+  covers: []

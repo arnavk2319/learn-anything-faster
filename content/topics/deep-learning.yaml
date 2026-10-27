@@ -1,0 +1,29 @@
+area: deep-learning
+topics:
+  - id: neural-networks
+    name: Neural networks
+    why: Layers, activations and loss are the building blocks of all deep models.
+    est_hours: 15
+    learn_first:
+      - regression
+      - classification
+  - id: backpropagation-training
+    name: Backpropagation and training
+    why: How gradients flow and how optimisers train a network; needed to debug training.
+    est_hours: 15
+    learn_first:
+      - neural-networks
+      - calculus-gradients
+  - id: cnns
+    name: Convolutional neural networks
+    why: Canonical architecture for images and a template for weight sharing.
+    est_hours: 12
+    learn_first:
+      - backpropagation-training
+  - id: transformers
+    name: Transformers
+    why: Architecture behind modern language models; attention is the key idea.
+    est_hours: 20
+    learn_first:
+      - backpropagation-training
+      - linear-algebra
