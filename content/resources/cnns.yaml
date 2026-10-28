@@ -2,7 +2,7 @@ topic: cnns
 resources:
   - id: cnns-cs231n-notes
     type: article
-    title: Convolutional Neural Networks (CNNs / ConvNets)
+    title: "CS231n Deep Learning for Computer Vision: Convolutional Networks"
     url: https://cs231n.github.io/convolutional-networks/
     is_free: true
     status: proposed
