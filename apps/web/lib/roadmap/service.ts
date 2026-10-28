@@ -12,6 +12,17 @@ export const roadmapDbFromPg = (c: Pool | PoolClient) => drizzle(c);
 
 export type RoadmapDb = Pick<NodePgDatabase, "select">;
 
+/** The single curated-pair rule: distinct roles, both live, and the target requires at least one topic. */
+export function isCuratedPair(
+  from: { id: string; status: string },
+  to: { id: string; status: string },
+  targetRequiresCount: number,
+): boolean {
+  return (
+    from.id !== to.id && from.status === "live" && to.status === "live" && targetRequiresCount > 0
+  );
+}
+
 /** Returns null when the pair is unknown or uncurated (a role missing, not live, or target requires nothing). */
 export async function getRoadmap(
   db: RoadmapDb,
@@ -25,14 +36,14 @@ export async function getRoadmap(
     .where(inArray(roles.id, [from, to]));
   const fromRole = roleRows.find((r) => r.id === from);
   const toRole = roleRows.find((r) => r.id === to);
-  if (!fromRole || !toRole || fromRole.status !== "live" || toRole.status !== "live") return null;
+  if (!fromRole || !toRole) return null;
 
   const rt = await db
     .select({ roleId: roleTopics.roleId, topicId: roleTopics.topicId, kind: roleTopics.kind })
     .from(roleTopics)
     .where(inArray(roleTopics.roleId, [from, to]));
   const requires = rt.filter((r) => r.roleId === to && r.kind === "requires").map((r) => r.topicId);
-  if (requires.length === 0) return null;
+  if (!isCuratedPair(fromRole, toRole, requires.length)) return null;
   const covers = rt.filter((r) => r.roleId === from && r.kind === "covers").map((r) => r.topicId);
 
   const edgeRows = await db
