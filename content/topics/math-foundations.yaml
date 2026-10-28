@@ -1,0 +1,17 @@
+area: math-foundations
+topics:
+  - id: linear-algebra
+    name: Linear algebra
+    why: Vectors, matrices and transformations are the data structures and operations behind every model.
+    est_hours: 20
+    learn_first: []
+  - id: probability-statistics
+    name: Probability and statistics
+    why: Models are probabilistic; you need distributions, expectation and inference to reason about data and error.
+    est_hours: 25
+    learn_first: []
+  - id: calculus-gradients
+    name: Calculus for gradients
+    why: Training is gradient descent, which needs derivatives, the chain rule and partial derivatives.
+    est_hours: 15
+    learn_first: []

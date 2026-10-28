@@ -1,0 +1,30 @@
+topic: backpropagation-training
+resources:
+  - id: backpropagation-training-micrograd
+    type: youtube
+    title: "The spelled-out intro to neural networks and backpropagation: building micrograd"
+    url: https://www.youtube.com/watch?v=VMj-3S1tku0
+    is_free: true
+    status: approved
+    source_note: Andrej Karpathy lecture; code-first, suits engineers.
+  - id: backpropagation-training-d2l
+    type: book
+    title: Forward Propagation, Backward Propagation, and Computational Graphs - Dive into Deep Learning
+    url: https://d2l.ai/chapter_multilayer-perceptrons/backprop.html
+    is_free: true
+    status: approved
+    source_note: Free textbook section on backprop.
+  - id: backpropagation-training-pytorch-autograd
+    type: docs
+    title: Automatic Differentiation with torch.autograd
+    url: https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html
+    is_free: true
+    status: approved
+    source_note: Official PyTorch tutorial; connects theory to the framework you will use.
+  - id: backpropagation-training-karpathy-zero-to-hero
+    type: youtube
+    title: "Neural Networks: Zero to Hero"
+    url: https://karpathy.ai/zero-to-hero.html
+    is_free: true
+    status: approved
+    source_note: Karpathy's full lecture series index; training loops and optimisers.

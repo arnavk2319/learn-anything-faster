@@ -1,0 +1,23 @@
+topic: git
+resources:
+  - id: git-pro-git
+    type: book
+    title: Pro Git
+    url: https://git-scm.com/book/en/v2
+    is_free: true
+    status: approved
+    source_note: Official free book on git-scm.com.
+  - id: git-github-about
+    type: docs
+    title: About Git - GitHub Docs
+    url: https://docs.github.com/en/get-started/using-git/about-git
+    is_free: true
+    status: approved
+    source_note: Official GitHub docs.
+  - id: git-learn-branching
+    type: course
+    title: Learn Git Branching
+    url: https://learngitbranching.js.org/
+    is_free: true
+    status: approved
+    source_note: Interactive visual exercises.

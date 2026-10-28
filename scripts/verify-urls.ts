@@ -25,12 +25,15 @@ const files =
         }
       })();
 
+const TITLE_BLIND_HOSTS = new Set(["youtube.com", "khanacademy.org"]);
 const words = (s: string): Set<string> => new Set(s.toLowerCase().match(/[a-z0-9]{3,}/g) ?? []);
 let bad = 0;
 let total = 0;
 
 for (const f of files) {
-  const items = (parse(readFileSync(f, "utf8")) ?? []) as Res[];
+  // resources/<topic-id>.yaml is `{ topic, resources: [...] }` (T-005 schema); also accept a bare list.
+  const doc = parse(readFileSync(f, "utf8")) as Res[] | { resources?: Res[] } | null;
+  const items = (Array.isArray(doc) ? doc : (doc?.resources ?? [])) as Res[];
   for (const r of items) {
     if (!r.url) continue;
     total++;
@@ -41,6 +44,8 @@ for (const f of files) {
         headers: { "user-agent": "laf-link-check/1.0" },
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      // These hosts serve scripts a bot-challenge or consent page with no real title; a 2xx is all we can check.
+      if (TITLE_BLIND_HOSTS.has(new URL(r.url).hostname.replace(/^www\./, ""))) continue;
       const html = (await res.text()).slice(0, 200_000);
       const title = /<title[^>]*>([^<]*)<\/title>/i.exec(html)?.[1] ?? "";
       const want = words(r.title ?? "");

@@ -1,0 +1,23 @@
+topic: sql
+resources:
+  - id: sql-postgres-tutorial
+    type: docs
+    title: "PostgreSQL: Documentation: Part I. Tutorial"
+    url: https://www.postgresql.org/docs/current/tutorial.html
+    is_free: true
+    status: approved
+    source_note: Official PostgreSQL tutorial.
+  - id: sql-sqlbolt
+    type: course
+    title: SQLBolt - Learn SQL
+    url: https://sqlbolt.com/
+    is_free: true
+    status: approved
+    source_note: Interactive lessons.
+  - id: sql-kaggle-intro
+    type: course
+    title: Learn Intro to SQL Tutorials | Kaggle
+    url: https://www.kaggle.com/learn/intro-to-sql
+    is_free: true
+    status: approved
+    source_note: Short hands-on course oriented to data work.

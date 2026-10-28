@@ -1,0 +1,30 @@
+topic: feature-engineering
+resources:
+  - id: feature-engineering-kaggle
+    type: course
+    title: Learn Feature Engineering Tutorials | Kaggle
+    url: https://www.kaggle.com/learn/feature-engineering
+    is_free: true
+    status: approved
+    source_note: Short hands-on Kaggle course.
+  - id: feature-engineering-sklearn-preprocessing
+    type: docs
+    title: Preprocessing data - scikit-learn documentation
+    url: https://scikit-learn.org/stable/modules/preprocessing.html
+    is_free: true
+    status: approved
+    source_note: Official reference for scaling and encoding.
+  - id: feature-engineering-google-numerical
+    type: course
+    title: Working with numerical data | Google for Developers
+    url: https://developers.google.com/machine-learning/crash-course/numerical-data
+    is_free: true
+    status: approved
+    source_note: Module of Google's Machine Learning Crash Course.
+  - id: feature-engineering-kaggle-intermediate
+    type: course
+    title: Learn Intermediate Machine Learning Tutorials | Kaggle
+    url: https://www.kaggle.com/learn/intermediate-machine-learning
+    is_free: true
+    status: approved
+    source_note: Covers missing values, categorical variables and pipelines.

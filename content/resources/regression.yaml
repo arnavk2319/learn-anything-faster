@@ -1,0 +1,23 @@
+topic: regression
+resources:
+  - id: regression-google-linear
+    type: course
+    title: Linear regression | Machine Learning | Google for Developers
+    url: https://developers.google.com/machine-learning/crash-course/linear-regression
+    is_free: true
+    status: approved
+    source_note: Module of Google's Machine Learning Crash Course.
+  - id: regression-sklearn-linear-models
+    type: docs
+    title: Linear Models - scikit-learn documentation
+    url: https://scikit-learn.org/stable/modules/linear_model.html
+    is_free: true
+    status: approved
+    source_note: Official reference with regression variants; pair with the library.
+  - id: regression-islr
+    type: book
+    title: An Introduction to Statistical Learning
+    url: https://www.statlearning.com/
+    is_free: true
+    status: approved
+    source_note: Standard textbook with linear regression chapters; free PDF.

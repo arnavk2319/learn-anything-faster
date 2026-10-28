@@ -1,0 +1,23 @@
+topic: linear-algebra
+resources:
+  - id: linear-algebra-3b1b-essence
+    type: youtube
+    title: Essence of linear algebra
+    url: https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab
+    is_free: true
+    status: approved
+    source_note: Well-known 3Blue1Brown video series; visual intuition for beginners.
+  - id: linear-algebra-coursera-deeplearningai
+    type: coursera
+    title: Linear Algebra for Machine Learning and Data Science
+    url: https://www.coursera.org/learn/machine-learning-linear-algebra
+    is_free: false
+    status: approved
+    source_note: DeepLearning.AI course aimed at ML practitioners; free to audit may vary.
+  - id: linear-algebra-mml-book
+    type: book
+    title: Mathematics for Machine Learning
+    url: https://mml-book.github.io/
+    is_free: true
+    status: approved
+    source_note: Free book by Deisenroth, Faisal and Ong; linear algebra chapters framed for ML.

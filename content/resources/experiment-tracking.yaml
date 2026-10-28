@@ -1,0 +1,23 @@
+topic: experiment-tracking
+resources:
+  - id: experiment-tracking-mlflow
+    type: docs
+    title: ML Experiment Tracking | MLflow
+    url: https://mlflow.org/docs/latest/ml/tracking/
+    is_free: true
+    status: approved
+    source_note: Official docs for a widely used open-source tracker.
+  - id: experiment-tracking-made-with-ml
+    type: course
+    title: Experiment Tracking - Made With ML
+    url: https://madewithml.com/courses/mlops/experiment-tracking/
+    is_free: true
+    status: approved
+    source_note: Lesson in a free MLOps course.
+  - id: experiment-tracking-mlops-zoomcamp
+    type: course
+    title: "MLOps Zoomcamp (DataTalks.Club)"
+    url: https://github.com/DataTalksClub/mlops-zoomcamp
+    is_free: true
+    status: approved
+    source_note: Free MLOps course; includes an experiment tracking module with MLflow.
