@@ -5,26 +5,26 @@ resources:
     title: Neural networks
     url: https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi
     is_free: true
-    status: proposed
+    status: approved
     source_note: 3Blue1Brown series; well-known visual introduction.
   - id: neural-networks-google-crash-course
     type: course
     title: Neural networks | Google for Developers
     url: https://developers.google.com/machine-learning/crash-course/neural-networks
     is_free: true
-    status: proposed
+    status: approved
     source_note: Module of Google's Machine Learning Crash Course.
   - id: neural-networks-d2l-mlp
     type: book
     title: Multilayer Perceptrons - Dive into Deep Learning
     url: https://d2l.ai/chapter_multilayer-perceptrons/mlp.html
     is_free: true
-    status: proposed
+    status: approved
     source_note: Free interactive textbook with code; chapter on MLPs.
   - id: neural-networks-coursera-dl-specialization
     type: coursera
     title: Deep Learning Specialization
     url: https://www.coursera.org/specializations/deep-learning
     is_free: false
-    status: proposed
+    status: approved
     source_note: Andrew Ng's established course; first course covers neural networks.

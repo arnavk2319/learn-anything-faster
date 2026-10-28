@@ -5,19 +5,19 @@ resources:
     title: 10 minutes to pandas
     url: https://pandas.pydata.org/docs/user_guide/10min.html
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official quick introduction.
   - id: pandas-kaggle-learn
     type: course
     title: Learn Pandas Tutorials | Kaggle
     url: https://www.kaggle.com/learn/pandas
     is_free: true
-    status: proposed
+    status: approved
     source_note: Hands-on short Kaggle course with exercises.
   - id: pandas-python-data-science-handbook
     type: book
     title: Python Data Science Handbook
     url: https://jakevdp.github.io/PythonDataScienceHandbook/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Free online book by Jake VanderPlas with pandas chapters.

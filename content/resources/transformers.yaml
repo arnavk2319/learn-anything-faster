@@ -5,26 +5,26 @@ resources:
     title: The Illustrated Transformer
     url: https://jalammar.github.io/illustrated-transformer/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Widely cited visual walkthrough by Jay Alammar.
   - id: transformers-hf-llm-course
     type: course
     title: LLM Course - Introduction | Hugging Face
     url: https://huggingface.co/learn/llm-course/chapter1/1
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official Hugging Face course on the transformers library.
   - id: transformers-karpathy-gpt
     type: youtube
     title: "Let's build GPT: from scratch, in code, spelled out."
     url: https://www.youtube.com/watch?v=kCc8FmEb1nY
     is_free: true
-    status: proposed
+    status: approved
     source_note: Andrej Karpathy lecture; code-first.
   - id: transformers-attention-paper
     type: article
     title: Attention Is All You Need
     url: https://arxiv.org/abs/1706.03762
     is_free: true
-    status: proposed
+    status: approved
     source_note: The original paper; read after a visual intro.

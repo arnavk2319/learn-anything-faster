@@ -5,19 +5,19 @@ resources:
     title: "Metrics and scoring: quantifying the quality of predictions - scikit-learn"
     url: https://scikit-learn.org/stable/modules/model_evaluation.html
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official reference for evaluation metrics.
   - id: model-evaluation-sklearn-cv
     type: docs
     title: "Cross-validation: evaluating estimator performance - scikit-learn"
     url: https://scikit-learn.org/stable/modules/cross_validation.html
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official reference for validation strategy.
   - id: model-evaluation-google-overfitting
     type: course
     title: Datasets, generalization, and overfitting | Google for Developers
     url: https://developers.google.com/machine-learning/crash-course/overfitting
     is_free: true
-    status: proposed
+    status: approved
     source_note: Module of Google's Machine Learning Crash Course.
