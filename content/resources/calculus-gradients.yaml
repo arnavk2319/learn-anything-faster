@@ -5,26 +5,26 @@ resources:
     title: Essence of calculus
     url: https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr
     is_free: true
-    status: proposed
+    status: approved
     source_note: 3Blue1Brown series; covers derivatives and the chain rule visually.
   - id: calculus-gradients-coursera-deeplearningai
     type: coursera
     title: Calculus for Machine Learning and Data Science
     url: https://www.coursera.org/learn/machine-learning-calculus
     is_free: false
-    status: proposed
+    status: approved
     source_note: DeepLearning.AI course focused on gradients and optimisation.
   - id: calculus-gradients-khan-multivariable
     type: course
     title: Khan Academy Multivariable calculus
     url: https://www.khanacademy.org/math/multivariable-calculus
     is_free: true
-    status: proposed
+    status: approved
     source_note: Free course covering partial derivatives and gradients.
   - id: calculus-gradients-mml-book
     type: book
     title: Mathematics for Machine Learning
     url: https://mml-book.github.io/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Free book with a vector calculus chapter aimed at ML.

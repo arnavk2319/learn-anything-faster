@@ -5,19 +5,19 @@ resources:
     title: Stanford CS109 Introduction to Probability for Computer Scientists (2022)
     url: https://www.youtube.com/playlist?list=PLoROMvodv4rOpr_A7B9SriE_iZmkanvUg
     is_free: true
-    status: proposed
+    status: approved
     source_note: Stanford lecture series by Chris Piech aimed at programmers.
   - id: probability-statistics-coursera-deeplearningai
     type: coursera
     title: Probability & Statistics for Machine Learning & Data Science
     url: https://www.coursera.org/learn/machine-learning-probability-and-statistics
     is_free: false
-    status: proposed
+    status: approved
     source_note: DeepLearning.AI course tied to ML use cases.
   - id: probability-statistics-khan
     type: course
     title: Khan Academy Statistics and probability
     url: https://www.khanacademy.org/math/statistics-probability
     is_free: true
-    status: proposed
+    status: approved
     source_note: Established free course for fundamentals; good for gap filling.

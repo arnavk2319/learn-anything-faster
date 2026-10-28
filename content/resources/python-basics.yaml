@@ -5,19 +5,19 @@ resources:
     title: The Python Tutorial
     url: https://docs.python.org/3/tutorial/index.html
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official tutorial; efficient for an engineer who already programs.
   - id: python-basics-kaggle
     type: course
     title: Learn Python Tutorials | Kaggle
     url: https://www.kaggle.com/learn/python
     is_free: true
-    status: proposed
+    status: approved
     source_note: Short hands-on course oriented to data work.
   - id: python-basics-automate-boring-stuff
     type: book
     title: Automate the Boring Stuff with Python
     url: https://automatetheboringstuff.com/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Free online book by Al Sweigart.

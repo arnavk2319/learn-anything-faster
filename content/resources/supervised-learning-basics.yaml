@@ -5,26 +5,26 @@ resources:
     title: Machine Learning Specialization
     url: https://www.coursera.org/specializations/machine-learning-introduction
     is_free: false
-    status: proposed
+    status: approved
     source_note: Andrew Ng's established intro course; supervised learning is the first course.
   - id: supervised-learning-basics-sklearn
     type: docs
     title: Supervised learning - scikit-learn documentation
     url: https://scikit-learn.org/stable/supervised_learning.html
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official reference for the standard Python ML library.
   - id: supervised-learning-basics-kaggle-intro
     type: course
     title: Learn Intro to Machine Learning Tutorials | Kaggle
     url: https://www.kaggle.com/learn/intro-to-machine-learning
     is_free: true
-    status: proposed
+    status: approved
     source_note: Short hands-on course; good first practical pass.
   - id: supervised-learning-basics-islr
     type: book
     title: An Introduction to Statistical Learning
     url: https://www.statlearning.com/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Standard textbook, free PDF.
