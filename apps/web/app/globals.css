@@ -1,25 +1,226 @@
+/*
+  Trailhead theme for [App name]
+  Drop into app/globals.css (Tailwind v4 + shadcn/ui).
+  Every colour, radius and font in the app must come from these variables.
+  See DESIGN.md for when to use each token.
+*/
+
 @import "tailwindcss";
-@import "tw-animate-css";
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --muted-foreground: oklch(0.45 0 0);
-  --border: oklch(0.922 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
+  /* Base palette (do not use directly in components; use the role tokens below) */
+  --pine: #1d3b2a; /* primary text, primary buttons, logo border */
+  --moss: #4f6556; /* secondary text */
+  --sage: #e9efe7; /* page background */
+  --paper: #ffffff; /* surfaces: panels, tables, canvas */
+  --lichen: #cbd6cc; /* decorative dividers, row lines */
+  --bark: #b9c7bd; /* resting borders on pills and chips (decorative) */
+  --stone: #788b7c; /* borders on form controls (3:1 on paper and sage) */
+  --trail: #1f6f50; /* route lines, links, highlighted edges, focus ring */
+  --trail-dark: #16543c;
+  --blaze: #f2c14e; /* selection, role highlight, logo mark. Never text. */
+  --covered: #dcebdf; /* topics the current role already covers */
+  --lane: #f3f6f1; /* area lanes on the roadmap canvas */
+  --canvas-dot: #d3ddd2;
+  --edge: #afc0b3; /* resting prerequisite edges */
+  --danger: #a8321e;
+  --sand: #f3edd7; /* v2: Bridge topics (partly known) */
+  --sand-edge: #8a6d1f;
+
+  /* shadcn/ui role tokens */
+  --background: var(--sage);
+  --foreground: var(--pine);
+  --card: var(--paper);
+  --card-foreground: var(--pine);
+  --popover: var(--paper);
+  --popover-foreground: var(--pine);
+  --primary: var(--pine);
+  --primary-foreground: var(--paper);
+  --primary-hover: #2a4f3a;
+  --secondary: var(--paper);
+  --secondary-foreground: var(--pine);
+  --muted: var(--lane);
+  --muted-foreground: var(--moss);
+  --accent: var(--covered);
+  --accent-foreground: var(--pine);
+  --destructive: var(--danger);
+  --destructive-foreground: var(--paper);
+  --border: var(--lichen);
+  --input: var(--stone);
+  --ring: var(--trail);
+
+  /* Product tokens */
+  --route: var(--trail);
+  --route-hover: var(--trail-dark);
+  --highlight: var(--blaze);
+  --highlight-foreground: var(--pine);
+  --known: var(--covered);
+  --known-foreground: var(--pine);
+  --known-ring: var(--trail);
+  --bridge: var(--sand);
+  --bridge-foreground: var(--pine);
+  --bridge-ring: var(--sand-edge);
+
+  /* Shape */
+  --radius: 10px; /* controls: buttons, inputs, selects, segmented */
+  --radius-panel: 16px; /* panels, tables, canvas */
+  --radius-lane: 20px; /* area lanes on the canvas */
+  --radius-pill: 999px; /* topic nodes, chips */
+  --radius-mark: 4px; /* logo blaze */
+
+  /* Motion */
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 320ms;
+  --ease-trail: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
+/* Dark ("night trail"). Defined so tokens are complete; ship light first. */
+.dark {
+  --background: #122019;
+  --foreground: #e6eee7;
+  --card: #1a2b21;
+  --card-foreground: #e6eee7;
+  --popover: #1a2b21;
+  --popover-foreground: #e6eee7;
+  --primary: #e6eee7;
+  --primary-foreground: #122019;
+  --primary-hover: #c9d8cc;
+  --secondary: #1a2b21;
+  --secondary-foreground: #e6eee7;
+  --muted: #18271e;
+  --muted-foreground: #a7b8ab;
+  --accent: #24402f;
+  --accent-foreground: #e6eee7;
+  --border: #2e4436;
+  --input: #5e7564;
+  --ring: #6fc3a0;
+  --route: #6fc3a0;
+  --route-hover: #8ed3b5;
+  --highlight: #f2c14e;
+  --highlight-foreground: #122019;
+  --known: #24402f;
+  --known-foreground: #e6eee7;
+  --known-ring: #6fc3a0;
+  --bridge: #3a3420;
+  --bridge-foreground: #e6eee7;
+  --bridge-ring: #d9b95c;
+  --canvas-dot: #24382b;
+  --edge: #3e5747;
+  --lane: #18271e;
+}
+
+/* Expose tokens to Tailwind utilities: bg-primary, text-muted-foreground, bg-highlight, rounded-panel, font-display ... */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-border: var(--border);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-route: var(--route);
+  --color-route-hover: var(--route-hover);
+  --color-highlight: var(--highlight);
+  --color-highlight-foreground: var(--highlight-foreground);
+  --color-known: var(--known);
+  --color-known-foreground: var(--known-foreground);
+  --color-known-ring: var(--known-ring);
+  --color-bridge: var(--bridge);
+  --color-bridge-foreground: var(--bridge-foreground);
+  --color-bridge-ring: var(--bridge-ring);
+  --color-lane: var(--lane);
+  --color-edge: var(--edge);
+  --color-canvas-dot: var(--canvas-dot);
+
+  --radius-sm: 6px;
+  --radius-md: var(--radius);
+  --radius-lg: var(--radius-panel);
+  --radius-lane: var(--radius-lane);
+  --radius-pill: var(--radius-pill);
+
+  --font-display: var(--font-familjen), "Familjen Grotesk", system-ui, sans-serif;
+  --font-sans: var(--font-hanken), "Hanken Grotesk", system-ui, sans-serif;
+
+  --ease-trail: var(--ease-trail);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    color: var(--foreground);
+    text-wrap: balance;
+  }
+  a {
+    color: var(--route);
+    text-underline-offset: 3px;
+  }
+  a:hover {
+    color: var(--route-hover);
+  }
+  :focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--highlight);
+    color: var(--highlight-foreground);
+  }
+}
+
+/* Trail pattern: the dashed route line used on the landing route and empty states */
+.trail-line {
+  height: 6px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(90deg, var(--route) 0 18px, transparent 18px 28px);
+}
+.trail-line[data-state="unmapped"] {
+  background: repeating-linear-gradient(90deg, var(--bark) 0 14px, transparent 14px 24px);
+}
+
+/* Roadmap canvas background */
+.canvas-dots {
+  background-color: var(--card);
+  background-image: radial-gradient(var(--canvas-dot) 1.2px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
