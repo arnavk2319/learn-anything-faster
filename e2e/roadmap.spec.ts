@@ -148,3 +148,47 @@ test("error state offers a retry", async ({ page }) => {
   await page.getByRole("button", { name: "Try again" }).click();
   await expect(topic(page, "stats")).toBeVisible();
 });
+
+test("@smoke topic panel opens with why, resources and suggest form", async ({ page }) => {
+  await page.goto("/roadmap/dev/ml-dev");
+  await topic(page, "torch").click();
+  const panel = page.getByTestId("topic-panel");
+  await expect(panel).toBeVisible();
+  await expect(panel.getByRole("heading", { name: "Torch" })).toBeVisible();
+  await expect(panel.getByText("Frameworks.")).toBeVisible();
+  await expect(panel.getByRole("button", { name: "Stats" })).toBeVisible(); // Needs first chip
+  await panel.locator("summary", { hasText: "Suggest a resource" }).click();
+  await expect(panel.getByRole("form", { name: "Suggest a resource" })).toBeVisible();
+});
+
+test("topic panel: resource link opens safely, Escape closes and returns focus", async ({
+  page,
+}) => {
+  await page.goto("/roadmap/dev/ml-dev");
+  await topic(page, "torch").focus();
+  await page.keyboard.press("Enter");
+  const panel = page.getByTestId("topic-panel");
+  await expect(panel).toBeFocused();
+  const link = panel.getByRole("link", { name: /torch docs/ });
+  await expect(link).toHaveAttribute("href", "https://example.com/torch");
+  await expect(link).toHaveAttribute("target", "_blank");
+  await expect(link).toHaveAttribute("rel", /noopener/);
+  await expect(link).toContainText("Free");
+  await page.keyboard.press("Escape");
+  await expect(panel).toHaveCount(0);
+  await expect(topic(page, "torch")).toBeFocused();
+});
+
+test("topic panel shows the empty-resources state", async ({ page }) => {
+  await page.route("**/api/roadmap**", async (route) => {
+    const res = await route.fetch();
+    const json = await res.json();
+    for (const n of json.nodes) n.resources = [];
+    await route.fulfill({ response: res, json });
+  });
+  await page.goto("/roadmap/dev/ml-dev");
+  await topic(page, "stats").click();
+  await expect(
+    page.getByTestId("topic-panel").getByText(/No approved resources yet/),
+  ).toBeVisible();
+});
