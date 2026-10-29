@@ -32,6 +32,18 @@ test("pages send the security headers", async ({ request }) => {
     expect(h["referrer-policy"]).toBeTruthy();
     expect(h["content-security-policy"]).toContain("worker-src 'self' blob:");
     expect(h["content-security-policy"]).toContain("frame-ancestors 'none'");
+    expect(h["content-security-policy"]).toContain("frame-src 'none'");
+    expect(h["content-security-policy"]).toContain("media-src 'none'");
+    expect(h["content-security-policy"]).toContain("manifest-src 'self'");
+    // Local runs are http, so the upgrade directive must be absent (it is on only for Vercel production).
+    expect(h["content-security-policy"]).not.toContain("upgrade-insecure-requests");
+    expect(h["content-security-policy"]).not.toContain("*.ingest");
+    expect(h["permissions-policy"]).toContain("camera=()");
+    expect(h["permissions-policy"]).toContain("clipboard-write=(self)");
+    expect(h["cross-origin-opener-policy"]).toBe("same-origin");
+    expect(h["cross-origin-resource-policy"]).toBe("same-origin");
+    expect(h["x-permitted-cross-domain-policies"]).toBe("none");
+    expect(h["cross-origin-embedder-policy"]).toBeUndefined();
   }
 });
 
