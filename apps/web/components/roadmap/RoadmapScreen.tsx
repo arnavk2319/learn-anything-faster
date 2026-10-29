@@ -12,6 +12,7 @@ import type { RoleOption } from "../../lib/roadmap/roles";
 import { selectTopic } from "../../lib/roadmap/selection-store";
 import { EmptyState, ErrorState, LoadingState, UnmappedState } from "./CanvasStates";
 import { RoadmapCanvas } from "./RoadmapCanvas";
+import { ShareLink } from "./ShareLink";
 import { TopicPanel } from "./TopicPanel";
 
 const selectCls =
@@ -122,7 +123,7 @@ export function RoadmapScreen({
     selectTopic(null);
   }, [key]);
 
-  const go = (f: string, t: string) => router.push(`/roadmap/${f}/${t}`);
+  const go = (f: string, t: string) => router.replace(`/roadmap/${f}/${t}`);
   const name = (id: string) => roles.find((r) => r.id === id)?.name ?? id;
 
   let body;
@@ -180,6 +181,7 @@ export function RoadmapScreen({
           />
         </h1>
         <p className="text-sm text-muted-foreground">{meta}</p>
+        <ShareLink from={from} to={to} />
       </div>
       {body}
       <TopicPanel data={data} />
