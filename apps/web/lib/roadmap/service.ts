@@ -3,7 +3,7 @@
 import { and, asc, eq, inArray } from "drizzle-orm";
 import { drizzle, type NodePgDatabase } from "drizzle-orm/node-postgres";
 import type { Pool, PoolClient } from "pg";
-import { computeDelta } from "../../../../packages/graph/src/index";
+import { computeDelta } from "@laf/graph";
 import { resources, roles, roleTopics, topicEdges, topics } from "../../db/schema";
 import type { RoadmapResponse } from "./schema";
 
