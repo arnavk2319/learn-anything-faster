@@ -8,12 +8,6 @@
 // style-src needs 'unsafe-inline' because React Flow positions nodes with inline style attributes.
 // Follow-up: move to nonces (most routes are already dynamic).
 
-const SENTRY_WILDCARDS = [
-  "https://*.ingest.sentry.io",
-  "https://*.ingest.us.sentry.io",
-  "https://*.ingest.de.sentry.io",
-];
-
 function dsnOrigin(dsn: string | undefined): string | null {
   if (!dsn) return null;
   try {
@@ -24,12 +18,19 @@ function dsnOrigin(dsn: string | undefined): string | null {
   }
 }
 
-export function buildCsp(env: { dev: boolean; sentryDsns?: (string | undefined)[] }): string {
+// Headers are computed at build/start (next.config.ts), so a DSN change needs a redeploy.
+// connect-src gets only the exact origins of the configured DSNs, no Sentry wildcards: a wildcard would let
+// any Sentry customer's ingest host act as an exfiltration path. No DSN means no Sentry host at all.
+// upgradeInsecure is set by the caller only for real HTTPS deployments (not dev, not local http `next start`).
+export type HeaderEnv = {
+  dev: boolean;
+  sentryDsns?: (string | undefined)[];
+  upgradeInsecure?: boolean;
+};
+
+export function buildCsp(env: HeaderEnv): string {
   const sentry = [
-    ...new Set([
-      ...SENTRY_WILDCARDS,
-      ...(env.sentryDsns ?? []).map(dsnOrigin).filter((x): x is string => x !== null),
-    ]),
+    ...new Set((env.sentryDsns ?? []).map(dsnOrigin).filter((x): x is string => x !== null)),
   ];
   const directives: Record<string, string[]> = {
     "default-src": ["'self'"],
@@ -43,17 +44,50 @@ export function buildCsp(env: { dev: boolean; sentryDsns?: (string | undefined)[
     "base-uri": ["'self'"],
     "form-action": ["'self'"],
     "frame-ancestors": ["'none'"],
+    "frame-src": ["'none'"],
+    "media-src": ["'none'"],
+    "manifest-src": ["'self'"],
+    ...(env.upgradeInsecure ? { "upgrade-insecure-requests": [] } : {}),
   };
   return Object.entries(directives)
-    .map(([k, v]) => `${k} ${v.join(" ")}`)
+    .map(([k, v]) => (v.length ? `${k} ${v.join(" ")}` : k))
     .join("; ");
 }
 
-export function securityHeaders(env: { dev: boolean; sentryDsns?: (string | undefined)[] }) {
+const DENIED_FEATURES = [
+  "accelerometer",
+  "autoplay",
+  "bluetooth",
+  "camera",
+  "display-capture",
+  "geolocation",
+  "gyroscope",
+  "hid",
+  "interest-cohort",
+  "magnetometer",
+  "microphone",
+  "midi",
+  "payment",
+  "serial",
+  "usb",
+  "xr-spatial-tracking",
+];
+
+// clipboard-write stays allowed for self: the share-link copy button needs it. HSTS is set by Vercel.
+export const PERMISSIONS_POLICY = [
+  ...DENIED_FEATURES.map((f) => `${f}=()`),
+  "clipboard-write=(self)",
+].join(", ");
+
+export function securityHeaders(env: HeaderEnv) {
   return [
     { key: "Content-Security-Policy", value: buildCsp(env) },
     { key: "X-Content-Type-Options", value: "nosniff" },
     { key: "X-Frame-Options", value: "DENY" },
     { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+    { key: "Permissions-Policy", value: PERMISSIONS_POLICY },
+    { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+    { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
+    { key: "X-Permitted-Cross-Domain-Policies", value: "none" },
   ];
 }
