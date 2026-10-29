@@ -23,6 +23,9 @@ const STRING_RULES: Array<[RegExp, string]> = [
   [/[A-Z0-9._%+-]+@[A-Z0-9-]+(?:\.[A-Z0-9-]+)+/gi, "[email]"],
 ];
 
+// Sentry structural identifiers (fixed-format hex). Rewriting them makes the envelope invalid (HTTP 400).
+const STRUCTURAL_KEYS = new Set(["event_id", "trace_id", "span_id", "parent_span_id"]);
+
 const SENSITIVE_KEY = /pass(word|wd)?|secret|token|api[_-]?key|authorization|cookie|dsn|e-?mail|ip_address/i;
 
 export function scrubString(input: string): string {
@@ -42,6 +45,7 @@ function scrubValue(value: unknown, depth: number, seen: WeakSet<object>): unkno
   }
   const rec = value as Record<string, unknown>;
   for (const key of Object.keys(rec)) {
+    if (STRUCTURAL_KEYS.has(key) && typeof rec[key] === "string") continue;
     if (SENSITIVE_KEY.test(key) && rec[key] != null && typeof rec[key] !== "object") {
       rec[key] = REDACTED;
     } else {
