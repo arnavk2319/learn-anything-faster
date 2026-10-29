@@ -63,3 +63,27 @@ describe("captured payloads contain no email", () => {
     expect(payload).not.toContain(EMAIL);
   });
 });
+
+describe("envelope validity", () => {
+  it("header event_id is a 32-hex id equal to the event's event_id", async () => {
+    const envelopes: unknown[] = [];
+    const transport = () => ({
+      send: async (envelope: unknown) => {
+        envelopes.push(envelope);
+        return {};
+      },
+      flush: async () => true,
+    });
+    initSentry(DSN, "server", { transport, defaultIntegrations: false, integrations: [] });
+    Sentry.captureException(new Error(`failed for ${EMAIL}`));
+    await Sentry.flush(2000);
+    expect(envelopes.length).toBeGreaterThan(0);
+    const [header, items] = envelopes[0] as [
+      { event_id?: string },
+      Array<[unknown, { event_id?: string }]>,
+    ];
+    expect(header.event_id).toMatch(/^[0-9a-f]{32}$/);
+    expect(items[0]?.[1].event_id).toBe(header.event_id);
+    expect(JSON.stringify(envelopes)).not.toContain(EMAIL);
+  });
+});
