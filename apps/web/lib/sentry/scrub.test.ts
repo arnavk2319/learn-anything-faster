@@ -68,3 +68,24 @@ describe("scrubEvent", () => {
     expect(() => scrubEvent(a)).not.toThrow();
   });
 });
+
+describe("structural identifiers", () => {
+  const eventId = "0123456789abcdef0123456789abcdef";
+  const traceId = "fedcba9876543210fedcba9876543210";
+  const spanId = "0123456789abcdef";
+  it("keeps event_id, trace_id, span_id while scrubbing free text", () => {
+    const ev = scrubEvent({
+      event_id: eventId,
+      message: `boom for ${email("a.b")} via ${pgUrl}`,
+      exception: { values: [{ type: "Error", value: `x ${email("c.d")} ${pgUrl}` }] },
+      contexts: { trace: { trace_id: traceId, span_id: spanId, parent_span_id: spanId } },
+      spans: [{ trace_id: traceId, span_id: spanId, parent_span_id: spanId }],
+    });
+    expect(ev.event_id).toBe(eventId);
+    expect(ev.contexts.trace).toEqual({ trace_id: traceId, span_id: spanId, parent_span_id: spanId });
+    expect(ev.spans[0]).toEqual({ trace_id: traceId, span_id: spanId, parent_span_id: spanId });
+    const out = JSON.stringify(ev);
+    expect(out).not.toContain(AT);
+    expect(out).not.toContain("p4ss");
+  });
+});
