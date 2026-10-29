@@ -12,6 +12,7 @@ import type { RoleOption } from "../../lib/roadmap/roles";
 import { selectTopic } from "../../lib/roadmap/selection-store";
 import { EmptyState, ErrorState, LoadingState, UnmappedState } from "./CanvasStates";
 import { RoadmapCanvas } from "./RoadmapCanvas";
+import { TopicPanel } from "./TopicPanel";
 
 const selectCls =
   "font-display cursor-pointer appearance-none bg-transparent text-3xl font-semibold tracking-tight";
@@ -181,6 +182,7 @@ export function RoadmapScreen({
         <p className="text-sm text-muted-foreground">{meta}</p>
       </div>
       {body}
+      <TopicPanel data={data} />
     </main>
   );
 }
