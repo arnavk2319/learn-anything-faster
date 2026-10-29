@@ -134,7 +134,10 @@ export const resourceSuggestions = pgTable(
     note: text("note"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [index("resource_suggestions_topic_idx").on(t.topicId)],
+  (t) => [
+    index("resource_suggestions_topic_idx").on(t.topicId),
+    unique("resource_suggestions_topic_url_uniq").on(t.topicId, t.url),
+  ],
 );
 
 export type Role = typeof roles.$inferSelect;
