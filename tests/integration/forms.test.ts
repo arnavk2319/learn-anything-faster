@@ -153,6 +153,22 @@ describe.skipIf(!isDbAvailable())("form actions against Postgres", () => {
     ).toMatchObject({ ok: false, error: "invalid" });
   });
 
+  it("a repeated suggestion returns the same success and stores one row", async () => {
+    const send = () =>
+      submitResourceSuggestion(
+        db,
+        { topicId: "t1", url: "https://example.test/dupe", note: "" },
+        ctx,
+        open(),
+      );
+    expect(await send()).toEqual({ ok: true });
+    expect(await send()).toEqual({ ok: true });
+    const n = await client.query(
+      "select count(*)::int as n from resource_suggestions where url = 'https://example.test/dupe'",
+    );
+    expect(n.rows[0].n).toBe(1);
+  });
+
   it("does not log input", async () => {
     const spies = (["log", "error", "warn", "info"] as const).map((m) => vi.spyOn(console, m));
     await submitTransitionRequest(db, req({ email: mail("quiet") }), ctx, open());

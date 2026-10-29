@@ -152,4 +152,28 @@ describe.skipIf(!isDbAvailable())("migrations against Postgres", () => {
     await applyUp(client, schema);
     expect(await tables(client, schema)).toEqual(TABLES);
   });
+
+  it("0001 dedupes existing suggestions (keeping the earliest) then enforces unique (topic, url)", async () => {
+    await applyDown(client);
+    const [first, ...rest] = ups;
+    const run = async (f: string) => {
+      const sql = readFileSync(join(DIR, f), "utf8").replaceAll('"public".', `"${schema}".`);
+      for (const stmt of sql.split("--> statement-breakpoint")) {
+        if (stmt.trim()) await client.query(stmt);
+      }
+    };
+    await run(first!);
+    await client.query("insert into topics values ('t1','T1','x','w',1)");
+    const ins =
+      "insert into resource_suggestions (topic_id,url,note,created_at) values ('t1','u',$1,$2)";
+    await client.query(ins, ["late", "2026-02-01"]);
+    await client.query(ins, ["early", "2026-01-01"]);
+    await client.query(ins, ["late2", "2026-03-01"]);
+    for (const f of rest) await run(f);
+    const r = await client.query("select note from resource_suggestions");
+    expect(r.rows).toEqual([{ note: "early" }]);
+    await client.query("begin");
+    expect(await fails(ins, ["again", "2026-04-01"])).toBe(true);
+    await client.query("rollback");
+  });
 });
