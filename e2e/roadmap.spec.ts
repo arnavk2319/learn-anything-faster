@@ -83,23 +83,62 @@ test("graph renders areas and topics, selects by click and by keyboard", async (
   await expect(topic(page, "torch")).toHaveAttribute("aria-pressed", "true");
 });
 
+// Finds a point whose topmost element is the bare React Flow pane (no node, edge, toolbar or minimap on top).
+const emptyPanePoint = (page: Page) =>
+  page.evaluate(`(() => {
+    const pane = document.querySelector(".react-flow__pane");
+    const r = pane.getBoundingClientRect();
+    for (let fy = 0.9; fy >= 0.1; fy -= 0.1) {
+      for (let fx = 0.5; fx <= 0.9; fx += 0.1) {
+        const x = r.left + r.width * fx;
+        const y = r.top + r.height * fy;
+        if (document.elementFromPoint(x, y) === pane) return { x, y };
+      }
+    }
+    throw new Error("no empty pane point");
+  })()`) as Promise<{ x: number; y: number }>;
+const parse = (t: string) => {
+  const m = /translate\((-?[\d.]+)px,\s*(-?[\d.]+)px\)\s*scale\((-?[\d.]+)\)/.exec(t);
+  if (!m) throw new Error(`unexpected transform: ${t}`);
+  return { x: Number(m[1]), y: Number(m[2]), k: Number(m[3]) };
+};
+
 test("pan, zoom and fit", async ({ page }) => {
   await page.goto("/roadmap/dev/ml-dev");
   await expect(topic(page, "stats")).toBeVisible();
+  // Wait for the fit-view animation to settle so "initial" is stable.
+  let prev = "";
+  await expect
+    .poll(async () => {
+      const cur = await viewportTransform(page);
+      const same = cur === prev;
+      prev = cur;
+      return same;
+    })
+    .toBe(true);
   const before = await viewportTransform(page);
   await page.getByRole("button", { name: "Zoom in" }).click();
   await expect.poll(() => viewportTransform(page)).not.toBe(before);
+  await expect
+    .poll(async () => parse(await viewportTransform(page)).k)
+    .toBeGreaterThan(parse(before).k);
   const zoomed = await viewportTransform(page);
 
-  const box = (await page.getByTestId("roadmap-canvas").boundingBox())!;
-  await page.mouse.move(box.x + 5, box.y + box.height - 5);
+  const p = await emptyPanePoint(page);
+  await page.mouse.move(p.x, p.y);
   await page.mouse.down();
-  await page.mouse.move(box.x + 85, box.y + box.height - 45, { steps: 5 });
+  await page.mouse.move(p.x - 40, p.y - 20, { steps: 5 });
   await page.mouse.up();
   await expect.poll(() => viewportTransform(page)).not.toBe(zoomed);
 
   await page.getByRole("button", { name: "Fit" }).click();
-  await expect.poll(() => viewportTransform(page)).not.toBe(zoomed);
+  await expect
+    .poll(async () => {
+      const a = parse(await viewportTransform(page));
+      const b = parse(before);
+      return Math.max(Math.abs(a.x - b.x), Math.abs(a.y - b.y), Math.abs(a.k - b.k) * 100);
+    })
+    .toBeLessThan(2);
 });
 
 test("areas collapse and expand; covered topics can be shown", async ({ page }) => {
