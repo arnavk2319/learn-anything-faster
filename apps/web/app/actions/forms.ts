@@ -8,11 +8,11 @@ import {
   type FormDb,
 } from "../../lib/forms/service";
 import type { FormResult } from "../../lib/forms/schemas";
+import { clientIp } from "../../lib/forms/client-ip";
 
 async function ctx(action: string) {
   const h = await headers();
-  const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() || h.get("x-real-ip") || "unknown";
-  return { ip, action };
+  return { ip: clientIp(h), action };
 }
 
 const str = (d: FormData, k: string) => {
