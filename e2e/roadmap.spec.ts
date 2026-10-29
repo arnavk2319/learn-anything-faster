@@ -192,3 +192,48 @@ test("topic panel shows the empty-resources state", async ({ page }) => {
     page.getByTestId("topic-panel").getByText(/No approved resources yet/),
   ).toBeVisible();
 });
+
+test.describe("share link (F6)", () => {
+  test("both URL forms load the same graph cold", async ({ page }) => {
+    await page.goto("/roadmap/dev/ml-dev");
+    await expect(topic(page, "stats")).toBeVisible();
+    const count = await page.locator("button[data-topic-id]").count();
+    await page.goto("/roadmap?from=dev&to=ml-dev");
+    await expect(page).toHaveURL(/\/roadmap\/dev\/ml-dev$/);
+    await expect(topic(page, "stats")).toBeVisible();
+    await expect(page.locator("button[data-topic-id]")).toHaveCount(count);
+  });
+
+  test("role change updates the URL in place without a reload", async ({ page }) => {
+    await page.goto("/roadmap/dev/ml-dev");
+    await expect(topic(page, "algebra")).toBeVisible();
+    await page.evaluate("window.__noReload = true");
+    await page.getByLabel("Current role").selectOption("dev2");
+    await expect(page).toHaveURL(/\/roadmap\/dev2\/ml-dev$/);
+    await expect(topic(page, "algebra")).toHaveCount(0);
+    expect(await page.evaluate("window.__noReload === true")).toBe(true);
+  });
+
+  test("copy link copies the canonical URL and confirms", async ({ page, context, baseURL }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+    await page.goto("/roadmap?from=dev&to=ml-dev");
+    await expect(topic(page, "stats")).toBeVisible();
+    await page.getByRole("button", { name: "Copy link" }).click();
+    await expect(page.getByRole("status").filter({ hasText: "Link copied" })).toBeVisible();
+    const origin = new URL(page.url()).origin;
+    expect(baseURL).toBeTruthy();
+    expect(await page.evaluate("navigator.clipboard.readText()")).toBe(
+      `${origin}/roadmap/dev/ml-dev`,
+    );
+  });
+
+  test("falls back to a selectable field when the clipboard rejects", async ({ page }) => {
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, "clipboard", { value: undefined, configurable: true });
+    });
+    await page.goto("/roadmap/dev/ml-dev");
+    await expect(topic(page, "stats")).toBeVisible();
+    await page.getByRole("button", { name: "Copy link" }).click();
+    await expect(page.getByLabel("Roadmap link")).toHaveValue(/\/roadmap\/dev\/ml-dev$/);
+  });
+});
