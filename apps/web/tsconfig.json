@@ -6,7 +6,7 @@
     "allowJs": false,
     "incremental": true,
     "plugins": [{ "name": "next" }],
-    "paths": { "@/*": ["./*"] },
+    "paths": { "@/*": ["./*"], "@laf/graph": ["../../packages/graph/src/index.ts"] },
     "types": ["node"]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

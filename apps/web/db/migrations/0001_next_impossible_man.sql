@@ -1,0 +1,2 @@
+DELETE FROM "resource_suggestions" a USING "resource_suggestions" b WHERE a."topic_id" = b."topic_id" AND a."url" = b."url" AND (a."created_at", a."id") > (b."created_at", b."id");--> statement-breakpoint
+ALTER TABLE "resource_suggestions" ADD CONSTRAINT "resource_suggestions_topic_url_uniq" UNIQUE("topic_id","url");

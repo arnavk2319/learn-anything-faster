@@ -61,7 +61,8 @@ export async function submitResourceSuggestion(
   const g = await guard(ctx, limiter);
   if (g !== "ok") return { ok: false, error: "rate_limited" };
   try {
-    await db.insert(resourceSuggestions).values(parsed.data);
+    // Duplicate (topic, url) is a no-op and looks identical to a first submit.
+    await db.insert(resourceSuggestions).values(parsed.data).onConflictDoNothing();
     return { ok: true };
   } catch (e) {
     if (isFkViolation(e))
