@@ -24,16 +24,23 @@ export function TransitionRequestForm({
   fromRole,
   toRole,
   kind,
+  idSuffix,
+  formLabel,
 }: {
   fromRole: string;
   toRole: string;
   kind: "request" | "notify";
+  /** Disambiguates input ids when several forms share a page. */
+  idSuffix?: string;
+  /** Accessible name for the form; defaults to the button text. */
+  formLabel?: string;
 }) {
   const [state, action, pending] = useActionState<FormResult | null, FormData>(
     requestTransitionAction,
     null,
   );
   const c = COPY[kind];
+  const inputId = idSuffix ? `email-${kind}-${idSuffix}` : `email-${kind}`;
   if (state?.ok) {
     return (
       <p role="status" className="text-sm font-medium">
@@ -43,29 +50,34 @@ export function TransitionRequestForm({
   }
   const fe = state && !state.ok ? state.fieldErrors : undefined;
   return (
-    <form action={action} noValidate className="flex flex-col gap-3" aria-label={c.button}>
+    <form
+      action={action}
+      noValidate
+      className="flex flex-col gap-3"
+      aria-label={formLabel ?? c.button}
+    >
       <input type="hidden" name="fromRole" value={fromRole} />
       <input type="hidden" name="toRole" value={toRole} />
       <input type="hidden" name="kind" value={kind} />
-      <FormField id={`email-${kind}`} label="Email" error={fe?.email ?? fe?.toRole ?? fe?.fromRole}>
+      <FormField id={inputId} label="Email" error={fe?.email ?? fe?.toRole ?? fe?.fromRole}>
         <input
-          id={`email-${kind}`}
+          id={inputId}
           name="email"
           type="email"
           autoComplete="email"
           placeholder={c.placeholder}
           aria-invalid={fe?.email ? true : undefined}
-          aria-describedby={fe?.email ? `email-${kind}-error` : undefined}
+          aria-describedby={fe?.email ? `${inputId}-error` : undefined}
           className={inputClass}
         />
       </FormField>
       {state && !state.ok && state.error === "rate_limited" ? (
-        <p role="alert" className="text-destructive text-sm">
+        <p role="alert" className="text-sm text-destructive">
           Too many requests. Try again in a few minutes.
         </p>
       ) : null}
       {state && !state.ok && state.error === "failed" ? (
-        <p role="alert" className="text-destructive text-sm">
+        <p role="alert" className="text-sm text-destructive">
           Something went wrong. Try again.
         </p>
       ) : null}
