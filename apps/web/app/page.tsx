@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { RolePicker } from "../components/RolePicker";
 import { getLandingData } from "../lib/roadmap/landing";
 import { sharedDb } from "../lib/roadmap/db";
@@ -13,6 +14,14 @@ export default async function HomePage() {
         The shortest learning path from the role you have to the role you want.
       </p>
       <RolePicker {...data} />
+      <p className="mt-8">
+        <Link
+          href="/roadmaps"
+          className="underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+        >
+          Browse all roadmaps
+        </Link>
+      </p>
     </main>
   );
 }
