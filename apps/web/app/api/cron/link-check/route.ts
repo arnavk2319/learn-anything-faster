@@ -14,7 +14,14 @@ export function GET(req: Request) {
     req,
     process.env.CRON_SECRET,
     // The neon and node-postgres drizzle clients share the select/update surface used here.
-    async () => (await (cached ??= getDb())) as unknown as LinkDb,
+    async () => {
+      try {
+        return (await (cached ??= getDb())) as unknown as LinkDb;
+      } catch (e) {
+        cached = undefined; // do not poison the instance after one transient failure
+        throw e;
+      }
+    },
     { fetch, lookup: (h) => lookup(h, { all: true }), now: Date.now },
   );
 }

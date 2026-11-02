@@ -6,15 +6,17 @@ export type LookupFn = (host: string) => Promise<{ address: string; family: numb
 export type GuardResult =
   { ok: true; url: URL } | { ok: false; reason: "blocked" | "notfound" | "error" };
 
-function ipv4Blocked(a: number, b: number): boolean {
+function ipv4Blocked(a: number, b: number, c: number): boolean {
   return (
     a === 0 || // unspecified / "this network"
+    (a === 198 && (b === 18 || b === 19)) || // benchmarking 198.18.0.0/15
     a === 10 ||
     a === 127 ||
     (a === 100 && b >= 64 && b <= 127) || // CGNAT
     (a === 169 && b === 254) || // link-local, cloud metadata
     (a === 172 && b >= 16 && b <= 31) ||
     (a === 192 && b === 168) ||
+    (a === 192 && b === 0 && c === 0) || // IETF protocol assignments 192.0.0.0/24
     a >= 224 // multicast, reserved, broadcast
   );
 }
@@ -42,21 +44,25 @@ function expandV6(ip: string): number[] | null {
 export function isBlockedIp(ip: string): boolean {
   const kind = isIP(ip);
   if (kind === 4) {
-    const [a, b] = ip.split(".").map(Number);
-    return ipv4Blocked(a!, b!);
+    const [a, b, c] = ip.split(".").map(Number);
+    return ipv4Blocked(a!, b!, c!);
   }
   if (kind === 6) {
     const g = expandV6(ip);
     if (!g) return true;
     if (g.slice(0, 5).every((x) => x === 0) && (g[5] === 0xffff || g[5] === 0)) {
       // v4-mapped (::ffff:a.b.c.d) and deprecated v4-compatible (::a.b.c.d, includes :: and ::1)
-      return g[5] === 0 && g[6] === 0 && g[7]! <= 1 ? true : ipv4Blocked(g[6]! >> 8, g[6]! & 255);
+      return g[5] === 0 && g[6] === 0 && g[7]! <= 1
+        ? true
+        : ipv4Blocked(g[6]! >> 8, g[6]! & 255, g[7]! >> 8);
     }
+    if (g[0] === 0x64 && g[1] === 0xff9b && g.slice(2, 6).every((x) => x === 0)) return true; // NAT64 64:ff9b::/96
     const first = g[0]!;
     return (
       (first & 0xfe00) === 0xfc00 || // fc00::/7
       (first & 0xffc0) === 0xfe80 || // fe80::/10
-      (first & 0xff00) === 0xff00 // multicast
+      (first & 0xff00) === 0xff00 || // multicast
+      first === 0x2002 // 6to4 2002::/16
     );
   }
   return true;

@@ -12,6 +12,7 @@ export const LIMITS = {
   concurrency: 5,
   timeoutMs: 8_000,
   deadlineMs: 45_000,
+  urlBudgetMs: 12_000, // all hops, lookups and HEAD+GET for one URL; 45 s + 12 s stays under maxDuration 60
   maxHops: 3,
 } as const;
 
@@ -39,11 +40,12 @@ async function request(
   method: "HEAD" | "GET",
   d: Deps,
   timeoutMs: number,
+  budget: AbortSignal,
 ): Promise<Response> {
   const res = await d.fetch(url.toString(), {
     method,
     redirect: "manual",
-    signal: AbortSignal.timeout(timeoutMs),
+    signal: AbortSignal.any([budget, AbortSignal.timeout(timeoutMs)]),
     headers: { "user-agent": "learn-anything-faster-linkcheck/1" },
   });
   await res.body?.cancel().catch(() => undefined); // never read the body
@@ -54,13 +56,19 @@ async function request(
 export async function checkUrl(raw: string, d: Deps): Promise<Verdict> {
   const timeoutMs = d.limits?.timeoutMs ?? LIMITS.timeoutMs;
   const maxHops = d.limits?.maxHops ?? LIMITS.maxHops;
+  const budget = AbortSignal.timeout(d.limits?.urlBudgetMs ?? LIMITS.urlBudgetMs);
+  const aborted = new Promise<never>((_, reject) => {
+    budget.addEventListener("abort", () => reject(new Error("budget")), { once: true });
+  });
+  aborted.catch(() => undefined); // avoid an unhandled rejection when nothing races it
   try {
     let current = raw;
     for (let hop = 0; hop <= maxHops; hop++) {
-      const g = await guardUrl(current, d.lookup);
+      const g = await Promise.race([guardUrl(current, d.lookup), aborted]);
       if (!g.ok) return hop === 0 && g.reason === "notfound" ? "dead" : "inconclusive";
-      let res = await request(g.url, "HEAD", d, timeoutMs);
-      if (res.status === 405 || res.status === 501) res = await request(g.url, "GET", d, timeoutMs);
+      let res = await request(g.url, "HEAD", d, timeoutMs, budget);
+      if (res.status === 405 || res.status === 501)
+        res = await request(g.url, "GET", d, timeoutMs, budget);
       if (REDIRECTS.has(res.status)) {
         const loc = res.headers.get("location");
         if (!loc) return "live";

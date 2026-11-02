@@ -34,15 +34,27 @@ describe("isBlockedIp", () => {
     "fd12::1",
     "fe80::1",
     "ff02::1",
+    "198.18.0.1",
+    "198.19.255.1",
+    "192.0.0.8",
+    "64:ff9b::7f00:1",
+    "64:ff9b::a9fe:a9fe",
+    "2002:7f00:1::1",
+    "2002::1",
     "::ffff:127.0.0.1",
     "::ffff:7f00:1",
     "::ffff:169.254.169.254",
     "not-an-ip",
   ])("blocks %s", (ip) => expect(isBlockedIp(ip)).toBe(true));
-  it.each(["93.184.216.34", "8.8.8.8", "172.32.0.1", "2606:4700:4700::1111", "::ffff:8.8.8.8"])(
-    "allows %s",
-    (ip) => expect(isBlockedIp(ip)).toBe(false),
-  );
+  it.each([
+    "93.184.216.34",
+    "8.8.8.8",
+    "172.32.0.1",
+    "192.0.2.1",
+    "198.20.0.1",
+    "2606:4700:4700::1111",
+    "::ffff:8.8.8.8",
+  ])("allows %s", (ip) => expect(isBlockedIp(ip)).toBe(false));
 });
 
 describe("guardUrl", () => {
@@ -152,6 +164,43 @@ describe("checkUrl", () => {
     );
     expect(await checkUrl("https://gone.test/", d)).toBe("dead");
     expect(d.fetch).not.toHaveBeenCalled();
+  });
+});
+
+describe("per-URL budget", () => {
+  it("aborts a slow lookup and a slow fetch within the budget", async () => {
+    const never = new Promise<never>(() => undefined);
+    const slowLookup = deps(
+      () => new Response(null, { status: 200 }),
+      () => never,
+    );
+    slowLookup.limits = { urlBudgetMs: 30 };
+    const t0 = Date.now();
+    expect(await checkUrl("https://a.test/", slowLookup)).toBe("inconclusive");
+    const slowFetch = deps(
+      (_u, i) =>
+        new Promise<Response>((_r, rej) =>
+          i?.signal?.addEventListener("abort", () => rej(new Error("aborted"))),
+        ),
+    );
+    slowFetch.limits = { urlBudgetMs: 30, timeoutMs: 60_000 };
+    expect(await checkUrl("https://a.test/", slowFetch)).toBe("inconclusive");
+    expect(Date.now() - t0).toBeLessThan(2_000);
+  });
+  it("one budget covers all hops", async () => {
+    const d = deps(
+      (_u, i) =>
+        new Promise<Response>((res, rej) => {
+          const t = setTimeout(() => res(redirect("https://a.test/")), 20);
+          i?.signal?.addEventListener("abort", () => {
+            clearTimeout(t);
+            rej(new Error("aborted"));
+          });
+        }),
+    );
+    d.limits = { urlBudgetMs: 50 };
+    expect(await checkUrl("https://a.test/", d)).toBe("inconclusive");
+    expect(vi.mocked(d.fetch).mock.calls.length).toBeLessThan(4);
   });
 });
 
