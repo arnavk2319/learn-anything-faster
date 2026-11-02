@@ -25,12 +25,15 @@ export function TransitionRequestForm({
   toRole,
   kind,
   idSuffix,
+  formLabel,
 }: {
   fromRole: string;
   toRole: string;
   kind: "request" | "notify";
   /** Disambiguates input ids when several forms share a page. */
   idSuffix?: string;
+  /** Accessible name for the form; defaults to the button text. */
+  formLabel?: string;
 }) {
   const [state, action, pending] = useActionState<FormResult | null, FormData>(
     requestTransitionAction,
@@ -47,7 +50,12 @@ export function TransitionRequestForm({
   }
   const fe = state && !state.ok ? state.fieldErrors : undefined;
   return (
-    <form action={action} noValidate className="flex flex-col gap-3" aria-label={c.button}>
+    <form
+      action={action}
+      noValidate
+      className="flex flex-col gap-3"
+      aria-label={formLabel ?? c.button}
+    >
       <input type="hidden" name="fromRole" value={fromRole} />
       <input type="hidden" name="toRole" value={toRole} />
       <input type="hidden" name="kind" value={kind} />

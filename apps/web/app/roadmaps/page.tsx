@@ -74,6 +74,7 @@ export default async function RoadmapsPage({
                   toRole={e.to}
                   kind="notify"
                   idSuffix={`${e.from}-${e.to}`}
+                  formLabel={`Notify me about ${e.fromName} to ${e.toName}`}
                 />
               )}
             </li>

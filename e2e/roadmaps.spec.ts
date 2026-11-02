@@ -62,7 +62,7 @@ test("@smoke catalog filters via the URL, links Live and notifies on Coming soon
   await expect(page).toHaveURL(/status=coming-soon/);
   await expect(live).toHaveCount(0);
 
-  const form = soon.getByRole("form", { name: "Notify me" });
+  const form = soon.getByRole("form", { name: "Notify me about Catalog Beta to Catalog Alpha" });
   await form.getByRole("button", { name: "Notify me" }).click();
   await expect(form.getByText("Enter an email address")).toBeVisible();
   await form.getByLabel("Email").fill(email);
