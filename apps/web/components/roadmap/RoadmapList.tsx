@@ -30,7 +30,13 @@ export function RoadmapList({ areas }: { areas: ListArea[] }) {
                   <button
                     type="button"
                     aria-pressed={selected === t.id}
-                    aria-label={t.covered ? `${t.name}, you already know this` : undefined}
+                    aria-label={
+                      t.covered
+                        ? `${t.name}, you already know this${
+                            t.needs.length > 0 ? `. Needs first: ${t.needs.join(", ")}` : ""
+                          }`
+                        : undefined
+                    }
                     data-topic-id={t.id}
                     onClick={() => selectTopic(t.id)}
                     className={cn(
@@ -44,7 +50,12 @@ export function RoadmapList({ areas }: { areas: ListArea[] }) {
                   >
                     <span className="font-medium">{t.name}</span>
                     {t.needs.length > 0 && (
-                      <span className="text-[13px] text-muted-foreground">
+                      <span
+                        className={cn(
+                          "text-[13px]",
+                          selected === t.id ? "text-highlight-foreground" : "text-muted-foreground",
+                        )}
+                      >
                         Needs first: {t.needs.join(", ")}
                       </span>
                     )}

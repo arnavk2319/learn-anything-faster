@@ -2,6 +2,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { expect, test, type Page } from "@playwright/test";
 import pg from "pg";
+import { expectNoA11yViolations } from "./helpers/a11y.ts";
 
 const DB = process.env.DATABASE_URL_TEST ?? "postgres://postgres:postgres@localhost:54329/laf_test";
 const email = `smoke${Date.now()}${String.fromCharCode(64)}example.test`;
@@ -87,4 +88,23 @@ test("suggesting the same link twice succeeds both times and keeps one row", asy
     );
     expect(r.rows[0].n).toBe(1);
   }
+});
+
+test("axe: request and suggest forms, idle and validation-error", async ({ page }) => {
+  await page.goto("/");
+  await page.getByLabel("I am a").selectOption("forms-a");
+  await page.getByLabel("and I want to be a").selectOption("forms-c");
+  const request = page.getByRole("form", { name: "Request this move" });
+  await expect(request).toBeVisible();
+  await expectNoA11yViolations(page, { label: "request idle" });
+  await request.getByRole("button", { name: "Request this move" }).click();
+  await expect(request.getByText("Enter an email address")).toBeVisible();
+  await expectNoA11yViolations(page, { label: "request error" });
+
+  const suggest = await openSuggest(page);
+  await expectNoA11yViolations(page, { label: "suggest idle" });
+  await suggest.getByLabel("Link").fill("ftp://example.test");
+  await suggest.getByRole("button", { name: "Suggest a resource" }).click();
+  await expect(suggest.getByText("Enter a link that starts with http or https")).toBeVisible();
+  await expectNoA11yViolations(page, { label: "suggest error" });
 });

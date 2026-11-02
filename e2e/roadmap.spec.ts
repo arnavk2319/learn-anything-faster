@@ -2,6 +2,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { expect, test, type Page } from "@playwright/test";
 import pg from "pg";
+import { expectNoA11yViolations } from "./helpers/a11y.ts";
 import { seedContent } from "../scripts/lib/content/seed.ts";
 import { validateContent } from "../scripts/lib/content/validate.ts";
 import { validFixture, res, writeFixture } from "../tests/fixtures/content-fixture.ts";
@@ -275,4 +276,34 @@ test.describe("share link (F6)", () => {
     await page.getByRole("button", { name: "Copy link" }).click();
     await expect(page.getByLabel("Roadmap link")).toHaveValue(/\/roadmap\/dev\/ml-dev$/);
   });
+});
+
+test("axe: graph default, node selected, covered shown, not-mapped and error states", async ({
+  page,
+}) => {
+  await page.goto("/roadmap/dev/ml-dev");
+  await expect(topic(page, "stats")).toBeVisible();
+  await expectNoA11yViolations(page, { label: "graph default" });
+
+  await topic(page, "torch").click();
+  await expect(page.getByTestId("topic-panel")).toBeVisible();
+  await expectNoA11yViolations(page, { label: "graph node selected" });
+
+  await page.keyboard.press("Escape");
+  await page.getByRole("button", { name: /Show what you already know/ }).click();
+  await expect(topic(page, "python")).toBeVisible();
+  await expectNoA11yViolations(page, { label: "graph covered shown" });
+
+  await page.goto("/roadmap/dev/later-role");
+  await expect(page.getByText("Developer to Later isn't mapped yet.")).toBeVisible();
+  await expectNoA11yViolations(page, { label: "graph not-mapped" });
+});
+
+test("axe: graph error state", async ({ page }) => {
+  await page.route("**/api/roadmap**", (route) =>
+    route.fulfill({ status: 503, json: { error: "unavailable" } }),
+  );
+  await page.goto("/roadmap/dev/ml-dev");
+  await expect(page.getByText("We couldn't load this roadmap.")).toBeVisible();
+  await expectNoA11yViolations(page, { label: "graph error" });
 });
