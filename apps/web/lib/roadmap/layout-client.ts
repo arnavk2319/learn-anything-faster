@@ -6,7 +6,8 @@ import type { ElkNode } from "elkjs/lib/elk-api";
 
 let elk: InstanceType<typeof ELK> | undefined;
 
-export function layoutInWorker(graph: ElkNode): Promise<ElkNode> {
+// async so a failing worker constructor rejects instead of throwing synchronously.
+export async function layoutInWorker(graph: ElkNode): Promise<ElkNode> {
   elk ??= new ELK({
     workerFactory: () =>
       new Worker(new URL("./layout.worker.ts", import.meta.url), { type: "module" }),

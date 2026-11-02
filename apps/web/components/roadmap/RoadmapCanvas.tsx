@@ -81,6 +81,7 @@ function ReactFlowRenderer({ nodes, edges }: Pick<FlowGraph, "nodes" | "edges">)
       maxZoom={1.6}
       nodesDraggable={false}
       nodesConnectable={false}
+      // Wrappers stay out of the tab order: each TopicNode's button is the single tab stop (T-012).
       nodesFocusable={false}
       edgesFocusable={false}
       elementsSelectable={false}

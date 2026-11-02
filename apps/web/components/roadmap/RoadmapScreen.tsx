@@ -3,20 +3,37 @@
 // Presentational children: RoadmapCanvas, CanvasStates. Role changes navigate (soft, no reload);
 // the query key ["roadmap", from, to] does the rest.
 import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { fetchRoadmap, isUnmapped, roadmapKey } from "../../lib/roadmap/client";
 import { buildModel, toElk, toFlow, type FlowGraph } from "../../lib/roadmap/layout";
 import { layoutInWorker } from "../../lib/roadmap/layout-client";
+import { buildListModel } from "../../lib/roadmap/list-model";
 import type { RoleOption } from "../../lib/roadmap/roles";
 import { selectTopic } from "../../lib/roadmap/selection-store";
 import { EmptyState, ErrorState, LoadingState, UnmappedState } from "./CanvasStates";
 import { RoadmapCanvas } from "./RoadmapCanvas";
+import { RoadmapList } from "./RoadmapList";
 import { ShareLink } from "./ShareLink";
 import { TopicPanel } from "./TopicPanel";
+import { ViewToggle, type View } from "./ViewToggle";
 
 const selectCls =
   "font-display cursor-pointer appearance-none bg-transparent text-3xl font-semibold tracking-tight";
+
+// Below Tailwind's sm breakpoint the list is the default view (F10). SSR snapshot is false.
+const SMALL = "(max-width: 639px)";
+const subscribeSmall = (cb: () => void) => {
+  const m = window.matchMedia(SMALL);
+  m.addEventListener("change", cb);
+  return () => m.removeEventListener("change", cb);
+};
+const useSmallScreen = () =>
+  useSyncExternalStore(
+    subscribeSmall,
+    () => window.matchMedia(SMALL).matches,
+    () => false,
+  );
 
 function RoleSelect({
   label,
@@ -78,6 +95,16 @@ export function RoadmapScreen({
   });
   const data = q.data;
 
+  // View choice lives in the URL (?view=list|graph) so it survives reload and share links.
+  const params = useSearchParams();
+  const param = params.get("view");
+  const small = useSmallScreen();
+  const setView = (v: View) => {
+    const next = new URLSearchParams(window.location.search);
+    next.set("view", v);
+    window.history.replaceState(null, "", `?${next.toString()}`);
+  };
+
   const [collapsed, setCollapsed] = useState<ReadonlySet<string>>(new Set());
   const [showCovered, setShowCovered] = useState(false);
   const toggleArea = useCallback(
@@ -100,6 +127,7 @@ export function RoadmapScreen({
   // on screen until the new positions arrive.
   const [laid, setLaid] = useState<{ key: string; graph: FlowGraph } | null>(null);
   const [layoutFailed, setLayoutFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   const key = `${from}>${to}`;
   useEffect(() => {
     if (!model) return;
@@ -116,12 +144,19 @@ export function RoadmapScreen({
     return () => {
       live = false;
     };
-  }, [model, key]);
+  }, [model, key, attempt]);
 
   // A selection that is not on this roadmap makes no sense after a role change.
   useEffect(() => {
     selectTopic(null);
   }, [key]);
+
+  const wanted: View = param === "list" || param === "graph" ? param : small ? "list" : "graph";
+  const view: View = wanted === "graph" && layoutFailed ? "list" : wanted;
+  const listAreas = useMemo(
+    () => (data ? buildListModel(data, { showCovered }) : []),
+    [data, showCovered],
+  );
 
   const go = (f: string, t: string) => router.replace(`/roadmap/${f}/${t}`);
   const name = (id: string) => roles.find((r) => r.id === id)?.name ?? id;
@@ -129,7 +164,7 @@ export function RoadmapScreen({
   let body;
   if (q.isError && isUnmapped(q.error)) {
     body = <UnmappedState fromId={from} toId={to} fromName={name(from)} toName={name(to)} />;
-  } else if (q.isError || layoutFailed) {
+  } else if (q.isError || (layoutFailed && !data)) {
     body = (
       <ErrorState
         onRetry={() => {
@@ -140,6 +175,39 @@ export function RoadmapScreen({
     );
   } else if (data && data.nodes.length === 0 && !showCovered) {
     body = <EmptyState />;
+  } else if (view === "list" && data) {
+    body = (
+      <div className="flex flex-col gap-3">
+        {wanted === "graph" && (
+          <div role="status" className="flex flex-wrap items-center gap-3 text-sm">
+            <span>The graph couldn&apos;t be drawn, so here is the list.</span>
+            <button
+              type="button"
+              onClick={() => {
+                setLayoutFailed(false);
+                setAttempt((n) => n + 1);
+              }}
+              className="h-10 cursor-pointer rounded-md border border-border bg-card px-3 font-medium hover:border-input hover:bg-lane"
+            >
+              Try the graph again
+            </button>
+          </div>
+        )}
+        {data.covered.length > 0 && (
+          <button
+            type="button"
+            aria-pressed={showCovered}
+            onClick={() => setShowCovered((v) => !v)}
+            className="h-10 w-fit cursor-pointer rounded-md border border-border bg-card px-3 text-sm font-medium hover:border-input hover:bg-lane"
+          >
+            {showCovered
+              ? "Hide what you know"
+              : `Show what you already know (${data.covered.length})`}
+          </button>
+        )}
+        <RoadmapList areas={listAreas} />
+      </div>
+    );
   } else if (laid && laid.key === key && data) {
     body = (
       <RoadmapCanvas
@@ -183,6 +251,7 @@ export function RoadmapScreen({
         <p className="text-sm text-muted-foreground">{meta}</p>
         <ShareLink from={from} to={to} />
       </div>
+      {data && data.nodes.length > 0 && <ViewToggle view={view} onChange={setView} />}
       {body}
       <TopicPanel data={data} />
     </main>
