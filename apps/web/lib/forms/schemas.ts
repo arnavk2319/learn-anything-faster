@@ -46,6 +46,6 @@ export type FormResult =
   | { ok: true }
   | {
       ok: false;
-      error: "invalid" | "rate_limited" | "failed";
+      error: "invalid" | "rate_limited" | "blocked" | "failed";
       fieldErrors?: Record<string, string>;
     };

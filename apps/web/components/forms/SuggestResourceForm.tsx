@@ -1,8 +1,9 @@
 "use client";
 // Reusable by T-011 (topic panel). Anonymous: link plus optional note, no email.
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { suggestResourceAction } from "../../app/actions/forms";
 import type { FormResult } from "../../lib/forms/schemas";
+import { BLOCKED_COPY, TurnstileWidget } from "./TurnstileWidget";
 import { buttonClass, FormField, inputClass } from "./FormField";
 
 export function SuggestResourceForm({ topicId }: { topicId: string }) {
@@ -10,6 +11,9 @@ export function SuggestResourceForm({ topicId }: { topicId: string }) {
     suggestResourceAction,
     null,
   );
+  // Controlled so a failed submit keeps what the user typed after React resets the form.
+  const [url, setUrl] = useState("");
+  const [note, setNote] = useState("");
   if (state?.ok) {
     return (
       <p role="status" className="text-sm font-medium">
@@ -30,6 +34,8 @@ export function SuggestResourceForm({ topicId }: { topicId: string }) {
         <input
           id={`url-${topicId}`}
           name="url"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
           type="url"
           placeholder="https://"
           aria-invalid={fe?.url ? true : undefined}
@@ -41,18 +47,26 @@ export function SuggestResourceForm({ topicId }: { topicId: string }) {
         <textarea
           id={`note-${topicId}`}
           name="note"
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
           rows={3}
           maxLength={500}
           className={`${inputClass} h-auto py-2`}
         />
       </FormField>
+      <TurnstileWidget action="suggestion" resetKey={state} />
+      {state && !state.ok && state.error === "blocked" ? (
+        <p role="alert" className="text-sm text-destructive">
+          {BLOCKED_COPY}
+        </p>
+      ) : null}
       {state && !state.ok && state.error === "rate_limited" ? (
-        <p role="alert" className="text-destructive text-sm">
+        <p role="alert" className="text-sm text-destructive">
           Too many suggestions. Try again in a few minutes.
         </p>
       ) : null}
       {state && !state.ok && state.error === "failed" ? (
-        <p role="alert" className="text-destructive text-sm">
+        <p role="alert" className="text-sm text-destructive">
           Something went wrong. Try again.
         </p>
       ) : null}

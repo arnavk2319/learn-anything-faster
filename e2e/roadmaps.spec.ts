@@ -67,6 +67,9 @@ test("@smoke catalog filters via the URL, links Live and notifies on Coming soon
   await form.getByRole("button", { name: "Notify me" }).click();
   await expect(form.getByText("Enter an email address")).toBeVisible();
   await form.getByLabel("Email").fill(email);
+  await expect(form.locator('input[name="cf-turnstile-response"]')).not.toHaveValue("", {
+    timeout: 20_000,
+  });
   await form.getByRole("button", { name: "Notify me" }).click();
   await expect(soon.getByRole("status")).toHaveText("You'll be notified.");
   await expect(page.locator("body")).not.toContainText(email);

@@ -30,8 +30,13 @@ describe("security headers", () => {
     expect(buildCsp({ dev: true })).toContain("'unsafe-eval'");
     expect(csp).toContain("frame-ancestors 'none'");
   });
+  it("allows only the exact Turnstile origin for scripts and frames", () => {
+    expect(csp).toContain("script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com;");
+    expect(csp).not.toMatch(/\*\.cloudflare/);
+    expect(csp).toContain("connect-src 'self';");
+  });
   it("adds frame, media and manifest directives", () => {
-    expect(csp).toContain("frame-src 'none'");
+    expect(csp).toContain("frame-src https://challenges.cloudflare.com;");
     expect(csp).toContain("media-src 'none'");
     expect(csp).toContain("manifest-src 'self'");
   });

@@ -1,8 +1,9 @@
 "use client";
 // Reusable by T-009 (unmapped pair, kind="request") and the Browse page (Coming soon, kind="notify").
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { requestTransitionAction } from "../../app/actions/forms";
 import type { FormResult } from "../../lib/forms/schemas";
+import { BLOCKED_COPY, TurnstileWidget } from "./TurnstileWidget";
 import { buttonClass, FormField, inputClass } from "./FormField";
 
 const COPY = {
@@ -39,6 +40,8 @@ export function TransitionRequestForm({
     requestTransitionAction,
     null,
   );
+  // Controlled so a failed submit (blocked, rate limited) keeps what the user typed after React resets the form.
+  const [email, setEmail] = useState("");
   const c = COPY[kind];
   const inputId = idSuffix ? `email-${kind}-${idSuffix}` : `email-${kind}`;
   if (state?.ok) {
@@ -63,6 +66,8 @@ export function TransitionRequestForm({
         <input
           id={inputId}
           name="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           type="email"
           autoComplete="email"
           placeholder={c.placeholder}
@@ -71,6 +76,12 @@ export function TransitionRequestForm({
           className={inputClass}
         />
       </FormField>
+      <TurnstileWidget action="transition" resetKey={state} />
+      {state && !state.ok && state.error === "blocked" ? (
+        <p role="alert" className="text-sm text-destructive">
+          {BLOCKED_COPY}
+        </p>
+      ) : null}
       {state && !state.ok && state.error === "rate_limited" ? (
         <p role="alert" className="text-sm text-destructive">
           Too many requests. Try again in a few minutes.
