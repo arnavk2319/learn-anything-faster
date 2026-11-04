@@ -2,6 +2,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { expect, test, type Page } from "@playwright/test";
 import pg from "pg";
+import { expectNoA11yViolations } from "./helpers/a11y.ts";
 import { seedContent } from "../scripts/lib/content/seed.ts";
 import { validateContent } from "../scripts/lib/content/validate.ts";
 import { validFixture, res, writeFixture } from "../tests/fixtures/content-fixture.ts";
@@ -239,3 +240,33 @@ for (const view of ["graph", "list"] as const) {
     }
   });
 }
+
+test("axe: list view default, topic panel open, covered group shown", async ({ page }) => {
+  await page.goto("/roadmap/dev/ml-dev?view=list");
+  await expect(list(page)).toBeVisible();
+  await expectNoA11yViolations(page, { label: "list default" });
+
+  await topic(page, "torch").click();
+  await expect(page.getByTestId("topic-panel")).toBeVisible();
+  await expectNoA11yViolations(page, { label: "list topic selected" });
+
+  await page.keyboard.press("Escape");
+  await page.getByRole("button", { name: /Show what you already know/ }).click();
+  await expect(topic(page, "python")).toBeVisible();
+  await expectNoA11yViolations(page, { label: "list covered shown" });
+});
+
+test("a covered topic's accessible name includes its Needs first text", async ({ page }) => {
+  // The API only returns edges between route topics; add one so a covered topic has a prerequisite.
+  await page.route("**/api/roadmap**", async (route) => {
+    const res = await route.fetch();
+    const body = await res.json();
+    body.edges.push({ topicId: "python", prerequisiteId: "stats" });
+    await route.fulfill({ response: res, json: body });
+  });
+  await page.goto("/roadmap/dev/ml-dev?view=list");
+  await page.getByRole("button", { name: /Show what you already know/ }).click();
+  await expect(topic(page, "python")).toHaveAccessibleName(
+    /you already know this.*Needs first: Stats/,
+  );
+});

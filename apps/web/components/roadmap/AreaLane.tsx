@@ -32,7 +32,7 @@ export function AreaLane({ data }: NodeProps) {
         )}
       >
         <Icon aria-hidden="true" className="size-4 shrink-0" />
-        <span className="truncate font-display text-base font-semibold">{d.label}</span>
+        <span className="truncate font-display text-base font-semibold">{d.label}</span>{" "}
         <span className="ml-auto text-sm text-muted-foreground">{d.count}</span>
       </button>
       <Handle
