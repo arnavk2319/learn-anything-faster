@@ -72,6 +72,15 @@ describe.skipIf(!isDbAvailable())("GET /api/roadmap and /api/health", () => {
     expect(text).not.toContain(email);
   });
 
+  it("never serves a dead resource", async () => {
+    const r = await get("from=dev&to=ml-dev");
+    const ids = ((await r.json()) as { nodes: { resources: { id: string }[] }[] }).nodes.flatMap(
+      (n) => n.resources.map((x) => x.id),
+    );
+    expect(ids).not.toContain("stats-dead");
+    expect(ids).not.toContain("stats-proposed");
+  });
+
   it("returns 400 for missing or malformed params", async () => {
     for (const qs of ["", "from=dev", "to=ml-dev", "from=DEV!&to=ml-dev", "from=&to=ml-dev"]) {
       const r = await get(qs);
