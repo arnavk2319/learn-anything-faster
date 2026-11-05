@@ -49,3 +49,11 @@ export type FormResult =
       error: "invalid" | "rate_limited" | "blocked" | "failed";
       fieldErrors?: Record<string, string>;
     };
+
+/** A `rate_limits` row (ADR-0014). Validates the RETURNING row and test fixtures; never exposed by an API. */
+export const rateLimitSchema = z.object({
+  key: z.string().regex(/^[0-9a-f]{64}$/, "key must be a hex sha256"),
+  windowStart: z.coerce.date(), // raw `execute` rows carry timestamps as strings
+  count: z.number().int().min(1),
+});
+export type RateLimitRow = z.infer<typeof rateLimitSchema>;
