@@ -3,7 +3,7 @@
 // CSP choice (T-025): script-src uses 'unsafe-inline', not nonces. Next.js App Router emits inline bootstrap
 // scripts; nonces need a proxy that stamps every request and forces dynamic rendering, plus nonce plumbing for
 // Sentry/React Flow. 'unsafe-inline' is the least permissive policy that works without that: scripts are still
-// limited to our own origin (no remote script hosts), with no object/embed, no framing, and form posts and base
+// limited to our own origin plus Cloudflare Turnstile, with no object/embed, framing only of Turnstile, and form posts and base
 // URI pinned to self. 'unsafe-eval' is added only in development (React/Turbopack need it there).
 // style-src needs 'unsafe-inline' because React Flow positions nodes with inline style attributes.
 // Follow-up: move to nonces (most routes are already dynamic).
@@ -28,13 +28,17 @@ export type HeaderEnv = {
   upgradeInsecure?: boolean;
 };
 
+// Cloudflare Turnstile (ADR-0012). Cloudflare's CSP page (checked 2026-11-04) lists only this origin for
+// script-src and frame-src; connect-src needs just 'self', so it is not widened.
+const TURNSTILE = "https://challenges.cloudflare.com";
+
 export function buildCsp(env: HeaderEnv): string {
   const sentry = [
     ...new Set((env.sentryDsns ?? []).map(dsnOrigin).filter((x): x is string => x !== null)),
   ];
   const directives: Record<string, string[]> = {
     "default-src": ["'self'"],
-    "script-src": ["'self'", "'unsafe-inline'", ...(env.dev ? ["'unsafe-eval'"] : [])],
+    "script-src": ["'self'", "'unsafe-inline'", TURNSTILE, ...(env.dev ? ["'unsafe-eval'"] : [])],
     "style-src": ["'self'", "'unsafe-inline'"],
     "img-src": ["'self'", "data:", "blob:"],
     "font-src": ["'self'", "data:"],
@@ -44,7 +48,7 @@ export function buildCsp(env: HeaderEnv): string {
     "base-uri": ["'self'"],
     "form-action": ["'self'"],
     "frame-ancestors": ["'none'"],
-    "frame-src": ["'none'"],
+    "frame-src": [TURNSTILE],
     "media-src": ["'none'"],
     "manifest-src": ["'self'"],
     ...(env.upgradeInsecure ? { "upgrade-insecure-requests": [] } : {}),

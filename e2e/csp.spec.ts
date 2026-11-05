@@ -32,7 +32,7 @@ test("pages send the security headers", async ({ request }) => {
     expect(h["referrer-policy"]).toBeTruthy();
     expect(h["content-security-policy"]).toContain("worker-src 'self' blob:");
     expect(h["content-security-policy"]).toContain("frame-ancestors 'none'");
-    expect(h["content-security-policy"]).toContain("frame-src 'none'");
+    expect(h["content-security-policy"]).toContain("frame-src https://challenges.cloudflare.com;");
     expect(h["content-security-policy"]).toContain("media-src 'none'");
     expect(h["content-security-policy"]).toContain("manifest-src 'self'");
     // Local runs are http, so the upgrade directive must be absent (it is on only for Vercel production).

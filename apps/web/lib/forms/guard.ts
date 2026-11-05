@@ -1,8 +1,15 @@
-// The single place a request passes before any form write. Fast lane (ADR-0008): no Turnstile.
-// To add a bot check later, implement it in `checkBot` (read its token from the FormData/headers) and
-// nothing else changes: every form action calls `guard` first.
+// The single place a request passes before any form write. Order: bot check (Cloudflare Turnstile, ADR-0012),
+// then the rate limiter, so a blocked bot never burns a limiter slot. Every form action calls `guard` first.
+import { secretKey, TEST_SECRET_KEY } from "./turnstile-keys";
 
-export type GuardContext = { ip: string; action: string };
+export type GuardContext = {
+  ip: string;
+  action: string;
+  /** Turnstile token from the FormData field `cf-turnstile-response`. Never logged. */
+  token?: string;
+  /** Request host without port, compared with the hostname Cloudflare reports. */
+  host?: string;
+};
 
 type Hit = { count: number; resetAt: number };
 
@@ -25,10 +32,37 @@ export function createRateLimiter(limit: number, windowMs: number): RateLimiter 
 
 const defaultLimiter = createRateLimiter(Number(process.env.FORM_RATE_LIMIT ?? 5), 10 * 60_000);
 
-/** Placeholder seam: returns true when the caller passes the bot check. Always true in the fast lane. */
+const SITEVERIFY = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+
+/**
+ * True only when Cloudflare confirms the token. Fails closed: missing key or token, timeout, network error,
+ * non-2xx, bad JSON, `success !== true`, or a hostname/action mismatch all return false. Sends only secret,
+ * token and an idempotency key (no email, no form content, no remoteip). Keeps no state: tokens are single use.
+ */
 export async function checkBot(ctx: GuardContext): Promise<boolean> {
-  void ctx;
-  return true;
+  const secret = secretKey();
+  if (!secret || !ctx.token) return false;
+  try {
+    const body = new URLSearchParams({
+      secret,
+      response: ctx.token,
+      idempotency_key: crypto.randomUUID(),
+    });
+    const res = await fetch(SITEVERIFY, {
+      method: "POST",
+      body,
+      signal: AbortSignal.timeout(3000),
+    });
+    if (!res.ok) return false;
+    const j = (await res.json()) as { success?: unknown; hostname?: unknown; action?: unknown };
+    if (j.success !== true) return false;
+    if (secret === TEST_SECRET_KEY) return true; // test tokens carry dummy hostname/action
+    if (typeof j.hostname === "string" && ctx.host && j.hostname !== ctx.host) return false;
+    if (typeof j.action === "string" && j.action !== ctx.action) return false;
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export async function guard(
