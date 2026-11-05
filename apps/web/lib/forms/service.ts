@@ -10,7 +10,7 @@ import { resourceSuggestionSchema, transitionRequestSchema, type FormResult } fr
 /** Wraps a pg pool or client (tests pin a schema through a client). */
 export const formDbFromPg = (c: Pool | PoolClient): FormDb => drizzle(c);
 
-export type FormDb = Pick<NodePgDatabase, "insert">;
+export type FormDb = Pick<NodePgDatabase, "insert" | "execute">;
 
 function fieldErrors(issues: { path: PropertyKey[]; message: string }[]): Record<string, string> {
   const out: Record<string, string> = {};

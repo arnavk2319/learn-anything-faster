@@ -8,6 +8,9 @@ import {
   type FormDb,
 } from "../../lib/forms/service";
 import type { FormResult } from "../../lib/forms/schemas";
+import { reportLimiterError } from "../../lib/forms/rate-limit-report";
+import { createDbLimiter } from "../../lib/forms/rate-limit-db";
+import { RATE_LIMIT, RATE_WINDOW_MS } from "../../lib/forms/guard";
 import { clientIp } from "../../lib/forms/client-ip";
 
 const str = (d: FormData, k: string) => {
@@ -35,6 +38,7 @@ export async function requestTransitionAction(
       kind: str(d, "kind"),
     },
     await ctx("transition", d),
+    createDbLimiter(db, RATE_LIMIT, RATE_WINDOW_MS, { onError: reportLimiterError }),
   );
 }
 
@@ -47,5 +51,6 @@ export async function suggestResourceAction(
     db,
     { topicId: str(d, "topicId"), url: str(d, "url"), note: str(d, "note") },
     await ctx("suggestion", d),
+    createDbLimiter(db, RATE_LIMIT, RATE_WINDOW_MS, { onError: reportLimiterError }),
   );
 }

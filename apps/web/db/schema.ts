@@ -140,6 +140,21 @@ export const resourceSuggestions = pgTable(
   ],
 );
 
+/** Fixed-window counters for the shared form rate limiter (ADR-0014). `key` is a hex sha256, never a raw IP. */
+export const rateLimits = pgTable(
+  "rate_limits",
+  {
+    key: text("key").notNull(),
+    windowStart: timestamp("window_start", { withTimezone: true }).notNull(),
+    count: integer("count").notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.key, t.windowStart] }),
+    index("rate_limits_window_idx").on(t.windowStart),
+    check("rate_limits_count_positive", sql`${t.count} >= 1`),
+  ],
+);
+
 export type Role = typeof roles.$inferSelect;
 export type NewRole = typeof roles.$inferInsert;
 export type Topic = typeof topics.$inferSelect;
@@ -154,3 +169,5 @@ export type TransitionRequest = typeof transitionRequests.$inferSelect;
 export type NewTransitionRequest = typeof transitionRequests.$inferInsert;
 export type ResourceSuggestion = typeof resourceSuggestions.$inferSelect;
 export type NewResourceSuggestion = typeof resourceSuggestions.$inferInsert;
+export type RateLimit = typeof rateLimits.$inferSelect;
+export type NewRateLimit = typeof rateLimits.$inferInsert;
