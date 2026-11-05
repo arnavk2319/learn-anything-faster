@@ -65,9 +65,14 @@ export async function checkBot(ctx: GuardContext): Promise<boolean> {
     const j = (await res.json()) as { success?: unknown; hostname?: unknown; action?: unknown };
     if (j.success !== true) return false;
     if (secret === TEST_SECRET_KEY) return true; // test tokens carry dummy hostname/action
-    if (typeof j.hostname === "string" && ctx.host && j.hostname !== ctx.host) return false;
-    if (typeof j.action === "string" && j.action !== ctx.action) return false;
-    return true;
+    // Real keys: hostname and action must be present and match (a token minted on another site or form is rejected).
+    return (
+      typeof j.hostname === "string" &&
+      !!ctx.host &&
+      j.hostname === ctx.host &&
+      typeof j.action === "string" &&
+      j.action === ctx.action
+    );
   } catch {
     return false;
   }
