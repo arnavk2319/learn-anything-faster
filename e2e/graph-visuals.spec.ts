@@ -73,6 +73,19 @@ test("contour follows pan and zoom", async ({ page }) => {
   await expect.poll(() => patternTransform(page)).not.toBe(t1);
 });
 
+test("edges follow orthogonal routes (no bezier curves)", async ({ page }) => {
+  await open(page);
+  const ds = await page
+    .locator(".react-flow__edge .edge-unmet")
+    .evaluateAll((els) =>
+      els.map(
+        (e) => (e as unknown as { getAttribute(n: string): string | null }).getAttribute("d") ?? "",
+      ),
+    );
+  expect(ds.length).toBeGreaterThan(0);
+  for (const d of ds) expect(d).not.toMatch(/C/);
+});
+
 test("unmet edges are dashed; selecting a topic draws solid hot edges, deselect removes them", async ({
   page,
 }) => {
