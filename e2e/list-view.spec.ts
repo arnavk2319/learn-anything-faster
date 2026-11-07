@@ -270,3 +270,39 @@ test("a covered topic's accessible name includes its Needs first text", async ({
     /you already know this.*Needs first: Stats/,
   );
 });
+
+// T-033: the Graph/List toggle must stay visible in the list view so the user can switch back.
+for (const [label, size] of [
+  ["desktop", { width: 1280, height: 800 }],
+  ["mobile", { width: 375, height: 700 }],
+] as const) {
+  for (const covered of [false, true]) {
+    test(`toggle stays visible after switching to the list (${label}, covered=${covered})`, async ({
+      page,
+    }) => {
+      await page.setViewportSize(size);
+      await page.goto("/roadmap/dev/ml-dev?view=graph");
+      await expect(topic(page, "stats")).toBeVisible();
+      const toggle = page.getByRole("group", { name: "View" });
+      if (covered) await page.getByRole("button", { name: /Show what you already know/ }).click();
+      await toggle.getByRole("button", { name: "List" }).click();
+      await expect(list(page)).toBeVisible();
+      await expect(toggle).toBeVisible();
+      await toggle.getByRole("button", { name: "Graph" }).click();
+      await expect(topic(page, "stats")).toBeVisible();
+      await expect(toggle).toBeVisible();
+    });
+  }
+}
+
+test("toggle is visible on a direct ?view=list load and after a role change", async ({ page }) => {
+  await page.goto("/roadmap/dev/ml-dev?view=list");
+  const toggle = page.getByRole("group", { name: "View" });
+  await expect(list(page)).toBeVisible();
+  await expect(toggle).toBeVisible();
+  await page.getByLabel("Current role").selectOption("dev2");
+  await expect(page).toHaveURL(/dev2/);
+  await expect(toggle).toBeVisible();
+  await toggle.getByRole("button", { name: "Graph" }).click();
+  await expect(topic(page, "stats")).toBeVisible();
+});
