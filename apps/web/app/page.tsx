@@ -3,6 +3,7 @@ import { RolePicker } from "../components/RolePicker";
 import { getLandingData } from "../lib/roadmap/landing";
 import { sharedDb } from "../lib/roadmap/db";
 
+export const metadata = { alternates: { canonical: "/" }, openGraph: { url: "/" } };
 export const dynamic = "force-dynamic"; // roles come from the DB at request time
 
 export default async function HomePage() {
