@@ -190,13 +190,15 @@ Mobile (< 768px): `display` 34/1.2, `h1` 32/1.2, `h2` 22/1.25, `h3` 22/1.2. Use 
 | ------------------------------ | --------------------------------------------------------------------------- |
 | Page                           | Sage, flat                                                                  |
 | Panels, tables, inputs         | Paper                                                                       |
-| Roadmap canvas                 | Paper with the dot grid (`.canvas-dots`)                                    |
-| Area lane                      | Lane (`#F3F6F1`), no border                                                 |
-| Covered lane                   | Covered fill, 1.5px Trail border                                            |
+| Roadmap canvas                 | Sage (same as the page) with the contour pattern (`.canvas-contour`)        |
+| Area lane                      | Lane band (`--lane-band`, 62% Paper), no border, rounded `--radius-lane`    |
+| Covered lane                   | Lane band, 1.5px Trail border                                               |
 | Open accordion row (list view) | Lane                                                                        |
 | Empty / unmapped states        | Paper, with a dashed Bark trail line (`.trail-line[data-state="unmapped"]`) |
 
-No images, gradients, textures or illustrations in v1.
+No images, gradients, textures or illustrations in v1, with one exception: the roadmap canvas may show the
+decorative contour pattern (`.canvas-contour`, inline SVG, `--contour` stroke, `aria-hidden`). It carries no meaning,
+stays below 1.3:1 against its background, and must never sit behind text without a lane band or a paper node on top.
 
 ---
 
@@ -231,20 +233,21 @@ Icons: Lucide (ships with shadcn), 16px in UI, 20px in nav, stroke 1.75, colour 
 
 Apply these consistently. Transitions use `--dur-fast` (120ms) for colour and border, `--ease-trail`.
 
-| Element             | Default                                | Hover                                                        | Focus-visible              | Pressed    | Selected / active                                                                                | Disabled                                                     |
-| ------------------- | -------------------------------------- | ------------------------------------------------------------ | -------------------------- | ---------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------ |
-| Primary button      | Pine fill                              | Fill `--primary-hover` (`bg-primary-hover`)                  | 3px Trail ring, 2px offset | Scale 0.98 | —                                                                                                | Avoid; if unavoidable 40% opacity + `disabledReason` tooltip |
-| Secondary button    | Paper, Lichen border                   | Border Stone, fill Lane                                      | Trail ring                 | Scale 0.98 | —                                                                                                | as above                                                     |
-| Link                | Trail                                  | Trail dark + underline                                       | Trail ring                 | —          | `aria-current` page: Pine 600 in nav                                                             | —                                                            |
-| Topic node          | Paper, Bark border                     | Border Pine, cursor pointer, its edges darken to Pine at 60% | Trail ring around the pill | Scale 0.98 | Blaze fill, Pine 1.5px border, dot Pine ring; its incoming and outgoing edges become 3.5px Trail | —                                                            |
-| Covered node        | Covered fill, Trail border, filled dot | Border Pine                                                  | Trail ring                 | —          | Blaze fill (dot stays filled Trail)                                                              | —                                                            |
-| Area lane header    | Transparent                            | Fill Paper at 60%                                            | Trail ring                 | —          | Collapsed shows ▶, expanded ▼                                                                    | —                                                            |
-| Table row (Browse)  | Paper                                  | Fill `#F7F9F6`                                               | Row focus Trail ring inset | —          | Live row: 4px Trail left border                                                                  | —                                                            |
-| Chip                | Paper, Bark border                     | Border Pine                                                  | Trail ring                 | —          | —                                                                                                | —                                                            |
-| Role select trigger | Blaze background                       | Blaze + 1.5px Pine underline                                 | Trail ring                 | —          | Open: menu visible                                                                               | —                                                            |
-| Segmented item      | Transparent, Pine text                 | Fill Lane                                                    | Trail ring                 | —          | Pine fill, Paper text                                                                            | —                                                            |
-| Input               | Stone border                           | Border Pine                                                  | Trail ring, border Trail   | —          | —                                                                                                | —                                                            |
-| Invalid input       | Danger border                          | —                                                            | Danger ring                | —          | Error text `small` Danger below: "Enter an email address"                                        | —                                                            |
+| Element             | Default                                | Hover                                                                                                                  | Focus-visible              | Pressed    | Selected / active                                                                                                                                          | Disabled                                                     |
+| ------------------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | -------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| Primary button      | Pine fill                              | Fill `--primary-hover` (`bg-primary-hover`)                                                                            | 3px Trail ring, 2px offset | Scale 0.98 | —                                                                                                                                                          | Avoid; if unavoidable 40% opacity + `disabledReason` tooltip |
+| Secondary button    | Paper, Lichen border                   | Border Stone, fill Lane                                                                                                | Trail ring                 | Scale 0.98 | —                                                                                                                                                          | as above                                                     |
+| Link                | Trail                                  | Trail dark + underline                                                                                                 | Trail ring                 | —          | `aria-current` page: Pine 600 in nav                                                                                                                       | —                                                            |
+| Topic node          | Paper, Bark border                     | Border Pine, cursor pointer, its edges darken to Pine at 60%; unmet edges stay dashed Stone; hot edges are solid Trail | Trail ring around the pill | Scale 0.98 | Blaze fill, Pine 1.5px border, dot Pine ring; its incoming and outgoing edges become solid 3.5px Trail and draw from prerequisite to topic over --dur-slow | —                                                            |
+| Prerequisite edge   | Dashed Stone 1.5px                     | (via node hover)                                                                                                       | n/a                        | n/a        | Solid Trail 3.5px, drawn in                                                                                                                                | n/a                                                          |
+| Covered node        | Covered fill, Trail border, filled dot | Border Pine                                                                                                            | Trail ring                 | —          | Blaze fill (dot stays filled Trail)                                                                                                                        | —                                                            |
+| Area lane header    | Transparent                            | Fill Paper at 60%                                                                                                      | Trail ring                 | —          | Collapsed shows ▶, expanded ▼                                                                                                                              | —                                                            |
+| Table row (Browse)  | Paper                                  | Fill `#F7F9F6`                                                                                                         | Row focus Trail ring inset | —          | Live row: 4px Trail left border                                                                                                                            | —                                                            |
+| Chip                | Paper, Bark border                     | Border Pine                                                                                                            | Trail ring                 | —          | —                                                                                                                                                          | —                                                            |
+| Role select trigger | Blaze background                       | Blaze + 1.5px Pine underline                                                                                           | Trail ring                 | —          | Open: menu visible                                                                                                                                         | —                                                            |
+| Segmented item      | Transparent, Pine text                 | Fill Lane                                                                                                              | Trail ring                 | —          | Pine fill, Paper text                                                                                                                                      | —                                                            |
+| Input               | Stone border                           | Border Pine                                                                                                            | Trail ring, border Trail   | —          | —                                                                                                                                                          | —                                                            |
+| Invalid input       | Danger border                          | —                                                                                                                      | Danger ring                | —          | Error text `small` Danger below: "Enter an email address"                                                                                                  | —                                                            |
 
 Highlight rules
 
@@ -272,11 +275,13 @@ Click and keyboard behaviour (roadmap)
 | `--ease-trail` | cubic-bezier(0.2, 0.8, 0.2, 1) | Everything                                                         |
 
 - **The one orchestrated moment:** when a roadmap first renders or the roles change, nodes move from their old positions to the new layout (or fade in from 0 → 1 opacity with a 4px horizontal shift for new nodes) over 320ms, staggered 12ms per column. Edges fade in after nodes settle. Nothing else animates on load.
+- Edge draw-in: when a topic is selected, its connected edges draw
+  along the path (stroke-dashoffset, --dur-slow, --ease-trail). Runs once per selection; no looping.
 - Panel content cross-fades (opacity only) in 200ms when the selection changes.
 - Lane collapse animates height and node opacity in 200ms.
 - Pressed state: `scale(0.98)` for 120ms.
 - No scroll-triggered entrances, no parallax, no looping animation, no hover lift on cards.
-- `prefers-reduced-motion: reduce`: disable movement (positions jump), keep opacity changes ≤ 120ms. Already handled globally in `theme.css`; React Flow and Framer Motion code must also check `useReducedMotion()`.
+- `prefers-reduced-motion: reduce`: disable movement (positions jump), keep opacity changes ≤ 120ms. Already handled globally in `theme.css`; Draw-in is replaced by an instant solid edge; React Flow code checks the same media query via `usePrefersReducedMotion()`.
 
 ---
 
@@ -348,7 +353,7 @@ Rules
 - Layout: ELK `layered`, direction `RIGHT`, `elk.spacing.nodeNode` 12, `elk.layered.spacing.nodeNodeBetweenLayers` 52, areas as compound nodes with 48px top padding. Run in a Web Worker.
 - `fitView` on first render with padding 0.08; min zoom 0.4, max 1.6.
 - `nodesDraggable={false}`, `nodesConnectable={false}`, `elementsSelectable` true, `panOnScroll={false}`, `zoomOnScroll={false}`, `zoomOnPinch` true.
-- Background: use `.canvas-dots` on the wrapper rather than React Flow's `<Background>` so it matches the token.
+- Background: the `.canvas-contour` wrapper plus one `ContourLayer` child inside `<ReactFlow>`; not React Flow's `<Background>`.
 - Hide the React Flow attribution only if your licence allows it.
 
 ---
