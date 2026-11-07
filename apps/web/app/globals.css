@@ -165,6 +165,7 @@
   --radius-lg: var(--radius-panel);
   --radius-lane: var(--radius-lane);
   --radius-pill: var(--radius-pill);
+  --radius-mark: var(--radius-mark);
 
   --font-display: var(--font-familjen), "Familjen Grotesk", system-ui, sans-serif;
   --font-sans: var(--font-hanken), "Hanken Grotesk", system-ui, sans-serif;
@@ -273,4 +274,8 @@ path.edge-unmet {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+.trail-line[data-muted="true"] {
+  background: repeating-linear-gradient(90deg, var(--bark) 0 14px, transparent 14px 24px);
 }
