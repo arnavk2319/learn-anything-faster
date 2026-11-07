@@ -76,4 +76,27 @@ describe.skipIf(!isDbAvailable())("content:seed", () => {
     );
     expect(await count("topic_edges")).toBe(0);
   });
+
+  it("re-seeding never flips a dead resource back to approved (unless its url changed)", async () => {
+    const c = load();
+    await seedContent(client, c);
+    await client.query("update resources set status = 'dead' where id = 'algebra-docs'");
+    await seedContent(client, c);
+    const status = async () =>
+      (
+        await client.query<{ status: string }>(
+          "select status from resources where id = 'algebra-docs'",
+        )
+      ).rows[0]!.status;
+    expect(await status()).toBe("dead");
+    expect((await seedContent(client, c)).changed).toBe(0); // still idempotent
+    await seedContent(
+      client,
+      load((f) => {
+        (f.resources.algebra as { resources: { url: string }[] }).resources[0]!.url =
+          "https://example.com/new-algebra-url";
+      }),
+    );
+    expect(await status()).toBe("approved");
+  });
 });

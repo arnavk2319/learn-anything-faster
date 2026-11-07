@@ -59,6 +59,15 @@ describe("checkBot", () => {
     vi.stubGlobal("fetch", reply({ success: true, hostname: "app.test", action: "suggestion" }));
     expect(await checkBot(ctx)).toBe(false);
   });
+  it("with a real secret, a missing hostname, action or request host fails closed", async () => {
+    vi.stubEnv("TURNSTILE_SECRET_KEY", "real-secret");
+    vi.stubGlobal("fetch", reply({ success: true, action: "transition" }));
+    expect(await checkBot(ctx)).toBe(false);
+    vi.stubGlobal("fetch", reply({ success: true, hostname: "app.test" }));
+    expect(await checkBot(ctx)).toBe(false);
+    vi.stubGlobal("fetch", reply({ success: true, hostname: "app.test", action: "transition" }));
+    expect(await checkBot({ ...ctx, host: undefined })).toBe(false);
+  });
   it("production without a secret is blocked and makes zero fetch calls", async () => {
     vi.stubEnv("NODE_ENV", "production");
     const f = reply({ success: true });

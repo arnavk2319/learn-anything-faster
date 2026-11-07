@@ -63,7 +63,14 @@ const viewportTransform = (page: Page) =>
     .evaluate((el) => (el as unknown as { style: { transform: string } }).style.transform);
 const topic = (page: Page, id: string) => page.locator(`button[data-topic-id="${id}"]`);
 
-test("graph renders areas and topics, selects by click and by keyboard", async ({ page }) => {
+test("graph renders areas and topics, selects by click and by keyboard", async ({
+  page,
+  request,
+}) => {
+  // Root cause of the old flake: this is the first test to hit /roadmap on a cold `next dev` server, so the timed
+  // load included on-demand route compilation (5.5 s). Warm the route and API first; the 5 s bound is unchanged.
+  await request.get("/roadmap/dev/ml-dev");
+  await request.get("/api/roadmap?from=dev&to=ml-dev");
   const t0 = Date.now();
   await page.goto("/roadmap/dev/ml-dev");
   await expect(topic(page, "stats")).toBeVisible();
