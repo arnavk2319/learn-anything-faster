@@ -19,7 +19,7 @@ import { TopicPanel } from "./TopicPanel";
 import { ViewToggle, type View } from "./ViewToggle";
 
 const selectCls =
-  "font-display cursor-pointer appearance-none bg-transparent text-3xl font-semibold tracking-tight";
+  "font-display cursor-pointer appearance-none bg-transparent text-xl font-semibold md:text-2xl tracking-tight";
 
 // Below Tailwind's sm breakpoint the list is the default view (F10). SSR snapshot is false.
 const SMALL = "(max-width: 639px)";
@@ -232,7 +232,7 @@ export function RoadmapScreen({
   return (
     <main className="flex min-h-0 flex-1 flex-col gap-3.5 px-8 pt-1 pb-6">
       <div className="flex flex-col gap-1.5">
-        <h1 className="flex flex-wrap items-baseline gap-3 text-3xl font-semibold tracking-tight">
+        <h1 className="flex flex-wrap items-baseline gap-3 text-xl font-semibold md:text-2xl tracking-tight">
           <RoleSelect
             label="Current role"
             value={from}
