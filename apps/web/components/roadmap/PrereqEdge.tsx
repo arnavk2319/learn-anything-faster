@@ -1,9 +1,9 @@
 "use client";
-// Prerequisite edge: resting Edge colour; the selected topic's edges become 3.5px Trail.
+// Prerequisite edge: dashed Stone (.edge-unmet); the selected topic's edges get a solid Trail overlay (.edge-hot) that draws in.
 import { BaseEdge, getBezierPath, type EdgeProps } from "@xyflow/react";
-import { cn } from "../../lib/utils";
 import { edgeTouches } from "../../lib/roadmap/layout";
 import { useSelectedTopicId } from "../../lib/roadmap/selection-store";
+import { usePrefersReducedMotion } from "../../lib/roadmap/use-prefers-reduced-motion";
 
 export function PrereqEdge({
   id,
@@ -16,6 +16,7 @@ export function PrereqEdge({
   data,
 }: EdgeProps) {
   const selected = useSelectedTopicId();
+  const reduced = usePrefersReducedMotion();
   const pairs = (data as { pairs: { topicId: string; prerequisiteId: string }[] }).pairs;
   const hot = edgeTouches(pairs, selected);
   const [path] = getBezierPath({
@@ -27,14 +28,16 @@ export function PrereqEdge({
     targetPosition,
   });
   return (
-    <BaseEdge
-      id={id}
-      path={path}
-      className={cn(
-        "fill-none transition-[stroke,stroke-width] duration-[var(--dur-fast)]",
-        hot ? "stroke-route stroke-[3.5px]" : "stroke-edge stroke-[1.5px]",
+    <>
+      <BaseEdge id={id} path={path} className="edge-unmet" interactionWidth={0} />
+      {hot && (
+        <path
+          d={path}
+          pathLength={1}
+          className="edge-hot"
+          style={reduced ? { animation: "none", strokeDashoffset: 0 } : undefined}
+        />
       )}
-      interactionWidth={0}
-    />
+    </>
   );
 }
