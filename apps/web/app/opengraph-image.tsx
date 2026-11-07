@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
-import { APP_NAME, APP_TAGLINE } from "../lib/site";
+import { SITE_NAME, APP_TAGLINE } from "../lib/site";
 
-export const alt = `${APP_NAME}: ${APP_TAGLINE}`;
+export const alt = `${SITE_NAME}: ${APP_TAGLINE}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -20,7 +20,7 @@ export default function OpengraphImage() {
         color: "#111111",
       }}
     >
-      <div style={{ fontSize: 84, fontWeight: 700 }}>{APP_NAME}</div>
+      <div style={{ fontSize: 84, fontWeight: 700 }}>{SITE_NAME}</div>
       <div style={{ fontSize: 40, marginTop: 24, color: "#444444" }}>{APP_TAGLINE}</div>
     </div>,
     size,

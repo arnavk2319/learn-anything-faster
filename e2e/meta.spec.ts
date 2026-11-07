@@ -24,7 +24,8 @@ test("home page has canonical, Open Graph and Twitter tags; OG image renders", a
   const attr = (sel: string, a: string) => page.locator(sel).first().getAttribute(a);
   expect(await attr('link[rel="canonical"]', "href")).toMatch(/^https?:\/\//);
   expect(await attr('meta[name="description"]', "content")).toBeTruthy();
-  expect(await attr('meta[property="og:title"]', "content")).toBeTruthy();
+  await expect(page).toHaveTitle(/Learn Anything Faster/);
+  expect(await attr('meta[property="og:title"]', "content")).toBe("Learn Anything Faster");
   expect(await attr('meta[property="og:description"]', "content")).toBeTruthy();
   expect(await attr('meta[name="twitter:card"]', "content")).toBe("summary_large_image");
   const img = await attr('meta[property="og:image"]', "content");

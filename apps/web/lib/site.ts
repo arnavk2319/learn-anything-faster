@@ -8,4 +8,6 @@ export function getSiteUrl(): string {
   return raw.replace(/\/+$/, "");
 }
 
-export { APP_NAME, APP_TAGLINE };
+// Until a product name is chosen, brand.ts holds a "[..." placeholder; show the working name instead.
+export const SITE_NAME = APP_NAME.startsWith("[") ? "Learn Anything Faster" : APP_NAME;
+export { APP_TAGLINE };
