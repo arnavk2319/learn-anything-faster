@@ -1,7 +1,7 @@
 // Pure layout preparation for the roadmap graph (no React, no DOM). The API sends no positions:
 // this builds the model (areas, visible topics, edges re-routed around collapsed areas), the ELK
 // input graph, and turns ELK's result into React Flow nodes and edges.
-import type { ElkNode } from "elkjs/lib/elk-api";
+import type { ElkEdge, ElkNode } from "elkjs/lib/elk-api";
 import type { Edge, Node } from "@xyflow/react";
 import type { RoadmapResponse } from "./schema";
 
@@ -106,6 +106,12 @@ const ROOT_OPTIONS = {
   "elk.spacing.nodeNode": "12",
   "elk.layered.spacing.nodeNodeBetweenLayers": "52",
   "elk.hierarchyHandling": "INCLUDE_CHILDREN",
+  // Orthogonal routes avoid node boxes; the spacings keep the channels between layers wide enough.
+  "elk.edgeRouting": "ORTHOGONAL",
+  "elk.layered.spacing.edgeNodeBetweenLayers": "16",
+  "elk.layered.spacing.edgeEdgeBetweenLayers": "10",
+  "elk.spacing.edgeNode": "16",
+  "elk.spacing.edgeEdge": "10",
   "elk.padding": "[top=16,left=16,bottom=16,right=16]",
 };
 
@@ -132,6 +138,60 @@ export function toElk(model: GraphModel): ElkNode {
 export interface FlowGraph {
   nodes: Node[];
   edges: Edge[];
+}
+
+/** ELK's floats carry noise (306.6666 vs 306.66666): snap so straight segments stay exactly straight. */
+const snap = (n: number) => Math.round(n * 100) / 100;
+
+/** The part of ELK's edge section we read (elk-api types it only on extended edges). */
+interface ElkSection {
+  startPoint: { x: number; y: number };
+  endPoint: { x: number; y: number };
+  bendPoints?: { x: number; y: number }[];
+}
+
+export interface RoutePoint {
+  x: number;
+  y: number;
+}
+
+/**
+ * Absolute flow-coordinate route per edge id, from ELK sections. Coordinates are relative to the
+ * node that holds the edge (the root, or a lane), so that node's absolute offset is added.
+ */
+export function absoluteRoutes(laid: ElkNode): Map<string, RoutePoint[]> {
+  const abs = new Map<string, RoutePoint>();
+  const walk = (n: ElkNode, ox: number, oy: number) => {
+    const o = { x: ox + (n.x ?? 0), y: oy + (n.y ?? 0) };
+    abs.set(n.id, o);
+    for (const c of n.children ?? []) walk(c, o.x, o.y);
+  };
+  abs.set(laid.id, { x: 0, y: 0 });
+  for (const c of laid.children ?? []) walk(c, 0, 0);
+
+  const routes = new Map<string, RoutePoint[]>();
+  const collect = (n: ElkNode) => {
+    const holder = abs.get(n.id) ?? { x: 0, y: 0 };
+    for (const e of n.edges ?? []) {
+      const { sections, container } = e as ElkEdge & {
+        sections?: ElkSection[];
+        container?: string;
+      };
+      const sec = sections?.[0];
+      if (!sec) continue;
+      const off = (container !== undefined ? abs.get(container) : undefined) ?? holder;
+      routes.set(
+        e.id,
+        [sec.startPoint, ...(sec.bendPoints ?? []), sec.endPoint].map((p) => ({
+          x: snap(p.x + off.x),
+          y: snap(p.y + off.y),
+        })),
+      );
+    }
+    for (const c of n.children ?? []) collect(c);
+  };
+  collect(laid);
+  return routes;
 }
 
 /** React Flow wants parents before children and positions relative to the parent: ELK gives both. */
@@ -180,12 +240,14 @@ export function toFlow(model: GraphModel, laid: ElkNode): FlowGraph {
       });
     }
   }
+  const routes = absoluteRoutes(laid);
   const edges: Edge[] = model.edges.map((e) => ({
     id: e.id,
     source: e.source,
     target: e.target,
     type: "prereq",
-    data: { pairs: e.pairs },
+    // No route (ELK gave no sections): PrereqEdge falls back to a bezier.
+    data: { pairs: e.pairs, points: routes.get(e.id) ?? [] },
     focusable: false,
     selectable: false,
     zIndex: 2,
