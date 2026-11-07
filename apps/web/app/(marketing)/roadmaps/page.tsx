@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { TransitionRequestForm } from "../../components/forms/TransitionRequestForm";
+import { TransitionRequestForm } from "@/components/forms/TransitionRequestForm";
 import {
   filterCatalog,
   getCatalog,
   parseCatalogFilter,
   type CatalogFilter,
-} from "../../lib/roadmap/catalog";
-import { sharedDb } from "../../lib/roadmap/db";
+} from "@/lib/roadmap/catalog";
+import { sharedDb } from "@/lib/roadmap/db";
 
 export const dynamic = "force-dynamic"; // roles come from the DB at request time
 export const metadata = { title: "Browse roadmaps" };
