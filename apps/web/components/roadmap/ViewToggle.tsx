@@ -12,7 +12,7 @@ export function ViewToggle({ view, onChange }: { view: View; onChange: (v: View)
     <div
       role="group"
       aria-label="View"
-      className="inline-flex overflow-hidden rounded-md border border-border bg-card"
+      className="inline-flex shrink-0 overflow-hidden rounded-md border border-border bg-card"
     >
       {(["graph", "list"] as const).map((v) => (
         <button
