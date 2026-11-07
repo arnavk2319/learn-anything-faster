@@ -1,6 +1,6 @@
 import { PopularMoves } from "@/components/landing/PopularMoves";
 import { RolePicker } from "@/components/RolePicker";
-import { pickPopular, SEED_PREVIEW } from "@/lib/landing-preview";
+import { pickPopular } from "@/lib/landing-preview";
 import { getCatalog } from "@/lib/roadmap/catalog";
 import { sharedDb } from "@/lib/roadmap/db";
 import { getLandingData } from "@/lib/roadmap/landing";
@@ -18,7 +18,7 @@ export default async function HomePage() {
   return (
     <main className="flex flex-1 flex-col px-4 pt-8 pb-10 md:px-16 md:pt-14">
       <h1 className="sr-only">{SITE_NAME}</h1>
-      <RolePicker {...data} preview={SEED_PREVIEW} />
+      <RolePicker {...data} />
       <PopularMoves moves={pickPopular(catalog)} />
     </main>
   );

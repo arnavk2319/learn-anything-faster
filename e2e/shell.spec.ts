@@ -55,9 +55,13 @@ test("header: logo links home, nav marks the current page", async ({ page }) => 
 
 test("landing: route preview and popular moves open the roadmap; axe clean", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByTestId("route-line")).toContainText("Math foundations");
-  await expect(page.getByTestId("route-line")).toContainText("You are here");
+  await expect(page.getByTestId("route-line")).toHaveAttribute("data-state", "abstract");
   await expectNoA11yViolations(page, { label: "landing" });
+  await page.getByLabel("I am a").selectOption("full-stack-engineer");
+  await page.getByLabel("and I want to be a").selectOption("ml-engineer");
+  await expect(page.getByTestId("route-line")).toHaveAttribute("data-state", "live");
+  await expect(page.getByTestId("route-line")).toContainText("You are here");
+  await expectNoA11yViolations(page, { label: "landing live preview" });
   await page
     .getByRole("region", { name: "Popular moves" })
     .getByRole("link", { name: /Full-stack engineer to ML engineer/ })
@@ -67,6 +71,7 @@ test("landing: route preview and popular moves open the roadmap; axe clean", asy
 
 test("landing: unmapped choice mutes the route line", async ({ page }) => {
   await page.goto("/");
+  await page.waitForLoadState("networkidle"); // selects are controlled: wait for hydration
   await page.getByLabel("I am a").selectOption("ml-engineer");
   await page.getByLabel("and I want to be a").selectOption("full-stack-engineer");
   await expect(page.getByTestId("route-line")).toHaveAttribute("data-state", "unmapped");
