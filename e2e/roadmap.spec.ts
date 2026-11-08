@@ -314,3 +314,21 @@ test("axe: graph error state", async ({ page }) => {
   await expect(page.getByText("We couldn't load this roadmap.")).toBeVisible();
   await expectNoA11yViolations(page, { label: "graph error" });
 });
+
+for (const [width, size] of [
+  [1280, "24px"],
+  [375, "20px"],
+] as const) {
+  test(`roadmap heading and selects render at ${size} at ${width}px without overflow`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto("/roadmap/dev/ml-dev");
+    const h1 = page.locator("h1");
+    await expect(h1).toBeVisible();
+    await expect(h1).toHaveCSS("font-size", size);
+    await expect(page.getByLabel("Current role")).toHaveCSS("font-size", size);
+    await expect(page.getByLabel("Target role")).toHaveCSS("font-size", size);
+    expect(await page.evaluate("document.documentElement.scrollWidth <= innerWidth")).toBe(true);
+  });
+}

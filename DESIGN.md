@@ -129,7 +129,7 @@ No monospace in the product UI (code samples inside resources are the only excep
 | --------- | ------------------ | -------------- | -------------- | ----------------------------------------------- |
 | `display` | 56 / 1.18          | Familjen 600   | -1.2px         | Landing role sentence                           |
 | `h1`      | 44 / 1.15          | Familjen 600   | -0.8px         | Page titles (Roadmaps)                          |
-| `h2`      | 30 / 1.2           | Familjen 600   | -0.5px         | Roadmap header role sentence                    |
+| `h2`      | 24 / 1.2           | Familjen 600   | -0.5px         | Roadmap header role sentence                    |
 | `h3`      | 28 / 1.15          | Familjen 600   | -0.4px         | Topic title in panel, empty-state title         |
 | `h4`      | 17–18 / 1.3        | Familjen 600   | 0              | Area names, section heads ("Popular moves")     |
 | `body-lg` | 17 / 1.55          | Hanken 400     | 0              | Page intro lines                                |
@@ -138,7 +138,7 @@ No monospace in the product UI (code samples inside resources are the only excep
 | `small`   | 13 / 1.45          | Hanken 400     | 0              | Metadata, captions, table headers               |
 | `micro`   | 12 / 1.4           | Hanken 400     | 0              | Canvas hints only. Minimum size in the product. |
 
-Mobile (< 768px): `display` 34/1.2, `h1` 32/1.2, `h2` 22/1.25, `h3` 22/1.2. Use `clamp()` between breakpoints.
+Mobile (< 768px): `display` 34/1.2, `h1` 32/1.2, `h2` 20/1.25, `h3` 22/1.2. Use `clamp()` between breakpoints.
 
 ### Type rules
 
