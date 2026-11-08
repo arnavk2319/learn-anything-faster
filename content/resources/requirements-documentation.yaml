@@ -1,0 +1,30 @@
+topic: requirements-documentation
+resources:
+  - id: reqdoc-atlassian-user-stories
+    type: docs
+    title: User Stories With Examples and a Template (Atlassian)
+    url: https://www.atlassian.com/agile/project-management/user-stories
+    is_free: true
+    status: proposed
+    source_note: Atlassian's Agile coach guide to user stories.
+  - id: reqdoc-atlassian-acceptance-criteria
+    type: docs
+    title: What is Acceptance Criteria? Definition, Examples, and Tips (Atlassian)
+    url: https://www.atlassian.com/work-management/project-management/acceptance-criteria
+    is_free: true
+    status: proposed
+    source_note: Atlassian guide on writing acceptance criteria.
+  - id: reqdoc-mountain-goat-user-stories
+    type: article
+    title: User Stories - What They Are, How to Write Them, and Examples (Mountain Goat Software)
+    url: https://www.mountaingoatsoftware.com/agile/user-stories
+    is_free: true
+    status: proposed
+    source_note: Mike Cohn, author of "User Stories Applied", a standard reference on the format.
+  - id: reqdoc-cucumber-gherkin
+    type: docs
+    title: Gherkin Reference (Cucumber)
+    url: https://cucumber.io/docs/gherkin/reference/
+    is_free: true
+    status: proposed
+    source_note: Official reference for Given/When/Then syntax used to write executable acceptance criteria.

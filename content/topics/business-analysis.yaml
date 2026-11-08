@@ -1,0 +1,47 @@
+area: business-analysis
+topics:
+  - id: ba-fundamentals
+    name: Business analysis fundamentals
+    why: Business analysis is about defining needs and recommending solutions that deliver value; the role, vocabulary and standards frame everything else.
+    est_hours: 6
+    learn_first: []
+  - id: stakeholder-management
+    name: Stakeholder management and communication
+    why: Requirements and adoption depend on knowing who has influence and interest, and on communicating to each of them in the right form.
+    est_hours: 5
+    learn_first:
+      - ba-fundamentals
+  - id: agile-scrum-for-ba
+    name: Agile and Scrum for business analysts
+    why: Most delivery teams run Agile; a BA needs to know the backlog, events and roles to work with product owners and engineers.
+    est_hours: 5
+    learn_first:
+      - ba-fundamentals
+  - id: requirements-elicitation
+    name: Requirements elicitation
+    why: Interviews, workshops and observation surface what stakeholders actually need, which is rarely what they first ask for.
+    est_hours: 6
+    learn_first:
+      - ba-fundamentals
+      - stakeholder-management
+  - id: requirements-documentation
+    name: User stories and acceptance criteria
+    why: Elicited needs must become clear, testable statements that engineers and testers can build and verify against.
+    est_hours: 6
+    learn_first:
+      - requirements-elicitation
+      - agile-scrum-for-ba
+  - id: process-modelling
+    name: Process modelling with BPMN and UML
+    why: Diagrams of current and future processes expose gaps and handoffs that prose requirements miss.
+    est_hours: 8
+    learn_first:
+      - requirements-elicitation
+  - id: domain-modelling
+    name: Business domain modelling
+    why: A shared model of entities, rules and vocabulary keeps business and engineering aligned; it builds on the data modelling you know from SQL.
+    est_hours: 6
+    learn_first:
+      - process-modelling
+      - requirements-documentation
+      - sql

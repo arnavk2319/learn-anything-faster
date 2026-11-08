@@ -62,3 +62,23 @@
     - ai-assisted-analysis
     - ai-assisted-reporting
   covers: []
+- role: business-analyst
+  requires:
+    - ba-fundamentals
+    - stakeholder-management
+    - agile-scrum-for-ba
+    - requirements-elicitation
+    - requirements-documentation
+    - process-modelling
+    - domain-modelling
+    - probability-statistics
+    - pandas
+    - data-cleaning
+    - exploratory-data-analysis
+    - statistical-inference
+    - business-metrics-kpis
+    - product-ab-testing
+    - data-visualisation-bi
+    - data-storytelling
+    - data-driven-decision-making
+  covers: []

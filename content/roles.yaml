@@ -10,3 +10,6 @@
 - id: ai-analyst
   name: AI analyst
   status: coming_soon
+- id: business-analyst
+  name: Business analyst
+  status: coming_soon
