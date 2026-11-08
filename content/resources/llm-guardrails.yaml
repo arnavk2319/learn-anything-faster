@@ -1,0 +1,30 @@
+topic: llm-guardrails
+resources:
+  - id: llm-guardrails-owasp
+    type: docs
+    title: OWASP Top 10 for Large Language Model Applications
+    url: https://owasp.org/www-project-top-10-for-large-language-model-applications/
+    is_free: true
+    status: proposed
+    source_note: Industry-standard risk list from OWASP; the security baseline for LLM apps.
+  - id: llm-guardrails-openai-safety
+    type: docs
+    title: Safety best practices | OpenAI API
+    url: https://developers.openai.com/api/docs/guides/safety-best-practices
+    is_free: true
+    status: proposed
+    source_note: Official provider guidance for shipping an app safely.
+  - id: llm-guardrails-claude-leak
+    type: docs
+    title: Reduce prompt leak
+    url: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-prompt-leak
+    is_free: true
+    status: proposed
+    source_note: Official Anthropic guardrails page on one concrete risk.
+  - id: llm-guardrails-nemo
+    type: docs
+    title: NVIDIA NeMo Guardrails documentation
+    url: https://docs.nvidia.com/nemo/guardrails/latest/index.html
+    is_free: true
+    status: proposed
+    source_note: Open-source toolkit for adding programmable guardrails to LLM apps.

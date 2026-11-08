@@ -1,0 +1,24 @@
+area: llmops
+topics:
+  - id: llm-cost-latency
+    name: LLM cost and latency
+    why: Token spend and response time dominate LLM app economics; caching, batching and model choice are the levers.
+    est_hours: 5
+    learn_first:
+      - llm-basics
+      - prompt-engineering
+  - id: llm-observability
+    name: LLM observability
+    why: Tracing prompts, tool calls and token usage in production is how you debug and improve an LLM app.
+    est_hours: 5
+    learn_first:
+      - llm-evals
+      - rest-apis
+  - id: llm-app-deployment
+    name: Deploying LLM applications
+    why: Streaming responses, containers and secrets for a production LLM service reuse your Docker and API skills.
+    est_hours: 8
+    learn_first:
+      - docker
+      - rest-apis
+      - llm-cost-latency

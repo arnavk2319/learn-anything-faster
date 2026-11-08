@@ -1,0 +1,17 @@
+area: architecture-practice
+topics:
+  - id: technical-leadership
+    name: Technical leadership and trade-off analysis
+    why: Architects influence through design docs, explicit trade-offs and communication with stakeholders rather than by writing most of the code.
+    est_hours: 6
+    learn_first:
+      - architecture-documentation
+      - stakeholder-management
+  - id: evolutionary-architecture
+    name: Evolutionary architecture and technical debt
+    why: Systems outlive their first design; managing debt and migrating incrementally keeps change affordable.
+    est_hours: 6
+    learn_first:
+      - architectural-styles
+      - architecture-documentation
+      - git

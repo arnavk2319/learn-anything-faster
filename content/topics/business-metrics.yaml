@@ -1,0 +1,24 @@
+area: business-metrics
+topics:
+  - id: business-metrics-kpis
+    name: Business metrics and KPIs
+    why: Choosing and defining the right measures (revenue, churn, conversion, cycle time) turns vague goals into trackable outcomes.
+    est_hours: 6
+    learn_first:
+      - ba-fundamentals
+      - sql
+  - id: product-ab-testing
+    name: Product experimentation and A/B testing
+    why: Controlled experiments test whether a change causes a metric to move; BAs frame the hypothesis and read the result.
+    est_hours: 8
+    learn_first:
+      - business-metrics-kpis
+      - statistical-inference
+  - id: data-driven-decision-making
+    name: Data-driven decision making
+    why: Combining metrics, experiments and clear communication into recommendations that stakeholders can act on.
+    est_hours: 5
+    learn_first:
+      - business-metrics-kpis
+      - product-ab-testing
+      - data-storytelling

@@ -27,3 +27,74 @@
     - model-serving
     - model-monitoring
   covers: []
+- role: ai-engineer
+  requires:
+    - llm-basics
+    - prompt-engineering
+    - structured-output
+    - embeddings-vector-search
+    - rag
+    - tool-use
+    - agents
+    - llm-evals
+    - llm-guardrails
+    - llm-cost-latency
+    - llm-observability
+    - llm-app-deployment
+  covers: []
+- role: ai-analyst
+  requires:
+    - probability-statistics
+    - numpy
+    - pandas
+    - matplotlib
+    - data-cleaning
+    - exploratory-data-analysis
+    - statistical-inference
+    - data-visualisation-bi
+    - data-storytelling
+    - llm-basics
+    - prompt-engineering
+    - structured-output
+    - llm-evals
+    - text-to-sql
+    - document-extraction
+    - ai-assisted-analysis
+    - ai-assisted-reporting
+  covers: []
+- role: business-analyst
+  requires:
+    - ba-fundamentals
+    - stakeholder-management
+    - agile-scrum-for-ba
+    - requirements-elicitation
+    - requirements-documentation
+    - process-modelling
+    - domain-modelling
+    - probability-statistics
+    - pandas
+    - data-cleaning
+    - exploratory-data-analysis
+    - statistical-inference
+    - business-metrics-kpis
+    - product-ab-testing
+    - data-visualisation-bi
+    - data-storytelling
+    - data-driven-decision-making
+  covers: []
+- role: software-architect
+  requires:
+    - arch-fundamentals
+    - architectural-styles
+    - system-design-scale
+    - distributed-systems
+    - api-design
+    - data-architecture
+    - cloud-iac
+    - observability-sre
+    - security-architecture
+    - architecture-documentation
+    - stakeholder-management
+    - technical-leadership
+    - evolutionary-architecture
+  covers: []

@@ -1,0 +1,23 @@
+topic: stakeholder-management
+resources:
+  - id: stakeholder-atlassian-comms-plan
+    type: docs
+    title: Stakeholder Project Communication Plan (Atlassian Team Playbook)
+    url: https://www.atlassian.com/team-playbook/plays/stakeholder-communications-plan
+    is_free: true
+    status: proposed
+    source_note: Atlassian's play for planning who gets which updates, through which channel and how often.
+  - id: stakeholder-coursera-skillup
+    type: coursera
+    title: Business Analysis - Project and Stakeholder Management (SkillUp, Coursera)
+    url: https://www.coursera.org/learn/business-analysis-project-and-stakeholder-management
+    is_free: false
+    status: proposed
+    source_note: Coursera course on engaging stakeholders and communication plans; free audit not confirmed.
+  - id: stakeholder-iiba-elicitation-engagement
+    type: article
+    title: Engaging Stakeholders in Elicitation and Collaboration (IIBA)
+    url: https://www.iiba.org/professional-development/knowledge-centre/articles/engaging-stakeholders-in-elicitation-and-collaboration/
+    is_free: true
+    status: proposed
+    source_note: IIBA knowledge-centre article on working with stakeholders.

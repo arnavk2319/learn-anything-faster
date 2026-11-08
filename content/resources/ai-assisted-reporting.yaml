@@ -1,0 +1,16 @@
+topic: ai-assisted-reporting
+resources:
+  - id: ai-reporting-powerbi-copilot
+    type: course
+    title: Get started with Copilot in Power BI (Microsoft Learn)
+    url: https://learn.microsoft.com/en-us/training/modules/power-bi-copilot/
+    is_free: true
+    status: proposed
+    source_note: Official module on generating reports and querying data in natural language inside a BI tool.
+  - id: ai-reporting-ms-data-analytics-path
+    type: course
+    title: Get started with Microsoft data analytics (Microsoft Learn)
+    url: https://learn.microsoft.com/en-us/training/paths/data-analytics-microsoft/
+    is_free: true
+    status: proposed
+    source_note: Official learning path that places the analytics process and Copilot reporting in one sequence.

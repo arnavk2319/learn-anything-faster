@@ -1,0 +1,16 @@
+area: llm-evaluation
+topics:
+  - id: llm-evals
+    name: LLM evals
+    why: Non-deterministic outputs need test sets and graders; evals are the unit tests of LLM apps.
+    est_hours: 10
+    learn_first:
+      - prompt-engineering
+      - git
+  - id: llm-guardrails
+    name: Guardrails and LLM security
+    why: Prompt injection, data leaks and unsafe output are new attack surfaces on top of normal web security.
+    est_hours: 6
+    learn_first:
+      - structured-output
+      - llm-evals

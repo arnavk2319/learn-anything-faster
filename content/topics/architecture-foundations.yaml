@@ -1,0 +1,22 @@
+area: architecture-foundations
+topics:
+  - id: arch-fundamentals
+    name: Architecture fundamentals and quality attributes
+    why: Architecture is the set of decisions that are costly to change; quality attributes (reliability, security, cost, performance) are what you trade between.
+    est_hours: 6
+    learn_first:
+      - rest-apis
+      - sql
+  - id: architectural-styles
+    name: Architectural styles and patterns
+    why: Layered, hexagonal, microservices and event-driven styles each trade simplicity against independence; knowing when each fits is the core architect skill.
+    est_hours: 8
+    learn_first:
+      - arch-fundamentals
+      - docker
+  - id: architecture-documentation
+    name: Architecture documentation (C4, ADRs)
+    why: Decisions and structure only scale across a team when recorded in a shared notation with the reasoning attached.
+    est_hours: 5
+    learn_first:
+      - architectural-styles

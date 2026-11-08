@@ -1,0 +1,36 @@
+area: data-analysis
+topics:
+  - id: data-cleaning
+    name: Data cleaning
+    why: Real datasets have missing, duplicated and mistyped values; analysis is only as good as the tidy table under it.
+    est_hours: 5
+    learn_first:
+      - pandas
+  - id: exploratory-data-analysis
+    name: Exploratory data analysis
+    why: Profile distributions, outliers and relationships before modelling or reporting; it is how analysts find the question worth answering.
+    est_hours: 8
+    learn_first:
+      - data-cleaning
+      - matplotlib
+      - probability-statistics
+  - id: statistical-inference
+    name: Statistics for analysts
+    why: Hypothesis tests, confidence intervals and A/B test reading separate real effects from noise in business data.
+    est_hours: 12
+    learn_first:
+      - probability-statistics
+      - pandas
+  - id: data-visualisation-bi
+    name: Data visualisation and BI dashboards
+    why: Stakeholders consume charts and dashboards, not notebooks; BI tools sit on top of the SQL you already know.
+    est_hours: 8
+    learn_first:
+      - exploratory-data-analysis
+      - sql
+  - id: data-storytelling
+    name: Communicating insights
+    why: An analysis only matters if the audience understands and acts on it; framing, chart choice and narrative do that.
+    est_hours: 5
+    learn_first:
+      - data-visualisation-bi

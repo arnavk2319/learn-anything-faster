@@ -1,0 +1,37 @@
+topic: data-visualisation-bi
+resources:
+  - id: dataviz-kaggle-learn
+    type: course
+    title: Learn Data Visualization Tutorials | Kaggle
+    url: https://www.kaggle.com/learn/data-visualization
+    is_free: true
+    status: proposed
+    source_note: Kaggle Learn short course on seaborn charts for analysis.
+  - id: dataviz-wilke-fundamentals
+    type: book
+    title: Fundamentals of Data Visualization
+    url: https://clauswilke.com/dataviz/
+    is_free: true
+    status: proposed
+    source_note: Claus Wilke, O'Reilly; free online manuscript on choosing and designing charts.
+  - id: dataviz-powerbi-get-started
+    type: course
+    title: Get started building with Power BI (Microsoft Learn)
+    url: https://learn.microsoft.com/en-us/training/modules/get-started-with-power-bi/
+    is_free: true
+    status: proposed
+    source_note: Official beginner module for building reports and dashboards in a mainstream BI tool.
+  - id: dataviz-metabase-learn
+    type: docs
+    title: Learn Metabase
+    url: https://www.metabase.com/learn/
+    is_free: true
+    status: proposed
+    source_note: Open-source BI tool's learning hub on dashboards and SQL-based analytics.
+  - id: dataviz-data-to-viz
+    type: article
+    title: From Data to Viz
+    url: https://www.data-to-viz.com/
+    is_free: true
+    status: proposed
+    source_note: Decision tree for picking a chart type from the shape of the data.

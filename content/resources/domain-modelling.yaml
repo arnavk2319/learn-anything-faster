@@ -1,0 +1,37 @@
+topic: domain-modelling
+resources:
+  - id: domain-fowler-ddd
+    type: blog
+    title: Domain Driven Design (Martin Fowler)
+    url: https://martinfowler.com/bliki/DomainDrivenDesign.html
+    is_free: true
+    status: proposed
+    source_note: Short, well-known introduction to DDD from a respected software author.
+  - id: domain-fowler-ubiquitous-language
+    type: blog
+    title: Ubiquitous Language (Martin Fowler)
+    url: https://martinfowler.com/bliki/UbiquitousLanguage.html
+    is_free: true
+    status: proposed
+    source_note: Covers the shared vocabulary between business and developers.
+  - id: domain-ddd-reference
+    type: book
+    title: DDD Reference (Domain Language)
+    url: https://www.domainlanguage.com/ddd/reference/
+    is_free: true
+    status: proposed
+    source_note: Eric Evans's own free summary reference of the DDD patterns.
+  - id: domain-ddd-crew-starter
+    type: docs
+    title: ddd-crew/ddd-starter-modelling-process (GitHub)
+    url: https://github.com/ddd-crew/ddd-starter-modelling-process
+    is_free: true
+    status: proposed
+    source_note: Community-maintained step-by-step modelling process.
+  - id: domain-eventstorming
+    type: docs
+    title: EventStorming
+    url: https://www.eventstorming.com/
+    is_free: true
+    status: proposed
+    source_note: Official site of Alberto Brandolini's workshop method for discovering the business domain.

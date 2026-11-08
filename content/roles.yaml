@@ -4,3 +4,15 @@
 - id: ml-engineer
   name: ML engineer
   status: live
+- id: ai-engineer
+  name: AI engineer
+  status: coming_soon
+- id: ai-analyst
+  name: AI analyst
+  status: coming_soon
+- id: business-analyst
+  name: Business analyst
+  status: coming_soon
+- id: software-architect
+  name: Software architect
+  status: coming_soon

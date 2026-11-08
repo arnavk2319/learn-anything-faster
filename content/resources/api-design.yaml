@@ -1,0 +1,30 @@
+topic: api-design
+resources:
+  - id: api-google-design-guide
+    type: docs
+    title: API Design Guide (Google Cloud)
+    url: https://docs.cloud.google.com/apis/design
+    is_free: true
+    status: proposed
+    source_note: Google's general design guide for networked APIs; old cloud.google.com/apis/design URL redirects here.
+  - id: api-azure-web-api-design
+    type: docs
+    title: Web API Design Best Practices (Azure Architecture Center)
+    url: https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-design
+    is_free: true
+    status: proposed
+    source_note: Official guidance on RESTful API design for loose coupling and service evolution.
+  - id: api-grpc-intro
+    type: docs
+    title: Introduction to gRPC
+    url: https://grpc.io/docs/what-is-grpc/introduction/
+    is_free: true
+    status: proposed
+    source_note: Official gRPC overview.
+  - id: api-graphql-learn
+    type: docs
+    title: Learn GraphQL
+    url: https://graphql.org/learn/
+    is_free: true
+    status: proposed
+    source_note: Official GraphQL learning section.

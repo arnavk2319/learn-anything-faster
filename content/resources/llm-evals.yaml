@@ -1,0 +1,30 @@
+topic: llm-evals
+resources:
+  - id: llm-evals-hamel-blog
+    type: blog
+    title: Your AI Product Needs Evals
+    url: https://hamel.dev/blog/posts/evals/
+    is_free: true
+    status: proposed
+    source_note: Hamel Husain; the most cited practitioner post on LLM evals.
+  - id: llm-evals-claude-docs
+    type: docs
+    title: Define success criteria and build evaluations
+    url: https://platform.claude.com/docs/en/test-and-evaluate/develop-tests
+    is_free: true
+    status: proposed
+    source_note: Official Anthropic guidance on building eval sets.
+  - id: llm-evals-openai-docs
+    type: docs
+    title: Working with evals | OpenAI API
+    url: https://developers.openai.com/api/docs/guides/evals
+    is_free: true
+    status: proposed
+    source_note: Official OpenAI docs for running evals on the platform.
+  - id: llm-evals-ragas
+    type: docs
+    title: Ragas documentation
+    url: https://docs.ragas.io/en/stable/
+    is_free: true
+    status: proposed
+    source_note: Open-source evaluation library, common for RAG pipelines.

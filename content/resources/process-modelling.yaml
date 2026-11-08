@@ -1,0 +1,30 @@
+topic: process-modelling
+resources:
+  - id: process-omg-bpmn
+    type: docs
+    title: About the Business Process Model And Notation Specification Version 2.0 (OMG)
+    url: https://www.omg.org/spec/BPMN/2.0/
+    is_free: true
+    status: proposed
+    source_note: The official OMG standard page for BPMN 2.0.
+  - id: process-bpmn-org
+    type: docs
+    title: BPMN Specification - Business Process Model and Notation
+    url: https://www.bpmn.org/
+    is_free: true
+    status: proposed
+    source_note: OMG-run BPMN site with a quick guide and examples (page links seen, content not read).
+  - id: process-camunda-bpmn
+    type: docs
+    title: BPMN - Business Process Model and Notation (Camunda)
+    url: https://camunda.com/bpmn/
+    is_free: true
+    status: proposed
+    source_note: Widely used BPMN vendor's introductory page.
+  - id: process-omg-uml
+    type: docs
+    title: About the Unified Modeling Language Specification Version 2.5.1 (OMG)
+    url: https://www.omg.org/spec/UML/
+    is_free: true
+    status: proposed
+    source_note: The official OMG standard page for UML.

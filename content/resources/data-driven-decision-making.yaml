@@ -1,0 +1,23 @@
+topic: data-driven-decision-making
+resources:
+  - id: dddm-coursera-colorado
+    type: coursera
+    title: Data Driven Decision Making (University of Colorado Boulder, Coursera)
+    url: https://www.coursera.org/learn/data-driven-decision-making
+    is_free: false
+    status: proposed
+    source_note: University course; free audit not confirmed.
+  - id: dddm-hbs-online
+    type: article
+    title: Data-Driven Decision-Making (Harvard Business School Online)
+    url: https://online.hbs.edu/blog/post/data-driven-decision-making
+    is_free: true
+    status: proposed
+    source_note: HBS Online business-school article on the topic.
+  - id: dddm-atlassian-dashboard-reporting
+    type: docs
+    title: What is Dashboard Reporting? A Guide to Data-Driven Insights (Atlassian)
+    url: https://www.atlassian.com/work-management/project-management/dashboard-reporting
+    is_free: true
+    status: proposed
+    source_note: Atlassian guide on reporting for decisions; fetch returned title only.

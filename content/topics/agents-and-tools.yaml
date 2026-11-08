@@ -1,0 +1,15 @@
+area: agents-and-tools
+topics:
+  - id: tool-use
+    name: Tool use and function calling
+    why: Lets a model call your functions and APIs; it is plain REST integration with a schema layer.
+    est_hours: 6
+    learn_first:
+      - structured-output
+      - rest-apis
+  - id: agents
+    name: Agents and workflows
+    why: Loops of model calls and tool calls; learn when a fixed workflow beats an autonomous agent.
+    est_hours: 12
+    learn_first:
+      - tool-use

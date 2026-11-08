@@ -1,0 +1,30 @@
+topic: data-architecture
+resources:
+  - id: data-azure-choose-store
+    type: docs
+    title: Prepare to Choose a Data Store in Azure (Azure Architecture Center)
+    url: https://learn.microsoft.com/en-us/azure/architecture/guide/technology-choices/data-stores-getting-started
+    is_free: true
+    status: proposed
+    source_note: Criteria for choosing relational, key-value, document, column, search and time-series stores; Azure-flavoured but the questions are general.
+  - id: data-kafka-intro
+    type: docs
+    title: Introduction (Apache Kafka)
+    url: https://kafka.apache.org/intro
+    is_free: true
+    status: proposed
+    source_note: Official intro to event streaming and Kafka.
+  - id: data-rabbitmq-tutorials
+    type: docs
+    title: RabbitMQ Tutorials
+    url: https://www.rabbitmq.com/tutorials
+    is_free: true
+    status: proposed
+    source_note: Official hands-on tutorials for work queues and publish/subscribe messaging.
+  - id: data-fowler-cqrs
+    type: article
+    title: CQRS (Martin Fowler)
+    url: https://martinfowler.com/bliki/CQRS.html
+    is_free: true
+    status: proposed
+    source_note: Fowler on separating read and write models, with cautions about overuse.

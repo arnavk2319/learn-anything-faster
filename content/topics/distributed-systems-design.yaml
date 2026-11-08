@@ -1,0 +1,29 @@
+area: distributed-systems-design
+topics:
+  - id: system-design-scale
+    name: System design at scale
+    why: Load balancing, caching, sharding and replication are the standard levers for handling load beyond one machine.
+    est_hours: 10
+    learn_first:
+      - arch-fundamentals
+      - sql
+  - id: distributed-systems
+    name: Distributed systems fundamentals
+    why: Partial failure, consistency models, CAP and consensus explain why distributed designs behave differently from single-node ones.
+    est_hours: 12
+    learn_first:
+      - system-design-scale
+  - id: api-design
+    name: API design (REST, gRPC, GraphQL)
+    why: APIs are the contracts between services; choosing a style and a versioning approach shapes how systems can evolve.
+    est_hours: 6
+    learn_first:
+      - rest-apis
+      - arch-fundamentals
+  - id: data-architecture
+    name: Data architecture (storage, messaging, streaming)
+    why: Picking databases, queues and streams per workload decides consistency, throughput and operational cost.
+    est_hours: 10
+    learn_first:
+      - sql
+      - distributed-systems
