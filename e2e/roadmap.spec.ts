@@ -2,6 +2,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { expect, test, type Page } from "@playwright/test";
 import pg from "pg";
+import { expectNoA11yViolations } from "./helpers/a11y.ts";
 import { seedContent } from "../scripts/lib/content/seed.ts";
 import { validateContent } from "../scripts/lib/content/validate.ts";
 import { validFixture, res, writeFixture } from "../tests/fixtures/content-fixture.ts";
@@ -62,7 +63,14 @@ const viewportTransform = (page: Page) =>
     .evaluate((el) => (el as unknown as { style: { transform: string } }).style.transform);
 const topic = (page: Page, id: string) => page.locator(`button[data-topic-id="${id}"]`);
 
-test("graph renders areas and topics, selects by click and by keyboard", async ({ page }) => {
+test("graph renders areas and topics, selects by click and by keyboard", async ({
+  page,
+  request,
+}) => {
+  // Root cause of the old flake: this is the first test to hit /roadmap on a cold `next dev` server, so the timed
+  // load included on-demand route compilation (5.5 s). Warm the route and API first; the 5 s bound is unchanged.
+  await request.get("/roadmap/dev/ml-dev");
+  await request.get("/api/roadmap?from=dev&to=ml-dev");
   const t0 = Date.now();
   await page.goto("/roadmap/dev/ml-dev");
   await expect(topic(page, "stats")).toBeVisible();
@@ -276,3 +284,51 @@ test.describe("share link (F6)", () => {
     await expect(page.getByLabel("Roadmap link")).toHaveValue(/\/roadmap\/dev\/ml-dev$/);
   });
 });
+
+test("axe: graph default, node selected, covered shown, not-mapped and error states", async ({
+  page,
+}) => {
+  await page.goto("/roadmap/dev/ml-dev");
+  await expect(topic(page, "stats")).toBeVisible();
+  await expectNoA11yViolations(page, { label: "graph default" });
+
+  await topic(page, "torch").click();
+  await expect(page.getByTestId("topic-panel")).toBeVisible();
+  await expectNoA11yViolations(page, { label: "graph node selected" });
+
+  await page.keyboard.press("Escape");
+  await page.getByRole("button", { name: /Show what you already know/ }).click();
+  await expect(topic(page, "python")).toBeVisible();
+  await expectNoA11yViolations(page, { label: "graph covered shown" });
+
+  await page.goto("/roadmap/dev/later-role");
+  await expect(page.getByText("Developer to Later isn't mapped yet.")).toBeVisible();
+  await expectNoA11yViolations(page, { label: "graph not-mapped" });
+});
+
+test("axe: graph error state", async ({ page }) => {
+  await page.route("**/api/roadmap**", (route) =>
+    route.fulfill({ status: 503, json: { error: "unavailable" } }),
+  );
+  await page.goto("/roadmap/dev/ml-dev");
+  await expect(page.getByText("We couldn't load this roadmap.")).toBeVisible();
+  await expectNoA11yViolations(page, { label: "graph error" });
+});
+
+for (const [width, size] of [
+  [1280, "24px"],
+  [375, "20px"],
+] as const) {
+  test(`roadmap heading and selects render at ${size} at ${width}px without overflow`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto("/roadmap/dev/ml-dev");
+    const h1 = page.locator("h1");
+    await expect(h1).toBeVisible();
+    await expect(h1).toHaveCSS("font-size", size);
+    await expect(page.getByLabel("Current role")).toHaveCSS("font-size", size);
+    await expect(page.getByLabel("Target role")).toHaveCSS("font-size", size);
+    expect(await page.evaluate("document.documentElement.scrollWidth <= innerWidth")).toBe(true);
+  });
+}

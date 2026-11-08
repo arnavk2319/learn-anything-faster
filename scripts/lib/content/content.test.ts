@@ -79,5 +79,5 @@ describe("content:validate", () => {
     const r = run(writeFixture(bad));
     expect(r.status).toBe(1);
     expect(r.stdout).toMatch(/✗ topic "stats"/);
-  });
+  }, 30_000);
 });

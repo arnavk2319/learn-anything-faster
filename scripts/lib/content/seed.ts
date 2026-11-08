@@ -1,5 +1,6 @@
 // Upserts validated content into Postgres. Idempotent: unchanged rows are not rewritten.
-// Resource status is written exactly as the content file says; nothing here ever approves a resource.
+// Resource status is written as the content file says, except a dead resource stays dead while its url is unchanged
+// (the link checker owns that verdict; a re-seed must never resurrect it). Nothing here ever approves a resource.
 import type pg from "pg";
 import type { Content } from "./load.ts";
 
@@ -59,10 +60,12 @@ export async function seedContent(client: pg.ClientBase, c: Content): Promise<Se
         `INSERT INTO resources (id, topic_id, type, title, url, is_free, status, last_checked_at, source_note)
          VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
          ON CONFLICT (id) DO UPDATE SET topic_id = EXCLUDED.topic_id, type = EXCLUDED.type, title = EXCLUDED.title,
-           url = EXCLUDED.url, is_free = EXCLUDED.is_free, status = EXCLUDED.status,
+           url = EXCLUDED.url, is_free = EXCLUDED.is_free,
+           status = CASE WHEN resources.status = 'dead' AND resources.url = EXCLUDED.url THEN resources.status ELSE EXCLUDED.status END,
            last_checked_at = EXCLUDED.last_checked_at, source_note = EXCLUDED.source_note
          WHERE (resources.topic_id, resources.type, resources.title, resources.url, resources.is_free, resources.status, resources.last_checked_at, resources.source_note)
-           IS DISTINCT FROM (EXCLUDED.topic_id, EXCLUDED.type, EXCLUDED.title, EXCLUDED.url, EXCLUDED.is_free, EXCLUDED.status, EXCLUDED.last_checked_at, EXCLUDED.source_note)`,
+           IS DISTINCT FROM (EXCLUDED.topic_id, EXCLUDED.type, EXCLUDED.title, EXCLUDED.url, EXCLUDED.is_free,
+             CASE WHEN resources.status = 'dead' AND resources.url = EXCLUDED.url THEN resources.status ELSE EXCLUDED.status END, EXCLUDED.last_checked_at, EXCLUDED.source_note)`,
         [
           r.id,
           topic,

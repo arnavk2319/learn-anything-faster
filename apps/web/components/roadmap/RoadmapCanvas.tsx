@@ -1,12 +1,14 @@
 "use client";
-// React Flow wrapper: dots background, toolbar, pan and zoom (DESIGN.md section 12 settings).
+// React Flow wrapper: contour canvas, toolbar, pan and zoom (DESIGN.md section 12 settings).
 // Presentational: receives an already laid-out graph and reports toggles upward.
 import "@xyflow/react/dist/style.css";
 import { useMemo, type KeyboardEvent } from "react";
 import { ReactFlow, ReactFlowProvider, useReactFlow } from "@xyflow/react";
 import { AREA_TYPE, TOPIC_TYPE, type FlowGraph } from "../../lib/roadmap/layout";
 import { AreaLane } from "./AreaLane";
+import { usePrefersReducedMotion } from "../../lib/roadmap/use-prefers-reduced-motion";
 import { CanvasToolbar } from "./CanvasToolbar";
+import { ContourLayer } from "./ContourLayer";
 import { PrereqEdge } from "./PrereqEdge";
 import { TopicNode } from "./TopicNode";
 
@@ -14,7 +16,7 @@ const nodeTypes = { [TOPIC_TYPE]: TopicNode, [AREA_TYPE]: AreaLane };
 const edgeTypes = { prereq: PrereqEdge };
 const FIT = { padding: 0.08 };
 const MOVE = { duration: 200 };
-// Re-layout glide (DESIGN.md section 9); reduced motion is handled by the global theme rule.
+// Re-layout glide (DESIGN.md section 9); dropped when the user prefers reduced motion.
 const MOTION = { transition: "transform var(--dur-slow) var(--ease-trail)" };
 
 interface Props {
@@ -27,15 +29,17 @@ interface Props {
 
 function Inner({ graph, onToggleArea, coveredCount, showCovered, onToggleCovered }: Props) {
   const rf = useReactFlow();
+  const reduced = usePrefersReducedMotion();
+  const motion = reduced ? undefined : MOTION;
   // Lanes get their toggle handler here so layout code stays free of callbacks.
   const nodes = useMemo(
     () =>
       graph.nodes.map((n) =>
         n.type === AREA_TYPE
-          ? { ...n, style: MOTION, data: { ...n.data, onToggle: onToggleArea } }
-          : { ...n, style: MOTION },
+          ? { ...n, style: motion, data: { ...n.data, onToggle: onToggleArea } }
+          : { ...n, style: motion },
       ),
-    [graph.nodes, onToggleArea],
+    [graph.nodes, onToggleArea, motion],
   );
   const fit = () => void rf.fitView({ ...FIT, ...MOVE });
 
@@ -60,7 +64,7 @@ function Inner({ graph, onToggleArea, coveredCount, showCovered, onToggleCovered
       <div
         data-testid="roadmap-canvas"
         onKeyDown={onKeyDown}
-        className="canvas-dots min-h-96 flex-1 overflow-hidden rounded-lg border border-border"
+        className="canvas-contour min-h-96 flex-1 overflow-hidden rounded-lg border border-border"
       >
         <ReactFlowRenderer nodes={nodes} edges={graph.edges} />
       </div>
@@ -81,6 +85,7 @@ function ReactFlowRenderer({ nodes, edges }: Pick<FlowGraph, "nodes" | "edges">)
       maxZoom={1.6}
       nodesDraggable={false}
       nodesConnectable={false}
+      // Wrappers stay out of the tab order: each TopicNode's button is the single tab stop (T-012).
       nodesFocusable={false}
       edgesFocusable={false}
       elementsSelectable={false}
@@ -91,7 +96,9 @@ function ReactFlowRenderer({ nodes, edges }: Pick<FlowGraph, "nodes" | "edges">)
       preventScrolling={false}
       colorMode="light"
       className="bg-transparent!"
-    />
+    >
+      <ContourLayer />
+    </ReactFlow>
   );
 }
 

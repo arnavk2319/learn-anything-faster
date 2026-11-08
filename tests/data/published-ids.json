@@ -1,0 +1,28 @@
+{
+  "topics": [
+    "backpropagation-training",
+    "calculus-gradients",
+    "classification",
+    "cnns",
+    "docker",
+    "experiment-tracking",
+    "feature-engineering",
+    "git",
+    "linear-algebra",
+    "matplotlib",
+    "model-evaluation",
+    "model-monitoring",
+    "model-serving",
+    "neural-networks",
+    "numpy",
+    "pandas",
+    "probability-statistics",
+    "python-basics",
+    "regression",
+    "rest-apis",
+    "sql",
+    "supervised-learning-basics",
+    "transformers"
+  ],
+  "roles": ["full-stack-engineer", "ml-engineer"]
+}

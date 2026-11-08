@@ -8,17 +8,21 @@ import {
   type FormDb,
 } from "../../lib/forms/service";
 import type { FormResult } from "../../lib/forms/schemas";
+import { reportLimiterError } from "../../lib/forms/rate-limit-report";
+import { createDbLimiter } from "../../lib/forms/rate-limit-db";
+import { RATE_LIMIT, RATE_WINDOW_MS } from "../../lib/forms/guard";
 import { clientIp } from "../../lib/forms/client-ip";
-
-async function ctx(action: string) {
-  const h = await headers();
-  return { ip: clientIp(h), action };
-}
 
 const str = (d: FormData, k: string) => {
   const v = d.get(k);
   return typeof v === "string" ? v : "";
 };
+
+async function ctx(action: string, d: FormData) {
+  const h = await headers();
+  const host = (h.get("x-forwarded-host") ?? h.get("host") ?? "").split(":")[0];
+  return { ip: clientIp(h), action, host, token: str(d, "cf-turnstile-response") };
+}
 
 export async function requestTransitionAction(
   _prev: FormResult | null,
@@ -33,7 +37,8 @@ export async function requestTransitionAction(
       email: str(d, "email"),
       kind: str(d, "kind"),
     },
-    await ctx("transition"),
+    await ctx("transition", d),
+    createDbLimiter(db, RATE_LIMIT, RATE_WINDOW_MS, { onError: reportLimiterError }),
   );
 }
 
@@ -45,6 +50,7 @@ export async function suggestResourceAction(
   return submitResourceSuggestion(
     db,
     { topicId: str(d, "topicId"), url: str(d, "url"), note: str(d, "note") },
-    await ctx("suggestion"),
+    await ctx("suggestion", d),
+    createDbLimiter(db, RATE_LIMIT, RATE_WINDOW_MS, { onError: reportLimiterError }),
   );
 }

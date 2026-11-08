@@ -18,7 +18,12 @@ export function AreaLane({ data }: NodeProps) {
   const d = data as LaneData;
   const Icon = d.collapsed ? ChevronRight : ChevronDown;
   return (
-    <div className="h-full w-full rounded-lane bg-lane">
+    <div
+      className={cn(
+        "h-full w-full rounded-lane bg-lane-band",
+        d.covered && "border-[1.5px] border-route",
+      )}
+    >
       <Handle type="target" position={Position.Left} isConnectable={false} className="opacity-0!" />
       <button
         type="button"
@@ -32,7 +37,7 @@ export function AreaLane({ data }: NodeProps) {
         )}
       >
         <Icon aria-hidden="true" className="size-4 shrink-0" />
-        <span className="truncate font-display text-base font-semibold">{d.label}</span>
+        <span className="truncate font-display text-base font-semibold">{d.label}</span>{" "}
         <span className="ml-auto text-sm text-muted-foreground">{d.count}</span>
       </button>
       <Handle

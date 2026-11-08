@@ -10,7 +10,7 @@ import { resourceSuggestionSchema, transitionRequestSchema, type FormResult } fr
 /** Wraps a pg pool or client (tests pin a schema through a client). */
 export const formDbFromPg = (c: Pool | PoolClient): FormDb => drizzle(c);
 
-export type FormDb = Pick<NodePgDatabase, "insert">;
+export type FormDb = Pick<NodePgDatabase, "insert" | "execute">;
 
 function fieldErrors(issues: { path: PropertyKey[]; message: string }[]): Record<string, string> {
   const out: Record<string, string> = {};
@@ -37,7 +37,7 @@ export async function submitTransitionRequest(
   if (!parsed.success)
     return { ok: false, error: "invalid", fieldErrors: fieldErrors(parsed.error.issues) };
   const g = await guard(ctx, limiter);
-  if (g !== "ok") return { ok: false, error: "rate_limited" };
+  if (g !== "ok") return { ok: false, error: g };
   try {
     // Duplicate (from, to, email, kind) is a no-op and looks identical to a first submit.
     await db.insert(transitionRequests).values(parsed.data).onConflictDoNothing();
@@ -59,7 +59,7 @@ export async function submitResourceSuggestion(
   if (!parsed.success)
     return { ok: false, error: "invalid", fieldErrors: fieldErrors(parsed.error.issues) };
   const g = await guard(ctx, limiter);
-  if (g !== "ok") return { ok: false, error: "rate_limited" };
+  if (g !== "ok") return { ok: false, error: g };
   try {
     // Duplicate (topic, url) is a no-op and looks identical to a first submit.
     await db.insert(resourceSuggestions).values(parsed.data).onConflictDoNothing();

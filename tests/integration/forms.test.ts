@@ -14,7 +14,7 @@ import { closePool, dropSchema, isDbAvailable, resetSchema } from "./harness";
 // Built at runtime so no email-shaped literal sits in the repo (secrets scan).
 const mail = (u: string) => `${u}${String.fromCharCode(64)}example.test`;
 const DIR = join(process.cwd(), "apps/web/db/migrations");
-const ctx = { ip: "1.2.3.4", action: "t" };
+const ctx = { ip: "1.2.3.4", action: "t", token: "dummy" };
 const open = () => createRateLimiter(1000, 60_000);
 
 describe("rate limiter", () => {
@@ -34,6 +34,10 @@ describe.skipIf(!isDbAvailable())("form actions against Postgres", () => {
     Number((await client.query(`select count(*)::int as n from ${t}`)).rows[0].n);
 
   beforeAll(async () => {
+    // Turnstile siteverify is mocked: the always-pass test secret accepts the dummy token.
+    vi.stubEnv("NODE_ENV", "test");
+    vi.stubEnv("TURNSTILE_SECRET_KEY", "");
+    vi.stubGlobal("fetch", async () => new Response(JSON.stringify({ success: true })));
     ({ client, schema } = await resetSchema());
     const ups = readdirSync(DIR)
       .filter((f) => f.endsWith(".sql") && !f.endsWith(".down.sql"))
@@ -47,6 +51,8 @@ describe.skipIf(!isDbAvailable())("form actions against Postgres", () => {
     db = formDbFromPg(client);
   });
   afterAll(async () => {
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
     client.release();
     await dropSchema(schema);
     await closePool();
@@ -99,6 +105,34 @@ describe.skipIf(!isDbAvailable())("form actions against Postgres", () => {
     const unknown = await submitTransitionRequest(db, req({ toRole: "zzz" }), ctx, open());
     expect(unknown).toMatchObject({ ok: false, error: "invalid" });
     expect(await count("transition_requests")).toBe(before);
+  });
+
+  it("writes nothing when the bot check blocks, for every action", async () => {
+    vi.stubGlobal("fetch", async () => new Response(JSON.stringify({ success: false })));
+    try {
+      const t = await count("transition_requests");
+      const r = await count("resource_suggestions");
+      expect(await submitTransitionRequest(db, req(), ctx, open())).toEqual({
+        ok: false,
+        error: "blocked",
+      });
+      expect(await submitTransitionRequest(db, req({ kind: "notify" }), ctx, open())).toEqual({
+        ok: false,
+        error: "blocked",
+      });
+      expect(
+        await submitResourceSuggestion(
+          db,
+          { topicId: "t1", url: "https://example.test/blocked", note: "" },
+          ctx,
+          open(),
+        ),
+      ).toEqual({ ok: false, error: "blocked" });
+      expect(await count("transition_requests")).toBe(t);
+      expect(await count("resource_suggestions")).toBe(r);
+    } finally {
+      vi.stubGlobal("fetch", async () => new Response(JSON.stringify({ success: true })));
+    }
   });
 
   it("enforces the rate limit", async () => {
