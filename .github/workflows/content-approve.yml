@@ -1,0 +1,57 @@
+name: content-approve
+
+# Human-only. Flips reviewed content proposed -> approved and opens a PR for you to merge.
+# Never pushes to a protected branch and never merges. The `production-content` environment
+# must have a required reviewer (you), so the run waits for your click before anything is written.
+
+on:
+  workflow_dispatch:
+    inputs:
+      topics:
+        description: "Topic ids to approve, comma separated, or 'all'"
+        required: true
+      roles:
+        description: "Role ids to set live, comma separated (blank = none)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  approve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production-content
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Flip statuses
+        env:
+          TOPICS: ${{ inputs.topics }}
+          ROLES: ${{ inputs.roles }}
+        run: pnpm tsx scripts/content-approve.ts --topics "$TOPICS" --roles "$ROLES"
+      - run: pnpm content:validate
+      - name: Commit and open PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TOPICS: ${{ inputs.topics }}
+          ROLES: ${{ inputs.roles }}
+        run: |
+          branch="content-approve-${GITHUB_RUN_ID}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add content
+          git diff --cached --quiet && { echo "nothing to approve"; exit 1; }
+          git commit -m "chore(content): approve reviewed content"
+          git push origin "$branch"
+          gh pr create --head "$branch" \
+            --title "chore(content): approve reviewed content" \
+            --body "Approved via the production-content environment. Topics: $TOPICS. Roles set live: $ROLES."
