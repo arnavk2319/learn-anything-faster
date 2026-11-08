@@ -5,19 +5,19 @@ resources:
     title: 9 Elicitation Techniques Used by Business Analysts (BusinessAnalystMentor)
     url: https://businessanalystmentor.com/elicitation-technique/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Practitioner site listing common elicitation techniques; secondary source, not an official body.
   - id: elicitation-iiba-engaging-stakeholders
     type: article
     title: Engaging Stakeholders in Elicitation and Collaboration (IIBA)
     url: https://www.iiba.org/professional-development/knowledge-centre/articles/engaging-stakeholders-in-elicitation-and-collaboration/
     is_free: true
-    status: proposed
+    status: approved
     source_note: IIBA article directly on elicitation with stakeholders.
   - id: elicitation-iiba-standard-preface
     type: docs
     title: The Business Analysis Standard, Preface (IIBA)
     url: https://www.iiba.org/knowledgehub/the-business-analysis-standard/preface/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Entry to IIBA's standard; elicitation and collaboration is one of its core areas.

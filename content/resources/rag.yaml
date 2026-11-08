@@ -5,19 +5,19 @@ resources:
     title: Retrieval Augmented Generation (RAG) by DeepLearning.AI
     url: https://www.deeplearning.ai/courses/retrieval-augmented-generation/
     is_free: false
-    status: proposed
+    status: approved
     source_note: Established course from DeepLearning.AI; first module previews free, certificate is paid.
   - id: rag-pinecone-learn
     type: article
     title: Retrieval-Augmented Generation (RAG) | Pinecone
     url: https://www.pinecone.io/learn/retrieval-augmented-generation/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Vector-database vendor's explainer; widely linked entry point.
   - id: rag-langchain-docs
     type: docs
     title: Retrieval Augmented Generation (RAG) | LangChain docs
     url: https://docs.langchain.com/oss/python/langchain/rag
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official framework tutorial for building a RAG app end to end.

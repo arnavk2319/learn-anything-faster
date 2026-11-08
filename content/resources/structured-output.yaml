@@ -5,12 +5,12 @@ resources:
     title: Structured model outputs | OpenAI API
     url: https://developers.openai.com/api/docs/guides/structured-outputs
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official guide to schema-constrained responses with Pydantic and Zod helpers.
   - id: structured-output-pydantic
     type: docs
     title: Pydantic documentation
     url: https://pydantic.dev/docs/validation/latest/get-started/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Standard Python schema and validation library used by most LLM SDKs for typed output.

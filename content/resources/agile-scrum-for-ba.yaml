@@ -5,19 +5,19 @@ resources:
     title: The Scrum Guide
     url: https://scrumguides.org/scrum-guide.html
     is_free: true
-    status: proposed
+    status: approved
     source_note: The official definition of Scrum by its creators.
   - id: agile-atlassian-scrum
     type: docs
     title: What is Scrum? Guide to the Agile Framework (Atlassian)
     url: https://www.atlassian.com/agile/scrum
     is_free: true
-    status: proposed
+    status: approved
     source_note: Atlassian's well-known Agile coach hub entry on Scrum.
   - id: agile-manifesto
     type: docs
     title: Manifesto for Agile Software Development
     url: https://agilemanifesto.org/
     is_free: true
-    status: proposed
+    status: approved
     source_note: The original values and principles behind Agile.

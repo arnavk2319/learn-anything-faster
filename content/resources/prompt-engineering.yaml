@@ -5,33 +5,33 @@ resources:
     title: Prompt engineering overview
     url: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official Anthropic docs; points to the living best-practices reference.
   - id: prompt-engineering-openai-docs
     type: docs
     title: Prompt engineering | OpenAI API
     url: https://developers.openai.com/api/docs/guides/prompt-engineering
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official OpenAI guide; a second vendor's view of the same practice.
   - id: prompt-engineering-anthropic-tutorial
     type: course
     title: "Anthropic's Interactive Prompt Engineering Tutorial"
     url: https://github.com/anthropics/prompt-eng-interactive-tutorial
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official hands-on notebooks; linked from the Anthropic docs.
   - id: prompt-engineering-dlai-course
     type: course
     title: ChatGPT Prompt Engineering for Developers
     url: https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/
     is_free: true
-    status: proposed
+    status: approved
     source_note: DeepLearning.AI short course by Andrew Ng and Isa Fulford; developer-oriented.
   - id: prompt-engineering-guide-dair
     type: docs
     title: Prompt Engineering Guide
     url: https://www.promptingguide.ai/
     is_free: true
-    status: proposed
+    status: approved
     source_note: DAIR.AI community reference; broad technique catalogue.

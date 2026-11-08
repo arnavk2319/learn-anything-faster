@@ -5,26 +5,26 @@ resources:
     title: The Business Analysis Standard, Preface (IIBA)
     url: https://www.iiba.org/knowledgehub/the-business-analysis-standard/preface/
     is_free: true
-    status: proposed
+    status: approved
     source_note: IIBA is the professional body behind the BABOK Guide; this is the entry to its public standard.
   - id: ba-fund-iiba-foundational-standards
     type: docs
     title: Foundational Standards for the Global Practice of Business Analysis (IIBA)
     url: https://www.iiba.org/career-resources/a-business-analysis-professionals-foundation-for-success/
     is_free: true
-    status: proposed
+    status: approved
     source_note: IIBA overview page for its core BA standards and the BABOK Guide.
   - id: ba-fund-coursera-microsoft
     type: coursera
     title: Business Analysis Fundamentals (Microsoft, Coursera)
     url: https://www.coursera.org/learn/business-analysis-fundamentals
     is_free: false
-    status: proposed
+    status: approved
     source_note: Beginner course from Microsoft; first course in its Business Analyst certificate. Free audit not confirmed.
   - id: ba-fund-coursera-ibm
     type: coursera
     title: Introduction to Business Analysis (IBM, Coursera)
     url: https://www.coursera.org/learn/introduction-to-business-analysis
     is_free: false
-    status: proposed
+    status: approved
     source_note: Beginner course from IBM covering the role; free audit not confirmed.

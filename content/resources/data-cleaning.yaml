@@ -5,26 +5,26 @@ resources:
     title: Learn Data Cleaning Tutorials | Kaggle
     url: https://www.kaggle.com/learn/data-cleaning
     is_free: true
-    status: proposed
+    status: approved
     source_note: Kaggle Learn short hands-on course on missing values, scaling, parsing and inconsistent data.
   - id: data-cleaning-pandas-missing
     type: docs
     title: Working with missing data (pandas User Guide)
     url: https://pandas.pydata.org/docs/user_guide/missing_data.html
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official pandas reference for detecting, dropping, filling and interpolating missing values.
   - id: data-cleaning-tidy-data
     type: article
     title: Tidy Data (Journal of Statistical Software)
     url: https://www.jstatsoft.org/article/view/v059i10
     is_free: true
-    status: proposed
+    status: approved
     source_note: Hadley Wickham's foundational paper on the tidy table shape that analysis tools expect.
   - id: data-cleaning-pds-handbook
     type: book
     title: Python Data Science Handbook
     url: https://jakevdp.github.io/PythonDataScienceHandbook/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Jake VanderPlas; free online, pandas chapters cover missing data, grouping and merging.

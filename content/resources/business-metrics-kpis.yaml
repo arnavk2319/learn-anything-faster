@@ -5,26 +5,26 @@ resources:
     title: Business Metrics for Data-Driven Companies (Duke University, Coursera)
     url: https://www.coursera.org/learn/analytics-business-metrics
     is_free: false
-    status: proposed
+    status: approved
     source_note: University course on business metrics; free audit not confirmed.
   - id: kpi-atlassian-product-metrics
     type: docs
     title: Product metrics (Atlassian)
     url: https://www.atlassian.com/agile/product-management/product-metrics
     is_free: true
-    status: proposed
+    status: approved
     source_note: Atlassian guide to metrics such as CAC, CLV and churn; fetch returned title only.
   - id: kpi-atlassian-pm-kpis
     type: docs
     title: Product management KPIs (Atlassian)
     url: https://www.atlassian.com/agile/product-management/product-management-kpis
     is_free: true
-    status: proposed
+    status: approved
     source_note: Atlassian guide to product KPIs; fetch returned title only.
   - id: kpi-atlassian-kpi-guide
     type: docs
     title: KPIs - Understanding Metrics for Business Success (Atlassian)
     url: https://www.atlassian.com/work-management/project-management/project-planning/kpi
     is_free: true
-    status: proposed
+    status: approved
     source_note: Atlassian general KPI guide; fetch returned title only.

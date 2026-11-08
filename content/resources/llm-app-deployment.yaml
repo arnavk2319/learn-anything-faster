@@ -5,19 +5,19 @@ resources:
     title: AI SDK by Vercel
     url: https://ai-sdk.dev/docs/introduction
     is_free: true
-    status: proposed
+    status: approved
     source_note: TypeScript toolkit for streaming LLM features in web apps; fits a full-stack background.
   - id: llm-deploy-openai-streaming
     type: docs
     title: Streaming API responses | OpenAI API
     url: https://developers.openai.com/api/docs/guides/streaming-responses
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official docs on streaming model output to clients.
   - id: llm-deploy-fastapi-stream
     type: docs
     title: Custom Response - HTML, Stream, File, others - FastAPI
     url: https://fastapi.tiangolo.com/advanced/custom-response/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official FastAPI docs for streaming responses from a Python backend.

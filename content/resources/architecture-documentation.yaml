@@ -5,26 +5,26 @@ resources:
     title: C4 model
     url: https://c4model.com/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official site of the C4 diagramming model by Simon Brown.
   - id: archdoc-adr-github
     type: docs
     title: Architectural Decision Records (adr.github.io)
     url: https://adr.github.io/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Community hub for ADR formats and tooling.
   - id: archdoc-fowler-adr
     type: article
     title: Architecture Decision Record (Martin Fowler)
     url: https://martinfowler.com/bliki/ArchitectureDecisionRecord.html
     is_free: true
-    status: proposed
+    status: approved
     source_note: Fowler's short article on ADR structure and lifecycle.
   - id: archdoc-arc42
     type: docs
     title: arc42 Template Overview
     url: https://arc42.org/overview
     is_free: true
-    status: proposed
+    status: approved
     source_note: Free open template for architecture documentation.

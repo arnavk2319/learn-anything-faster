@@ -5,19 +5,19 @@ resources:
     title: Design Docs at Google (Malte Ubl)
     url: https://www.industrialempathy.com/posts/design-docs-at-google/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Well-known practitioner article on design docs, alternatives and trade-offs.
   - id: lead-staffeng-guides
     type: article
     title: Staff Engineer guides (Will Larson)
     url: https://staffeng.com/guides/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Guides from the Staff Engineer (Leadership beyond the management track) site on technical leadership.
   - id: lead-fowler-adr-advice
     type: article
     title: Architecture Decision Record, advice process (Martin Fowler)
     url: https://martinfowler.com/bliki/ArchitectureDecisionRecord.html
     is_free: true
-    status: proposed
+    status: approved
     source_note: Covers recording alternatives and the advice process for collaborative decisions; same page as the documentation entry.

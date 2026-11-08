@@ -5,19 +5,19 @@ resources:
     title: Software Architecture Guide (Martin Fowler)
     url: https://martinfowler.com/architecture/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Fowler's guide to what architecture is and why it matters, linking to further articles.
   - id: archfund-aws-wellarchitected
     type: docs
     title: AWS Well-Architected Framework
     url: https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official framework of quality pillars (reliability, security, cost, performance, sustainability) and their trade-offs.
   - id: archfund-azure-waf-pillars
     type: docs
     title: Microsoft Azure Well-Architected Framework pillars
     url: https://learn.microsoft.com/en-us/azure/well-architected/pillars
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official pillar matrix with design principles and a trade-offs page per pillar.

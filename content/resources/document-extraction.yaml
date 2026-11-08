@@ -5,26 +5,26 @@ resources:
     title: PDF support (Claude Platform Docs)
     url: https://platform.claude.com/docs/en/build-with-claude/pdf-support
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official Anthropic guide to sending PDFs to the API for extraction into structured formats.
   - id: doc-extraction-openai-structured
     type: docs
     title: Structured model outputs (OpenAI API)
     url: https://developers.openai.com/api/docs/guides/structured-outputs
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official docs for schema-constrained output, the usual way to extract typed fields.
   - id: doc-extraction-docling
     type: docs
     title: Docling
     url: https://docling-project.github.io/docling/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Open-source document parsing toolkit for converting PDFs and other formats before LLM use.
   - id: doc-extraction-unstructured
     type: docs
     title: Unstructured documentation
     url: https://docs.unstructured.io/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Widely used document-partitioning library docs for turning files into clean elements.

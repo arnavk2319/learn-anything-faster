@@ -5,26 +5,26 @@ resources:
     title: Site Reliability Engineering (Google SRE book, table of contents)
     url: https://sre.google/sre-book/table-of-contents/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Free online edition of the O'Reilly book; chapters on SLOs, monitoring, incident response and postmortems.
   - id: sre-book-slo
     type: book
     title: Service Level Objectives (Google SRE book chapter)
     url: https://sre.google/sre-book/service-level-objectives/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Chapter defining SLIs, SLOs and SLAs and error budgets.
   - id: sre-workbook-implementing-slos
     type: book
     title: Implementing SLOs (Google SRE workbook)
     url: https://sre.google/workbook/implementing-slos/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Practical workbook chapter on choosing and implementing SLOs.
   - id: sre-otel-primer
     type: docs
     title: Observability primer (OpenTelemetry)
     url: https://opentelemetry.io/docs/concepts/observability-primer/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official primer on logs, metrics, traces, SLIs and SLOs.
