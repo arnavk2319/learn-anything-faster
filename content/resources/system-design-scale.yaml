@@ -1,0 +1,30 @@
+topic: system-design-scale
+resources:
+  - id: scale-system-design-primer
+    type: article
+    title: The System Design Primer (donnemartin/system-design-primer)
+    url: https://github.com/donnemartin/system-design-primer
+    is_free: true
+    status: proposed
+    source_note: Widely used open-source guide covering load balancers, caching, sharding, CAP and consistency patterns.
+  - id: scale-aws-caching
+    type: article
+    title: Caching challenges and strategies (Amazon Builders' Library, Jas Chhabra)
+    url: https://builder.aws.com/content/3K9TeXp6strMiJ4vhakpRD7BQWO/caching-challenges-and-strategies
+    is_free: true
+    status: proposed
+    source_note: Practitioner article from AWS on caching strategies and their failure modes; original aws.amazon.com URL redirects here.
+  - id: scale-sre-load-balancing
+    type: docs
+    title: Load Balancing in the Datacenter (Google SRE book)
+    url: https://sre.google/sre-book/load-balancing-datacenter/
+    is_free: true
+    status: proposed
+    source_note: Chapter on distributing requests across backends within a datacenter.
+  - id: scale-azure-sharding
+    type: docs
+    title: Sharding pattern (Azure Architecture Center)
+    url: https://learn.microsoft.com/en-us/azure/architecture/patterns/sharding
+    is_free: true
+    status: proposed
+    source_note: Official pattern page for horizontal partitioning; URL taken from the confirmed Cloud Design Patterns catalogue, page itself not fetched.

@@ -1,0 +1,23 @@
+topic: distributed-systems
+resources:
+  - id: dist-jepsen-consistency
+    type: docs
+    title: Consistency Models (Jepsen)
+    url: https://jepsen.io/consistency
+    is_free: true
+    status: proposed
+    source_note: Reference map of consistency models by Jepsen, widely cited for testing distributed databases.
+  - id: dist-mit-6824
+    type: course
+    title: MIT 6.5840 Distributed Systems (formerly 6.824)
+    url: https://pdos.csail.mit.edu/6.824/
+    is_free: true
+    status: proposed
+    source_note: University course with public lectures, notes and labs on replication, consensus and fault tolerance; lecture videos not confirmed.
+  - id: dist-azure-cloud-patterns
+    type: docs
+    title: Cloud Design Patterns (Azure Architecture Center)
+    url: https://learn.microsoft.com/en-us/azure/architecture/patterns/
+    is_free: true
+    status: proposed
+    source_note: Catalogue including leader election, saga, retry, circuit breaker and the fallacies of distributed computing.

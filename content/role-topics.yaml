@@ -82,3 +82,19 @@
     - data-storytelling
     - data-driven-decision-making
   covers: []
+- role: software-architect
+  requires:
+    - arch-fundamentals
+    - architectural-styles
+    - system-design-scale
+    - distributed-systems
+    - api-design
+    - data-architecture
+    - cloud-iac
+    - observability-sre
+    - security-architecture
+    - architecture-documentation
+    - stakeholder-management
+    - technical-leadership
+    - evolutionary-architecture
+  covers: []

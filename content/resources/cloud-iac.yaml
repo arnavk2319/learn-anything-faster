@@ -1,0 +1,30 @@
+topic: cloud-iac
+resources:
+  - id: cloud-k8s-overview
+    type: docs
+    title: Kubernetes Overview
+    url: https://kubernetes.io/docs/concepts/overview/
+    is_free: true
+    status: proposed
+    source_note: Official concepts overview of Kubernetes.
+  - id: cloud-terraform-intro
+    type: docs
+    title: What is Terraform (HashiCorp Developer)
+    url: https://developer.hashicorp.com/terraform/intro
+    is_free: true
+    status: proposed
+    source_note: Official introduction to Terraform and infrastructure as code.
+  - id: cloud-12factor
+    type: docs
+    title: The Twelve-Factor App
+    url: https://12factor.net/
+    is_free: true
+    status: proposed
+    source_note: Well-known methodology for building cloud-deployable services.
+  - id: cloud-azure-wellarch-pillars
+    type: docs
+    title: Cloud Design Patterns (Azure Architecture Center), cloud view
+    url: https://learn.microsoft.com/en-us/azure/architecture/patterns/
+    is_free: true
+    status: proposed
+    source_note: Technology-agnostic cloud patterns (gateway, sidecar, bulkhead, deployment stamps); same page as the distributed-systems entry.

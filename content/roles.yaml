@@ -13,3 +13,6 @@
 - id: business-analyst
   name: Business analyst
   status: coming_soon
+- id: software-architect
+  name: Software architect
+  status: coming_soon

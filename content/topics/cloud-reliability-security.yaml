@@ -1,0 +1,22 @@
+area: cloud-reliability-security
+topics:
+  - id: cloud-iac
+    name: Cloud architecture and infrastructure as code
+    why: Architectures are realised as orchestrated containers and declarative infrastructure; you already know Docker, so Kubernetes and Terraform are the next layer.
+    est_hours: 10
+    learn_first:
+      - docker
+      - arch-fundamentals
+  - id: observability-sre
+    name: Observability and reliability (SRE, SLOs)
+    why: Reliability targets, error budgets and telemetry turn quality attributes into measurable operating goals.
+    est_hours: 8
+    learn_first:
+      - distributed-systems
+  - id: security-architecture
+    name: Security architecture (threat modelling, authN/Z)
+    why: Security is a design-time quality attribute; threat modelling and sound authentication and authorisation designs prevent costly retrofits.
+    est_hours: 8
+    learn_first:
+      - arch-fundamentals
+      - api-design

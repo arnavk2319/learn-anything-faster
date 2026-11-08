@@ -1,0 +1,37 @@
+topic: evolutionary-architecture
+resources:
+  - id: evo-fowler-technical-debt
+    type: article
+    title: Technical Debt (Martin Fowler)
+    url: https://martinfowler.com/bliki/TechnicalDebt.html
+    is_free: true
+    status: proposed
+    source_note: Fowler on the technical debt metaphor.
+  - id: evo-fowler-debt-quadrant
+    type: article
+    title: Technical Debt Quadrant (Martin Fowler)
+    url: https://martinfowler.com/bliki/TechnicalDebtQuadrant.html
+    is_free: true
+    status: proposed
+    source_note: Classifies debt as deliberate or inadvertent, prudent or reckless.
+  - id: evo-fowler-quality-cost
+    type: article
+    title: Is High Quality Software Worth the Cost? (Martin Fowler)
+    url: https://martinfowler.com/articles/is-quality-worth-cost.html
+    is_free: true
+    status: proposed
+    source_note: Argues internal quality reduces the cost of future change.
+  - id: evo-fowler-strangler-fig
+    type: article
+    title: Strangler Fig (Martin Fowler)
+    url: https://martinfowler.com/bliki/StranglerFigApplication.html
+    is_free: true
+    status: proposed
+    source_note: Incremental legacy modernisation pattern.
+  - id: evo-break-monolith
+    type: article
+    title: How to Break a Monolith into Microservices (Zhamak Dehghani, Martin Fowler)
+    url: https://martinfowler.com/articles/break-monolith-into-microservices.html
+    is_free: true
+    status: proposed
+    source_note: Stepwise guidance for decomposing a monolith.

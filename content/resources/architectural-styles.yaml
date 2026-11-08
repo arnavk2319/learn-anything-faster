@@ -1,0 +1,30 @@
+topic: architectural-styles
+resources:
+  - id: styles-azure-architecture-styles
+    type: docs
+    title: Architecture Styles (Azure Architecture Center)
+    url: https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/
+    is_free: true
+    status: proposed
+    source_note: Official comparison of n-tier, web-queue-worker, microservices, event-driven and other styles with when to choose each.
+  - id: styles-lewis-fowler-microservices
+    type: article
+    title: Microservices (James Lewis and Martin Fowler)
+    url: https://martinfowler.com/articles/microservices.html
+    is_free: true
+    status: proposed
+    source_note: The canonical 2014 article defining the microservices style.
+  - id: styles-cockburn-hexagonal
+    type: article
+    title: Hexagonal (Ports & Adapters) Architecture (Alistair Cockburn)
+    url: https://alistair.cockburn.us/hexagonal-architecture/
+    is_free: true
+    status: proposed
+    source_note: Original description of hexagonal architecture by its author.
+  - id: styles-microservices-io
+    type: docs
+    title: A pattern language for microservices (Chris Richardson)
+    url: https://microservices.io/patterns/index.html
+    is_free: true
+    status: proposed
+    source_note: Catalogue of microservice and event-driven patterns (saga, API gateway, CQRS and others).
