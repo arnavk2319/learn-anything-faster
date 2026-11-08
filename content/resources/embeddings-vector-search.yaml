@@ -1,0 +1,30 @@
+topic: embeddings-vector-search
+resources:
+  - id: embeddings-openai-docs
+    type: docs
+    title: Vector embeddings | OpenAI API
+    url: https://developers.openai.com/api/docs/guides/embeddings
+    is_free: true
+    status: proposed
+    source_note: Official guide to generating and using embeddings.
+  - id: embeddings-claude-docs
+    type: docs
+    title: Embeddings | Claude API Docs
+    url: https://platform.claude.com/docs/en/build-with-claude/embeddings
+    is_free: true
+    status: proposed
+    source_note: Official Anthropic page; includes a small retrieval example and similarity discussion.
+  - id: embeddings-pgvector
+    type: docs
+    title: "pgvector: open-source vector similarity search for Postgres"
+    url: https://github.com/pgvector/pgvector
+    is_free: true
+    status: proposed
+    source_note: Reference for vector search inside Postgres, matching this stack and your SQL background.
+  - id: embeddings-sentence-transformers
+    type: docs
+    title: Sentence Transformers documentation
+    url: https://www.sbert.net/
+    is_free: true
+    status: proposed
+    source_note: Main open-source library for running embedding and reranker models yourself.

@@ -1,0 +1,16 @@
+area: rag-and-retrieval
+topics:
+  - id: embeddings-vector-search
+    name: Embeddings and vector search
+    why: Embeddings turn text into vectors so you can search by meaning; pgvector builds on your SQL skills.
+    est_hours: 8
+    learn_first:
+      - llm-basics
+      - sql
+  - id: rag
+    name: Retrieval-augmented generation (RAG)
+    why: Grounds answers in your own data via chunking, retrieval and prompting; the most common LLM app pattern.
+    est_hours: 12
+    learn_first:
+      - embeddings-vector-search
+      - prompt-engineering

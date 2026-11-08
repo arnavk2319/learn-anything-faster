@@ -1,0 +1,21 @@
+area: llm-fundamentals
+topics:
+  - id: llm-basics
+    name: LLM basics for application builders
+    why: Tokens, context windows, sampling and model families; the mental model every LLM API call rests on.
+    est_hours: 5
+    learn_first:
+      - python-basics
+      - rest-apis
+  - id: prompt-engineering
+    name: Prompt engineering
+    why: Prompts are the main interface to a model; system prompts, examples and iteration decide output quality.
+    est_hours: 6
+    learn_first:
+      - llm-basics
+  - id: structured-output
+    name: Structured output
+    why: Apps need typed, schema-valid data from a model, not free text; this is the contract between model and code.
+    est_hours: 4
+    learn_first:
+      - prompt-engineering

@@ -27,3 +27,18 @@
     - model-serving
     - model-monitoring
   covers: []
+- role: ai-engineer
+  requires:
+    - llm-basics
+    - prompt-engineering
+    - structured-output
+    - embeddings-vector-search
+    - rag
+    - tool-use
+    - agents
+    - llm-evals
+    - llm-guardrails
+    - llm-cost-latency
+    - llm-observability
+    - llm-app-deployment
+  covers: []

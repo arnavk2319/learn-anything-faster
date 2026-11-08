@@ -4,3 +4,6 @@
 - id: ml-engineer
   name: ML engineer
   status: live
+- id: ai-engineer
+  name: AI engineer
+  status: coming_soon

@@ -1,0 +1,30 @@
+topic: agents
+resources:
+  - id: agents-anthropic-effective
+    type: blog
+    title: Building effective agents
+    url: https://www.anthropic.com/engineering/building-effective-agents
+    is_free: true
+    status: proposed
+    source_note: Anthropic engineering essay; widely cited for workflow versus agent design.
+  - id: agents-hf-course
+    type: course
+    title: Welcome to the AI Agents Course | Hugging Face
+    url: https://huggingface.co/learn/agents-course/unit0/introduction
+    is_free: true
+    status: proposed
+    source_note: Free official Hugging Face course covering several agent frameworks.
+  - id: agents-langgraph-docs
+    type: docs
+    title: LangGraph overview
+    url: https://docs.langchain.com/oss/python/langgraph/overview
+    is_free: true
+    status: proposed
+    source_note: Official docs for a widely used agent orchestration framework.
+  - id: agents-openai-docs
+    type: docs
+    title: Agents | OpenAI API
+    url: https://developers.openai.com/api/docs/guides/agents
+    is_free: true
+    status: proposed
+    source_note: Official OpenAI guide to building agents.

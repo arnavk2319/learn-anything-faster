@@ -1,0 +1,23 @@
+topic: tool-use
+resources:
+  - id: tool-use-claude-docs
+    type: docs
+    title: Tool use with Claude
+    url: https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview
+    is_free: true
+    status: proposed
+    source_note: Official Anthropic docs for tool definitions and the call/result round trip.
+  - id: tool-use-openai-docs
+    type: docs
+    title: Function calling | OpenAI API
+    url: https://developers.openai.com/api/docs/guides/function-calling
+    is_free: true
+    status: proposed
+    source_note: Official OpenAI docs; compares directly with the Anthropic approach.
+  - id: tool-use-mcp-intro
+    type: docs
+    title: What is the Model Context Protocol (MCP)?
+    url: https://modelcontextprotocol.io/docs/getting-started/intro
+    is_free: true
+    status: proposed
+    source_note: Official site of the open standard for connecting models to tools and data.
