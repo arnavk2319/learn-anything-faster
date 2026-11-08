@@ -2,18 +2,20 @@ import { cn } from "@/lib/utils";
 import type { RoutePreview } from "@/lib/landing-preview";
 
 type RouteLineProps = {
-  preview: RoutePreview;
-  /** live: mapped move. unmapped: the chosen move is not curated yet (muted line, no stops). */
-  state?: "live" | "unmapped";
+  /** Required for live. Ignored by abstract and unmapped. */
+  preview?: RoutePreview;
+  /** live: mapped move. unmapped: not curated yet (muted line, no stops). abstract: generic placeholder route. */
+  state?: "live" | "unmapped" | "abstract";
   fromName?: string;
   toName?: string;
 };
 
 // Landing trail with stops (DESIGN.md section 12). Horizontal from md, vertical list below.
 export function RouteLine({ preview, state = "live", fromName, toName }: RouteLineProps) {
+  if (state === "abstract" || (state === "live" && !preview)) return <AbstractRoute />;
   const live = state === "live";
   const mid = live
-    ? preview.stops.map((s) => ({ key: s.id, name: s.name, sub: `${s.topics} topics` }))
+    ? (preview?.stops ?? []).map((s) => ({ key: s.id, name: s.name, sub: `${s.topics} topics` }))
     : [{ key: "unmapped", name: "Not mapped yet", sub: "" }];
   return (
     <div data-testid="route-line" data-state={state} className="relative">
@@ -25,7 +27,7 @@ export function RouteLine({ preview, state = "live", fromName, toName }: RouteLi
       <ol className="relative flex flex-col gap-5 md:flex-row md:justify-between md:gap-0">
         <Stop
           end
-          name={fromName ?? preview.fromName}
+          name={fromName ?? preview?.fromName ?? "You"}
           sub="You are here"
           tone="from"
           live={live}
@@ -36,12 +38,40 @@ export function RouteLine({ preview, state = "live", fromName, toName }: RouteLi
         ))}
         <Stop
           end
-          name={toName ?? preview.toName}
-          sub={live ? `About ${preview.hours} hours of learning` : "Request it to get it mapped"}
+          name={toName ?? preview?.toName ?? "Goal"}
+          sub={
+            live ? `About ${preview?.hours ?? 0} hours of learning` : "Request it to get it mapped"
+          }
           tone="to"
           live={live}
           align="end"
         />
+      </ol>
+    </div>
+  );
+}
+
+// Generic route shown before a real pair is known: no role names, topics, hours or links.
+function AbstractRoute() {
+  return (
+    <div data-testid="route-line" data-state="abstract" className="relative">
+      <div
+        aria-hidden="true"
+        data-muted="true"
+        className="trail-line absolute top-4 right-2 left-2 hidden md:block"
+      />
+      <ol className="relative flex flex-col gap-5 md:flex-row md:justify-between md:gap-0">
+        <Stop end name="Start" sub="" tone="from" live={false} align="start" />
+        {[0, 1, 2].map((i) => (
+          <li
+            key={i}
+            aria-hidden="true"
+            className="flex items-start gap-3 md:w-37.5 md:justify-center"
+          >
+            <span className="mt-2 box-border size-5 shrink-0 rounded-pill border-4 border-border bg-card" />
+          </li>
+        ))}
+        <Stop end name="Goal" sub="" tone="to" live={false} align="end" />
       </ol>
     </div>
   );

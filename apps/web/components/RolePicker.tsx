@@ -1,16 +1,27 @@
 "use client";
 // Role sentence with two native selects (keyboard operable by default). Presentational: data comes from the page.
 import Link from "next/link";
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import type { RoutePreview } from "../lib/landing-preview";
+import { fetchRoadmap, isUnmapped, roadmapKey } from "../lib/roadmap/client";
 import type { LandingData } from "../lib/roadmap/landing";
+import { deriveRouteView } from "../lib/route-view";
 import { RouteLine } from "./route/RouteLine";
 import { TransitionRequestForm } from "./forms/TransitionRequestForm";
 
 const selectClass =
   "cursor-pointer rounded-md border-b-2 border-transparent bg-highlight px-3 font-display text-highlight-foreground hover:border-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
 
-export function RolePicker({ roles, curated, preview }: LandingData & { preview: RoutePreview }) {
+export function RolePicker(props: LandingData) {
+  const [client] = useState(() => new QueryClient());
+  return (
+    <QueryClientProvider client={client}>
+      <RolePickerInner {...props} />
+    </QueryClientProvider>
+  );
+}
+
+function RolePickerInner({ roles, curated }: LandingData) {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const chosen = from !== "" && to !== "";
@@ -18,11 +29,23 @@ export function RolePicker({ roles, curated, preview }: LandingData & { preview:
   const isCurated = curated.some((p) => p.from === from && p.to === to);
   const name = (id: string) => roles.find((r) => r.id === id)?.name ?? id;
 
-  const isSeedPair = from === preview.fromId && to === preview.toId;
-  // Route preview: seed move by default; muted when the chosen move is unmapped; hidden for other
-  // curated moves (no seed data for them, so nothing is invented).
-  const routeState =
-    !chosen || same ? "live" : isCurated ? (isSeedPair ? "live" : null) : "unmapped";
+  // The preview is the abstract route until a curated pair is picked; then it shows that pair's
+  // API data. The query key ["roadmap", from, to] keeps a stale response from showing for a newer pair.
+  const query = useQuery({
+    queryKey: roadmapKey(from, to),
+    queryFn: ({ signal }) => fetchRoadmap(from, to, signal),
+    enabled: chosen && !same && isCurated,
+    retry: (n, e) => !isUnmapped(e) && n < 1,
+    staleTime: 60_000,
+  });
+  const view = deriveRouteView({
+    chosen,
+    same,
+    isCurated,
+    data: query.data,
+    unmappedError: query.isError && isUnmapped(query.error),
+  });
+  const livePreview = view.kind === "live" ? view.preview : null;
 
   if (roles.length === 0) {
     return <p className="text-muted-foreground">No roadmaps are live yet. Check back soon.</p>;
@@ -70,10 +93,10 @@ export function RolePicker({ roles, curated, preview }: LandingData & { preview:
             >
               Show my roadmap
             </Link>
-            {isSeedPair ? (
+            {livePreview ? (
               <span className="ml-5 text-muted-foreground">
-                {preview.topicCount} topics to learn. {preview.knownCount} you already know from
-                your current role.
+                {livePreview.topicCount} topics to learn. {livePreview.knownCount} you already know
+                from your current role.
               </span>
             ) : null}
           </>
@@ -87,16 +110,14 @@ export function RolePicker({ roles, curated, preview }: LandingData & { preview:
           </div>
         ) : null}
       </div>
-      {routeState ? (
-        <div className="mt-8">
-          <RouteLine
-            preview={preview}
-            state={routeState}
-            fromName={chosen && !same ? name(from) : undefined}
-            toName={chosen && !same ? name(to) : undefined}
-          />
-        </div>
-      ) : null}
+      <div className="mt-8">
+        <RouteLine
+          preview={livePreview ?? undefined}
+          state={view.kind}
+          fromName={chosen && !same ? name(from) : undefined}
+          toName={chosen && !same ? name(to) : undefined}
+        />
+      </div>
     </div>
   );
 }
