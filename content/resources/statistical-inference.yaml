@@ -1,0 +1,30 @@
+topic: statistical-inference
+resources:
+  - id: stats-think-stats
+    type: book
+    title: Think Stats 2e
+    url: https://greenteapress.com/wp/think-stats-2e/
+    is_free: true
+    status: proposed
+    source_note: Allen Downey's free Python-based statistics book, code-first and aimed at programmers.
+  - id: stats-seeing-theory
+    type: course
+    title: Seeing Theory
+    url: https://seeing-theory.brown.edu/
+    is_free: true
+    status: proposed
+    source_note: Brown University interactive visual intro; frequentist inference chapter covers estimation and the bootstrap.
+  - id: stats-scipy-stats
+    type: docs
+    title: Statistics (scipy.stats) - SciPy Manual
+    url: https://docs.scipy.org/doc/scipy/tutorial/stats.html
+    is_free: true
+    status: proposed
+    source_note: Official reference for running tests and distributions in Python.
+  - id: stats-khan-academy
+    type: course
+    title: Khan Academy Statistics and probability
+    url: https://www.khanacademy.org/math/statistics-probability
+    is_free: true
+    status: proposed
+    source_note: Established free course covering confidence intervals and significance tests.

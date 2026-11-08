@@ -1,0 +1,30 @@
+topic: data-storytelling
+resources:
+  - id: storytelling-swd
+    type: blog
+    title: storytelling with data
+    url: https://www.storytellingwithdata.com/
+    is_free: true
+    status: proposed
+    source_note: Cole Nussbaumer Knaflic's well-known site and blog on communicating with data.
+  - id: storytelling-ft-visual-vocabulary
+    type: article
+    title: Visual Vocabulary (Financial Times chart-doctor)
+    url: https://github.com/Financial-Times/chart-doctor/tree/main/visual-vocabulary
+    is_free: true
+    status: proposed
+    source_note: FT's reference mapping the message you want to make to the chart type.
+  - id: storytelling-datawrapper-academy
+    type: docs
+    title: Datawrapper Academy
+    url: https://www.datawrapper.de/academy
+    is_free: true
+    status: proposed
+    source_note: Newsroom-grade guidance on chart design, annotation and colour for audiences.
+  - id: storytelling-wilke-fundamentals
+    type: book
+    title: Fundamentals of Data Visualization
+    url: https://clauswilke.com/dataviz/
+    is_free: true
+    status: proposed
+    source_note: Part III includes a chapter on telling a story with figures.

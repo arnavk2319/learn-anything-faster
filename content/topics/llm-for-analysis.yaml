@@ -1,0 +1,32 @@
+area: llm-for-analysis
+topics:
+  - id: text-to-sql
+    name: Text-to-SQL
+    why: Letting people ask questions in plain English over a database needs schema context, query validation and read-only safety.
+    est_hours: 6
+    learn_first:
+      - sql
+      - prompt-engineering
+      - structured-output
+  - id: document-extraction
+    name: Document extraction with LLMs
+    why: Invoices, contracts and reports hold data that never reaches a table; LLMs turn them into typed rows that must be checked.
+    est_hours: 6
+    learn_first:
+      - structured-output
+      - llm-evals
+  - id: ai-assisted-analysis
+    name: AI-assisted data analysis
+    why: Models that write and run pandas code speed up exploration, but their answers need verification against the data.
+    est_hours: 6
+    learn_first:
+      - exploratory-data-analysis
+      - prompt-engineering
+  - id: ai-assisted-reporting
+    name: AI-assisted reporting
+    why: Drafting summaries and dashboards with a model saves time only if numbers stay grounded in the data and are evaluated.
+    est_hours: 4
+    learn_first:
+      - data-storytelling
+      - ai-assisted-analysis
+      - llm-evals

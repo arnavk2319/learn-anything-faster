@@ -1,0 +1,30 @@
+topic: ai-assisted-analysis
+resources:
+  - id: ai-analysis-claude-code-exec
+    type: docs
+    title: Code execution tool (Claude Platform Docs)
+    url: https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool
+    is_free: true
+    status: proposed
+    source_note: Official docs for a sandboxed tool where the model runs Python on your data.
+  - id: ai-analysis-openai-code-interpreter
+    type: docs
+    title: Code Interpreter (OpenAI API)
+    url: https://developers.openai.com/api/docs/guides/tools-code-interpreter
+    is_free: true
+    status: proposed
+    source_note: Official OpenAI docs for the equivalent sandboxed Python analysis tool.
+  - id: ai-analysis-pandasai
+    type: docs
+    title: Introduction to PandasAI
+    url: https://docs.pandas-ai.com/
+    is_free: true
+    status: proposed
+    source_note: Open-source library for natural-language questions over dataframes.
+  - id: ai-analysis-coursera-genai-data
+    type: coursera
+    title: Introduction to Generative AI for Data Analysis
+    url: https://www.coursera.org/learn/introduction-to-generative-ai-for-data-analysis
+    is_free: false
+    status: proposed
+    source_note: Microsoft course on data exploration and summarising with generative AI; free audit may be limited, certificate paid.

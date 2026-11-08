@@ -7,3 +7,6 @@
 - id: ai-engineer
   name: AI engineer
   status: coming_soon
+- id: ai-analyst
+  name: AI analyst
+  status: coming_soon

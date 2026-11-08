@@ -42,3 +42,23 @@
     - llm-observability
     - llm-app-deployment
   covers: []
+- role: ai-analyst
+  requires:
+    - probability-statistics
+    - numpy
+    - pandas
+    - matplotlib
+    - data-cleaning
+    - exploratory-data-analysis
+    - statistical-inference
+    - data-visualisation-bi
+    - data-storytelling
+    - llm-basics
+    - prompt-engineering
+    - structured-output
+    - llm-evals
+    - text-to-sql
+    - document-extraction
+    - ai-assisted-analysis
+    - ai-assisted-reporting
+  covers: []
