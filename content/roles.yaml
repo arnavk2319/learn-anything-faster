@@ -6,13 +6,13 @@
   status: live
 - id: ai-engineer
   name: AI engineer
-  status: coming_soon
+  status: live
 - id: ai-analyst
   name: AI analyst
-  status: coming_soon
+  status: live
 - id: business-analyst
   name: Business analyst
-  status: coming_soon
+  status: live
 - id: software-architect
   name: Software architect
-  status: coming_soon
+  status: live

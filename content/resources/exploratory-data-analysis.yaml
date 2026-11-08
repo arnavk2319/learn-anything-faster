@@ -5,19 +5,19 @@ resources:
     title: Exploratory Data Analysis (NIST/SEMATECH e-Handbook of Statistical Methods)
     url: https://www.itl.nist.gov/div898/handbook/eda/eda.htm
     is_free: true
-    status: proposed
+    status: approved
     source_note: Government reference on EDA principles, graphical techniques and case studies.
   - id: eda-seaborn-intro
     type: docs
     title: An introduction to seaborn (seaborn 0.13.2)
     url: https://seaborn.pydata.org/tutorial/introduction.html
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official tutorial for statistical graphics on top of matplotlib and pandas, the standard EDA plotting toolkit.
   - id: eda-pds-handbook
     type: book
     title: Python Data Science Handbook
     url: https://jakevdp.github.io/PythonDataScienceHandbook/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Free online book; pandas and matplotlib chapters are practical EDA workflow material.

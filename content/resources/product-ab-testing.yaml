@@ -5,26 +5,26 @@ resources:
     title: A/B Testing (Udacity)
     url: https://www.udacity.com/course/ab-testing--ud257
     is_free: true
-    status: proposed
+    status: approved
     source_note: Udacity course on A/B testing; is_free to be confirmed by a human (free listing not verified).
   - id: abtest-experiment-guide
     type: book
     title: Trustworthy Online Controlled Experiments (experimentguide.com)
     url: https://experimentguide.com/
     is_free: false
-    status: proposed
+    status: approved
     source_note: Companion site to Kohavi, Tang and Xu's standard text on online experiments; the book itself is paid.
   - id: abtest-evan-miller-tools
     type: docs
     title: Evan's Awesome A/B Tools
     url: https://www.evanmiller.org/ab-testing/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Well-known sample size and result calculators with explanatory articles.
   - id: abtest-optimizely-glossary
     type: docs
     title: A/B testing (Optimizely)
     url: https://www.optimizely.com/optimization-glossary/ab-testing/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Experimentation vendor's glossary entry.

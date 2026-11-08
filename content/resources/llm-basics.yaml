@@ -5,19 +5,19 @@ resources:
     title: "[1hr Talk] Intro to Large Language Models"
     url: https://www.youtube.com/watch?v=zjkBMFhNj_g
     is_free: true
-    status: proposed
+    status: approved
     source_note: Andrej Karpathy; well-known one-hour overview aimed at general technical audiences.
   - id: llm-basics-karpathy-deep-dive
     type: youtube
     title: Deep Dive into LLMs like ChatGPT
     url: https://www.youtube.com/watch?v=7xTGNNLPyMI
     is_free: true
-    status: proposed
+    status: approved
     source_note: Andrej Karpathy; longer follow-up for readers who want more depth.
   - id: llm-basics-openai-text
     type: docs
     title: Text generation | OpenAI API
     url: https://developers.openai.com/api/docs/guides/text
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official API guide; first hands-on call to a hosted model.

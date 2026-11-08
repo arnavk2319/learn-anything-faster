@@ -5,26 +5,26 @@ resources:
     title: Latency optimization | OpenAI API
     url: https://developers.openai.com/api/docs/guides/latency-optimization
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official guide on reducing response time.
   - id: llm-cost-openai-cost
     type: docs
     title: Cost optimization | OpenAI API
     url: https://developers.openai.com/api/docs/guides/cost-optimization
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official guide on reducing token spend.
   - id: llm-cost-openai-caching
     type: docs
     title: Prompt caching | OpenAI API
     url: https://developers.openai.com/api/docs/guides/prompt-caching
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official docs on one of the largest cost and latency levers.
   - id: llm-cost-openai-batch
     type: docs
     title: Batch API | OpenAI API
     url: https://developers.openai.com/api/docs/guides/batch
     is_free: true
-    status: proposed
+    status: approved
     source_note: Official docs on asynchronous batch processing for non-urgent work.

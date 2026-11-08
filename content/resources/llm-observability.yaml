@@ -5,12 +5,12 @@ resources:
     title: AI Observability & Application Tracing | Langfuse
     url: https://langfuse.com/docs/tracing/overview
     is_free: true
-    status: proposed
+    status: approved
     source_note: Open-source LLM observability platform docs; covers traces and sessions.
   - id: llm-observability-phoenix
     type: docs
     title: What is Arize Phoenix?
     url: https://arize.com/docs/phoenix
     is_free: true
-    status: proposed
+    status: approved
     source_note: Open-source tracing and evaluation tool, OpenTelemetry-based.

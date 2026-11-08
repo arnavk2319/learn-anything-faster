@@ -5,33 +5,33 @@ resources:
     title: Threat Modeling (OWASP Cheat Sheet Series)
     url: https://cheatsheetseries.owasp.org/cheatsheets/Threat_Modeling_Cheat_Sheet.html
     is_free: true
-    status: proposed
+    status: approved
     source_note: OWASP's practical guide to threat modelling.
   - id: sec-threat-modeling-manifesto
     type: article
     title: Threat Modeling Manifesto
     url: https://www.threatmodelingmanifesto.org/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Community-authored statement of threat modelling values and principles.
   - id: sec-oauth2
     type: docs
     title: OAuth 2.0
     url: https://oauth.net/2/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Community hub for the OAuth 2.0 standard and related specs.
   - id: sec-owasp-authorization
     type: docs
     title: Authorization (OWASP Cheat Sheet Series)
     url: https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html
     is_free: true
-    status: proposed
+    status: approved
     source_note: OWASP guidance on designing authorisation (least privilege, deny by default).
   - id: sec-owasp-asvs
     type: docs
     title: OWASP Application Security Verification Standard (ASVS)
     url: https://asvs.owasp.org/
     is_free: true
-    status: proposed
+    status: approved
     source_note: Security requirements standard (v5.0.0) useful as a design checklist; the old owasp.org/asvs URL redirects here.
