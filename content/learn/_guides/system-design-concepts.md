@@ -1,6 +1,6 @@
 # System Design Mastery Guide — Basics → Intermediate → Advanced
 
-Concepts, question banks and model answers, organised by the level a system design professional is expected to reach. Companion to the companion problems guide (which solves 37 specific design problems); this guide teaches the **building blocks and reasoning** behind those answers.
+Concepts, question banks and model answers, organised by the level a system design professional is expected to reach. Companion to the problems guide (which solves 37 specific design problems); this guide teaches the **building blocks and reasoning** behind those answers.
 
 **Structure:** 3 stages × 7 topics = 21 topics. Each topic has **Concepts** (what you must know), **Question bank** (questions with best answers) and **Pitfalls** (what weak candidates say).
 
