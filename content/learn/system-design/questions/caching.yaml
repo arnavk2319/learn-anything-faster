@@ -14,7 +14,13 @@
   difficulty: 2
   tags: [patterns]
   status: proposed
-  src: { kind: guide, guide: system-design-concepts, heading: "5. Caching", quote: "Cache-aside is simple and resilient (cache outage degrades to DB)" }
+  src:
+    {
+      kind: guide,
+      guide: system-design-concepts,
+      heading: "5. Caching",
+      quote: "Cache-aside is simple and resilient (cache outage degrades to DB)",
+    }
 - id: q-caching-2
   conceptId: caching
   relatedConceptIds: []
@@ -31,7 +37,13 @@
   difficulty: 3
   tags: [invalidation]
   status: proposed
-  src: { kind: guide, guide: system-design-concepts, heading: "5. Caching", quote: "Concurrent writers can apply updates to the cache out of order" }
+  src:
+    {
+      kind: guide,
+      guide: system-design-concepts,
+      heading: "5. Caching",
+      quote: "Concurrent writers can apply updates to the cache out of order",
+    }
 - id: q-caching-3
   conceptId: caching
   relatedConceptIds: []
@@ -48,7 +60,13 @@
   difficulty: 3
   tags: [failure-modes]
   status: proposed
-  src: { kind: guide, guide: system-design-concepts, heading: "5. Caching", quote: "Use a per-key lock / single-flight so one request rebuilds" }
+  src:
+    {
+      kind: guide,
+      guide: system-design-concepts,
+      heading: "5. Caching",
+      quote: "Use a per-key lock / single-flight so one request rebuilds",
+    }
 - id: q-caching-4
   conceptId: caching
   relatedConceptIds: []
@@ -66,7 +84,13 @@
   difficulty: 1
   tags: [metrics]
   status: proposed
-  src: { kind: guide, guide: system-design-concepts, heading: "5. Caching", quote: "A cache at 90% hit ratio cuts DB load 10×; at 99%, 100×." }
+  src:
+    {
+      kind: guide,
+      guide: system-design-concepts,
+      heading: "5. Caching",
+      quote: "A cache at 90% hit ratio cuts DB load 10×; at 99%, 100×.",
+    }
 - id: q-caching-5
   conceptId: caching
   relatedConceptIds: []
@@ -84,7 +108,13 @@
   difficulty: 3
   tags: [failure-modes]
   status: proposed
-  src: { kind: guide, guide: system-design-concepts, heading: "5. Caching", quote: "**penetration** (queries for non-existent keys → cache negatives, Bloom filter)" }
+  src:
+    {
+      kind: guide,
+      guide: system-design-concepts,
+      heading: "5. Caching",
+      quote: "**penetration** (queries for non-existent keys → cache negatives, Bloom filter)",
+    }
 - id: q-caching-6
   conceptId: caching
   relatedConceptIds: []
@@ -93,7 +123,10 @@
   type: multi
   prompt: "Select the things you would not put in a cache."
   options:
-    - { id: a, text: "Data needing strict read-after-write consistency with no tolerable staleness" }
+    - {
+        id: a,
+        text: "Data needing strict read-after-write consistency with no tolerable staleness",
+      }
     - { id: b, text: "Rarely read data" }
     - { id: c, text: "Hot, frequently read data" }
     - { id: d, text: "Data with no source of truth behind it" }
@@ -102,4 +135,10 @@
   difficulty: 2
   tags: [fundamentals]
   status: proposed
-  src: { kind: guide, guide: system-design-concepts, heading: "5. Caching", quote: "rarely read data (low hit ratio wastes memory)" }
+  src:
+    {
+      kind: guide,
+      guide: system-design-concepts,
+      heading: "5. Caching",
+      quote: "rarely read data (low hit ratio wastes memory)",
+    }

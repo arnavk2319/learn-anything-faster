@@ -15,7 +15,13 @@
   difficulty: 3
   tags: [code-generation]
   status: proposed
-  src: { kind: guide, guide: system-design-problems, heading: "1. URL Shortener (TinyURL) ★", quote: "7 base62 chars = 62⁷ ≈ 3.5 trillion codes" }
+  src:
+    {
+      kind: guide,
+      guide: system-design-problems,
+      heading: "1. URL Shortener (TinyURL) ★",
+      quote: "7 base62 chars = 62⁷ ≈ 3.5 trillion codes",
+    }
 - id: q-url-shortener-2
   problemId: url-shortener
   relatedConceptIds: []
@@ -32,7 +38,13 @@
   difficulty: 1
   tags: [redirect]
   status: proposed
-  src: { kind: guide, guide: system-design-problems, heading: "1. URL Shortener (TinyURL) ★", quote: "302 (lets you count every click)" }
+  src:
+    {
+      kind: guide,
+      guide: system-design-problems,
+      heading: "1. URL Shortener (TinyURL) ★",
+      quote: "302 (lets you count every click)",
+    }
 - id: q-url-shortener-3
   problemId: url-shortener
   relatedConceptIds: []
@@ -49,7 +61,13 @@
   difficulty: 2
   tags: [code-generation]
   status: proposed
-  src: { kind: guide, guide: system-design-problems, heading: "1. URL Shortener (TinyURL) ★", quote: "is stateless but collides; handle with retry/append salt" }
+  src:
+    {
+      kind: guide,
+      guide: system-design-problems,
+      heading: "1. URL Shortener (TinyURL) ★",
+      quote: "is stateless but collides; handle with retry/append salt",
+    }
 - id: q-url-shortener-4
   problemId: url-shortener
   relatedConceptIds: [caching]
@@ -67,4 +85,10 @@
   difficulty: 1
   tags: [read-path]
   status: proposed
-  src: { kind: guide, guide: system-design-problems, heading: "1. URL Shortener (TinyURL) ★", quote: "**Read path:** CDN/edge → app → Redis" }
+  src:
+    {
+      kind: guide,
+      guide: system-design-problems,
+      heading: "1. URL Shortener (TinyURL) ★",
+      quote: "**Read path:** CDN/edge → app → Redis",
+    }
