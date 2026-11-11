@@ -1,0 +1,105 @@
+- id: q-caching-1
+  conceptId: caching
+  relatedConceptIds: []
+  level: basic
+  retired: false
+  type: short-explain
+  prompt: "Cache-aside vs write-through: when would you choose each?"
+  answer: "Cache-aside is simple and resilient (a cache outage degrades to the DB) but can serve stale data after writes unless you delete on write. Write-through keeps the cache fresh and consistent for read-after-write but doubles write latency and caches data that may never be read."
+  rubric:
+    - "Names cache-aside as resilient to cache outage"
+    - "Notes staleness risk unless the key is deleted on write"
+    - "Notes write-through doubles write latency and may cache unread data"
+  explanation: "Cache-aside trades freshness for resilience; write-through trades write latency for consistency."
+  difficulty: 2
+  tags: [patterns]
+  status: proposed
+  src: { kind: guide, guide: system-design-concepts, heading: "5. Caching", quote: "Cache-aside is simple and resilient (cache outage degrades to DB)" }
+- id: q-caching-2
+  conceptId: caching
+  relatedConceptIds: []
+  level: intermediate
+  retired: false
+  type: short-explain
+  prompt: "Why delete the key on write instead of updating it?"
+  answer: "Concurrent writers can apply updates to the cache out of order, leaving a stale value forever. Deleting makes the next read reload the latest committed value. It is still race-prone, so use a short TTL or delayed double-delete for critical paths."
+  rubric:
+    - "Explains out-of-order concurrent updates leave a stale value"
+    - "States delete forces a reload of the committed value"
+    - "Mentions short TTL or delayed double-delete as a backstop"
+  explanation: "An update can persist a losing write; a delete cannot."
+  difficulty: 3
+  tags: [invalidation]
+  status: proposed
+  src: { kind: guide, guide: system-design-concepts, heading: "5. Caching", quote: "Concurrent writers can apply updates to the cache out of order" }
+- id: q-caching-3
+  conceptId: caching
+  relatedConceptIds: []
+  level: intermediate
+  retired: false
+  type: short-explain
+  prompt: "What is a cache stampede and how do you stop it?"
+  answer: "A popular key expires and thousands of requests hit the DB at once. Use a per-key lock or single-flight so one request rebuilds while the others wait or get stale data, jitter TTLs, and refresh popular keys ahead of expiry."
+  rubric:
+    - "Describes simultaneous misses on an expired hot key"
+    - "Names single-flight or per-key lock"
+    - "Names jittered TTLs or refresh-ahead"
+  explanation: "Collapse the herd into one rebuild and spread expiries out."
+  difficulty: 3
+  tags: [failure-modes]
+  status: proposed
+  src: { kind: guide, guide: system-design-concepts, heading: "5. Caching", quote: "Use a per-key lock / single-flight so one request rebuilds" }
+- id: q-caching-4
+  conceptId: caching
+  relatedConceptIds: []
+  level: basic
+  retired: false
+  type: mcq
+  prompt: "A cache has a 90% hit ratio. By roughly what factor does it cut database load?"
+  options:
+    - { id: a, text: "2 times" }
+    - { id: b, text: "10 times" }
+    - { id: c, text: "90 times" }
+    - { id: d, text: "100 times" }
+  answer: [b]
+  explanation: "Only 10% of requests reach the database, so load drops 10 times; at 99% it drops 100 times."
+  difficulty: 1
+  tags: [metrics]
+  status: proposed
+  src: { kind: guide, guide: system-design-concepts, heading: "5. Caching", quote: "A cache at 90% hit ratio cuts DB load 10×; at 99%, 100×." }
+- id: q-caching-5
+  conceptId: caching
+  relatedConceptIds: []
+  level: advanced
+  retired: false
+  type: mcq
+  prompt: "Queries keep arriving for keys that do not exist, so every one reaches the database. Which mitigation fits?"
+  options:
+    - { id: a, text: "Cache negative results or add a Bloom filter" }
+    - { id: b, text: "Randomise TTLs" }
+    - { id: c, text: "Replicate the key across shards" }
+    - { id: d, text: "Switch to write-back" }
+  answer: [a]
+  explanation: "This is cache penetration; negatives and a Bloom filter stop repeated misses. Randomised TTLs address avalanche and key replication addresses hot keys."
+  difficulty: 3
+  tags: [failure-modes]
+  status: proposed
+  src: { kind: guide, guide: system-design-concepts, heading: "5. Caching", quote: "**penetration** (queries for non-existent keys → cache negatives, Bloom filter)" }
+- id: q-caching-6
+  conceptId: caching
+  relatedConceptIds: []
+  level: intermediate
+  retired: false
+  type: multi
+  prompt: "Select the things you would not put in a cache."
+  options:
+    - { id: a, text: "Data needing strict read-after-write consistency with no tolerable staleness" }
+    - { id: b, text: "Rarely read data" }
+    - { id: c, text: "Hot, frequently read data" }
+    - { id: d, text: "Data with no source of truth behind it" }
+  answer: [a, b, d]
+  explanation: "Hot read-heavy data is what caches are for. The others risk staleness, wasted memory, or data loss."
+  difficulty: 2
+  tags: [fundamentals]
+  status: proposed
+  src: { kind: guide, guide: system-design-concepts, heading: "5. Caching", quote: "rarely read data (low hit ratio wastes memory)" }

@@ -1,0 +1,103 @@
+id: caching
+trackId: system-design
+title: Caching
+summary: Where caches sit, the read and write patterns, eviction, invalidation and the failure modes that bite in production.
+stage: basic
+order: 5
+topicIds: []
+prerequisites: []
+status: proposed
+sim:
+  id: cache-aside-read
+  template: cache-aside
+  durationMs: 9000
+  loop: true
+  nodes:
+    - { id: app, kind: app, label: App, inspect: "Reads the cache first; on a miss loads from the database and fills the cache." }
+    - { id: cache, kind: cache, label: "Cache (LRU, 3)", state: { type: lru, capacity: 3, init: [a, b, c] }, inspect: "Holds hot keys; sized by the working set, not total data. Evicts the least recently used key when full." }
+    - { id: hit, kind: decision, label: "Hit?", inspect: "Hit ratio decides how much load reaches the database." }
+    - { id: db, kind: db, label: Database, inspect: "Source of truth; the slow path." }
+  edges:
+    - { id: e1, from: app, to: cache }
+    - { id: e2, from: cache, to: hit }
+    - { id: e3, from: hit, to: db, label: miss }
+  scenarios:
+    - id: hit
+      title: Cache hit
+      events:
+        - { at: 0, send: { edge: e1, token: { label: "GET c", color: request } } }
+        - { at: 800, decide: { node: hit, result: yes } }
+        - { at: 800, state: { node: cache, op: touch, key: c } }
+        - { at: 1600, caption: "Served from the cache; the database is not touched." }
+    - id: miss-fill
+      title: Miss, load and fill
+      events:
+        - { at: 0, send: { edge: e1, token: { label: "GET d", color: request } } }
+        - { at: 800, decide: { node: hit, result: no } }
+        - { at: 900, send: { edge: e3, token: { label: "GET d", color: request } } }
+        - { at: 2200, state: { node: cache, op: put, key: d } }
+        - { at: 2200, caption: "App loads d from the database and fills the cache (cache-aside). a is evicted (least recent)." }
+  src: { kind: gap, note: "Guide states cache-aside flow; the LRU capacity of 3 and which key is evicted are illustrative." }
+levels:
+  basic:
+    - id: caching-where
+      type: text
+      body: "A cache can sit at the client or browser, a CDN, a reverse proxy, inside the application (in-process), in a distributed cache such as Redis or Memcached, or as the database buffer pool. Each layer cuts latency and load."
+      src: { kind: guide, guide: system-design-concepts, heading: "5. Caching", quote: "Each layer cuts latency and load." }
+    - id: caching-patterns
+      type: table
+      columns: [Pattern, How it works, Trade-off]
+      rows:
+        - [Cache-aside, "App reads the cache; on a miss loads the DB and fills the cache", "Default; resilient to cache outage, can serve stale data"]
+        - [Read-through, "Cache itself loads from the DB on a miss", "Simpler callers"]
+        - [Write-through, "Write cache and DB synchronously", "Consistent, slower writes"]
+        - [Write-back, "Write cache, flush to DB asynchronously", "Fast, risk of loss"]
+        - [Refresh-ahead, "Refresh popular keys before they expire", "Avoids misses on hot keys"]
+      src: { kind: guide, guide: system-design-concepts, heading: "5. Caching", quote: "write-through** (write cache and DB synchronously; consistent, slower writes)" }
+    - id: caching-sim
+      type: sim
+      sim: { ref: cache-aside-read }
+      src: { kind: gap, note: "Animation of the cache-aside flow is derived from the pattern description, not stated step by step." }
+    - id: caching-quick-check
+      type: quiz
+      questionIds: [q-caching-1, q-caching-2]
+      src: { kind: gap, note: "Quick-check selection is an authoring choice." }
+  intermediate:
+    - id: caching-eviction
+      type: text
+      body: "Eviction policies are LRU, LFU, FIFO and TTL. Size the cache by the working set, not by total data."
+      src: { kind: guide, guide: system-design-concepts, heading: "5. Caching", quote: "sized by working set, not total data" }
+    - id: caching-invalidation
+      type: compare
+      left:
+        title: "TTL"
+        body: "Simple, with bounded staleness."
+      right:
+        title: "Delete on write"
+        body: "Preferred over update-on-write because it avoids update races. Event-driven invalidation and versioned keys are the other options."
+      src: { kind: guide, guide: system-design-concepts, heading: "5. Caching", quote: "delete-on-write (preferred over update-on-write to avoid races)" }
+    - id: caching-metrics
+      type: text
+      body: "Track hit ratio, eviction rate, latency and memory. A cache at 90% hit ratio cuts database load 10 times; at 99%, 100 times."
+      src: { kind: guide, guide: system-design-concepts, heading: "5. Caching", quote: "A cache at 90% hit ratio cuts DB load 10×; at 99%, 100×." }
+  advanced:
+    - id: caching-failure-modes
+      type: table
+      columns: [Failure mode, What happens, Mitigation]
+      rows:
+        - [Stampede, "Many misses at once on an expired hot key", "Single-flight lock, jittered TTL, stale-while-revalidate"]
+        - [Penetration, "Queries for keys that do not exist", "Cache negatives, Bloom filter"]
+        - [Avalanche, "Mass expiry or cache loss", "Randomised TTLs, warm-up, replicas"]
+        - [Hot key, "One key overloads a shard", "Local L1 cache, key replication or suffix sharding"]
+      src: { kind: guide, guide: system-design-concepts, heading: "5. Caching", quote: "**penetration** (queries for non-existent keys" }
+    - id: caching-pitfalls
+      type: callout
+      tone: pitfall
+      body: "Treating the cache as the source of truth; caching without a TTL; ignoring hot keys; not stating the consistency model of the cache."
+      src: { kind: guide, guide: system-design-concepts, heading: "5. Caching", quote: "treating cache as the source of truth; caching without a TTL" }
+    - id: caching-redis
+      type: faq
+      items:
+        - q: "Redis is single-threaded. How does it reach 100k ops/s?"
+          a: "Command execution is single-threaded but in-memory, with I/O multiplexing, no lock contention and very cheap operations. Scale further with sharding (Redis Cluster) and replicas."
+      src: { kind: guide, guide: system-design-concepts, heading: "5. Caching", quote: "Command execution is single-threaded but in-memory" }

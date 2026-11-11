@@ -1,0 +1,70 @@
+- id: q-url-shortener-1
+  problemId: url-shortener
+  relatedConceptIds: [caching]
+  level: basic
+  retired: false
+  type: short-explain
+  prompt: "How do you generate short codes with guaranteed uniqueness at scale without a per-request coordinator call?"
+  answer: "Use a counter with base62 encoding. Each app server leases a range of IDs (for example 1M at a time) from a coordinator such as ZooKeeper, etcd or a DB sequence, then encodes a local counter. Seven base62 characters give about 3.5 trillion codes. Pass the ID through a bijective scramble to stop sequential guessing."
+  rubric:
+    - "Chooses counter or key service over hashing"
+    - "Describes leasing an ID range to avoid per-request coordination"
+    - "Mentions base62 and the 7-character capacity"
+    - "Mentions a scramble to prevent guessing"
+  explanation: "Leasing ranges moves coordination off the hot path."
+  difficulty: 3
+  tags: [code-generation]
+  status: proposed
+  src: { kind: guide, guide: system-design-problems, heading: "1. URL Shortener (TinyURL) ★", quote: "7 base62 chars = 62⁷ ≈ 3.5 trillion codes" }
+- id: q-url-shortener-2
+  problemId: url-shortener
+  relatedConceptIds: []
+  level: basic
+  retired: false
+  type: mcq
+  prompt: "You need a count of every click on every short link. Which redirect status do you return?"
+  options:
+    - { id: a, text: "301, because it is cacheable" }
+    - { id: b, text: "302, because it lets you count every click" }
+    - { id: c, text: "200 with the long URL in the body" }
+  answer: [b]
+  explanation: "A 301 is cached by clients and hides repeat clicks from you; a 302 costs more load but each click reaches the service."
+  difficulty: 1
+  tags: [redirect]
+  status: proposed
+  src: { kind: guide, guide: system-design-problems, heading: "1. URL Shortener (TinyURL) ★", quote: "302 (lets you count every click)" }
+- id: q-url-shortener-3
+  problemId: url-shortener
+  relatedConceptIds: []
+  level: intermediate
+  retired: false
+  type: multi
+  prompt: "Select the true statements about hash-based short codes (MD5, first 7 characters)."
+  options:
+    - { id: a, text: "It is stateless" }
+    - { id: b, text: "It can collide, so you retry or append a salt" }
+    - { id: c, text: "It needs a coordinated counter" }
+  answer: [a, b]
+  explanation: "Hash-based codes need no shared state but collide; the coordinated counter belongs to the counter approach."
+  difficulty: 2
+  tags: [code-generation]
+  status: proposed
+  src: { kind: guide, guide: system-design-problems, heading: "1. URL Shortener (TinyURL) ★", quote: "is stateless but collides; handle with retry/append salt" }
+- id: q-url-shortener-4
+  problemId: url-shortener
+  relatedConceptIds: [caching]
+  level: intermediate
+  retired: false
+  type: ordering
+  prompt: "Order the read path from first to last."
+  options:
+    - { id: a, text: "CDN / edge" }
+    - { id: b, text: "App" }
+    - { id: c, text: "Redis (cache-aside)" }
+    - { id: d, text: "Database" }
+  answer: [a, b, c, d]
+  explanation: "Hot links are served from the earliest layer that has them; the database is the last resort."
+  difficulty: 1
+  tags: [read-path]
+  status: proposed
+  src: { kind: guide, guide: system-design-problems, heading: "1. URL Shortener (TinyURL) ★", quote: "**Read path:** CDN/edge → app → Redis" }

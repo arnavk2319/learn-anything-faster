@@ -1,0 +1,129 @@
+id: url-shortener
+trackId: system-design
+title: URL shortener
+summary: "Design a TinyURL-style service: short code generation, a read-heavy redirect path, caching and click analytics."
+difficulty: easy
+priority: true
+conceptIds: [caching]
+topicIds: []
+status: proposed
+sim:
+  id: url-shortener-redirect
+  template: cache-aside
+  durationMs: 9000
+  loop: true
+  nodes:
+    - { id: client, kind: client, label: Browser, inspect: "Requests the short link and follows the redirect." }
+    - { id: edge, kind: external, label: "CDN / edge", inspect: "First stop for hot links on the read path." }
+    - { id: app, kind: app, label: App, inspect: "Looks up the code; emits a click event without blocking the redirect." }
+    - { id: cache, kind: cache, label: "Redis (cache-aside)", state: { type: kv, init: { abc1234: "https://example.com/long" } }, inspect: "Hot links stay here; about 20% of codes serve about 80% of traffic." }
+    - { id: db, kind: db, label: "URL store", inspect: "Key-value access by code. Source of truth." }
+    - { id: kafka, kind: queue, label: "Click events", inspect: "Analytics are emitted asynchronously so the redirect is never blocked." }
+  edges:
+    - { id: e1, from: client, to: edge }
+    - { id: e2, from: edge, to: app }
+    - { id: e3, from: app, to: cache }
+    - { id: e4, from: cache, to: db, label: miss }
+    - { id: e5, from: app, to: kafka }
+  scenarios:
+    - id: cached-redirect
+      title: Redirect served from cache
+      events:
+        - { at: 0, send: { edge: e1, token: { label: "GET /abc1234", color: request } } }
+        - { at: 800, send: { edge: e2, token: { label: "GET /abc1234", color: request } } }
+        - { at: 1600, send: { edge: e3, token: { label: "abc1234", color: request } } }
+        - { at: 2400, send: { edge: e5, token: { label: click, color: replicate } } }
+        - { at: 2400, caption: "Cache hit: app answers with a redirect and emits a click event asynchronously." }
+    - id: cache-miss
+      title: Cache miss falls through to the store
+      events:
+        - { at: 0, send: { edge: e1, token: { label: "GET /zzz9999", color: request } } }
+        - { at: 800, send: { edge: e2, token: { label: "GET /zzz9999", color: request } } }
+        - { at: 1600, send: { edge: e3, token: { label: "zzz9999", color: request } } }
+        - { at: 2400, send: { edge: e4, token: { label: "zzz9999", color: request } } }
+        - { at: 3600, state: { node: cache, op: put, key: zzz9999 } }
+        - { at: 3600, caption: "Miss: the store is read and the cache is filled for next time." }
+  src: { kind: gap, note: "Guide gives the read path CDN, app, Redis, DB and async click events; token timings and the scenarios are illustrative." }
+blocks:
+  - id: us-clarify
+    type: text
+    body: "Ask first: custom aliases, expiry, analytics (click counts), edit or delete. Scale: new URLs per day, the read to write ratio (assume 100 to 1) and the redirect latency target. Is a shorter link unique per long URL, or may duplicates exist?"
+    src: { kind: guide, guide: system-design-problems, heading: "1. URL Shortener (TinyURL) ★", quote: "Custom aliases? Expiry? Analytics (click counts)? Edit/delete links?" }
+  - id: us-approach-codes
+    type: text
+    body: "The key decision is how to generate the short code: hash and cut (collisions), counter plus base62 (needs a coordinated counter), or a pre-generated key service. Pick counter or key service for guaranteed uniqueness."
+    src: { kind: guide, guide: system-design-problems, heading: "1. URL Shortener (TinyURL) ★", quote: "The key decision is **how to generate the short code**" }
+  - id: us-approach-redirect
+    type: callout
+    tone: tip
+    body: "Reads dominate, so lean on cache and CDN. Use 301 (cacheable, less load) or 302 (lets you count every click) and say which and why."
+    src: { kind: guide, guide: system-design-problems, heading: "1. URL Shortener (TinyURL) ★", quote: "Reads dominate, so lean on **cache + CDN**" }
+  - id: us-estimates
+    type: table
+    columns: [Quantity, Estimate]
+    rows:
+      - ["Writes", "100M new URLs per month, about 40 writes/s"]
+      - ["Reads", "100:1, about 4,000 reads/s"]
+      - ["Storage", "5 years x 1.2B URLs x about 500 B, about 600 GB (small)"]
+    src: { kind: guide, guide: system-design-problems, heading: "1. URL Shortener (TinyURL) ★", quote: "100M new URLs/month ≈ 40 writes/s" }
+  - id: us-api
+    type: code
+    language: text
+    caption: API and data model
+    code: |
+      POST /urls {longUrl, alias?, ttl?}  ->  {shortUrl}
+      GET  /{code}                        ->  302 Location: longUrl
+
+      urls(code PK, long_url, user_id, created_at, expires_at)
+    src: { kind: guide, guide: system-design-problems, heading: "1. URL Shortener (TinyURL) ★", quote: "`urls(code PK, long_url, user_id, created_at, expires_at)`" }
+  - id: us-code-generation
+    type: text
+    body: "Seven base62 characters give 62^7, about 3.5 trillion codes. Each app server leases a range of IDs (for example 1M at a time) from a coordinator and base62-encodes a local counter, so there is no per-request coordination. To stop sequential guessing, pass the ID through a bijective scramble."
+    src: { kind: guide, guide: system-design-problems, heading: "1. URL Shortener (TinyURL) ★", quote: "Each app server leases a **range of IDs**" }
+  - id: us-base62
+    type: code
+    language: ts
+    caption: Base62 encoding of a leased counter
+    code: |
+      const ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+      function toBase62(n: bigint): string {
+        if (n === 0n) return "0";
+        let s = "";
+        while (n > 0n) { s = ALPHABET[Number(n % 62n)] + s; n /= 62n; }
+        return s;
+      }
+      // each app server leases [start, start+1_000_000) from the coordinator, then:
+      let next = 0n; // set from the leased range
+      const newCode = () => toBase62(next++).padStart(7, "0");
+    src: { kind: guide, guide: system-design-problems, heading: "1. URL Shortener (TinyURL) ★", quote: "function toBase62(n: bigint): string {" }
+  - id: us-sim
+    type: sim
+    sim: { ref: url-shortener-redirect }
+    src: { kind: gap, note: "Animation derived from the stated read path; timings are illustrative." }
+  - id: us-read-path
+    type: text
+    body: "Read path: CDN or edge, then the app, then Redis (cache-aside, LRU, TTL), then the database. Hot links stay in cache. Click events go to Kafka asynchronously and never block the redirect."
+    src: { kind: guide, guide: system-design-problems, heading: "1. URL Shortener (TinyURL) ★", quote: "CDN/edge → app → Redis (cache-aside, LRU, TTL) → DB." }
+  - id: us-tradeoffs
+    type: compare
+    left:
+      title: "301 redirect"
+      body: "Cacheable and reduces load, but hides clicks from you."
+    right:
+      title: "302 redirect"
+      body: "Costs more load but gives you analytics."
+    src: { kind: guide, guide: system-design-problems, heading: "1. URL Shortener (TinyURL) ★", quote: "301 reduces load but hides clicks from you" }
+  - id: us-abuse-expiry
+    type: callout
+    tone: note
+    body: "Abuse: rate limit creation, scan for malware and phishing URLs, block redirect loops. Expiry: lazy delete on read plus a background sweeper; recycle codes only after a long cool-down."
+    src: { kind: guide, guide: system-design-problems, heading: "1. URL Shortener (TinyURL) ★", quote: "recycle codes only after a long cool-down" }
+  - id: us-hash-pitfall
+    type: callout
+    tone: pitfall
+    body: "Hash-based codes (MD5, first 7 chars) are stateless but collide; handle with a retry or an appended salt."
+    src: { kind: guide, guide: system-design-problems, heading: "1. URL Shortener (TinyURL) ★", quote: "Hash-based (MD5 → first 7 chars) is stateless but collides" }
+  - id: us-quick-check
+    type: quiz
+    questionIds: [q-url-shortener-1, q-url-shortener-2]
+    src: { kind: gap, note: "Quick-check selection is an authoring choice." }
