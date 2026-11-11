@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Learn: System design (wireframe) /learn/system-design</title>
+    <link rel="stylesheet" href="../../theme.css" />
+    <link rel="stylesheet" href="learn.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="logo" href="#"><i></i>Trailhead</a>
+      <nav class="nav" aria-label="Main">
+        <a href="#">Roadmaps</a>
+        <a href="learn-landing.html" aria-current="page">Learn</a>
+      </nav>
+    </header>
+
+    <main class="page">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="learn-landing.html">Learn</a> / System design
+      </nav>
+
+      <div class="track-head">
+        <div class="left">
+          <span class="lg ring" style="--p: 38" role="img" aria-label="38% of System design done"
+            ><b>38%</b></span
+          >
+          <div>
+            <h1>System design</h1>
+            <p class="small num">21 concepts &middot; 37 problems &middot; 400 questions</p>
+          </div>
+        </div>
+        <button
+          class="star"
+          type="button"
+          aria-pressed="true"
+          aria-label="Favorite System design"
+        ></button>
+      </div>
+
+      <div class="continue">
+        <span class="dot"></span>
+        <div class="grow">
+          <p class="small">Continue where you left off</p>
+          <p><b>Caching</b> <span class="small">basic, concept</span></p>
+        </div>
+        <a class="btn" href="learn-concept.html">Continue</a>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Track sections">
+        <button role="tab" id="t-concepts" aria-controls="p-concepts" aria-selected="true">
+          Concepts <span class="count">21</span>
+        </button>
+        <button
+          role="tab"
+          id="t-problems"
+          aria-controls="p-problems"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          Problems <span class="count">37</span>
+        </button>
+        <button
+          role="tab"
+          id="t-questions"
+          aria-controls="p-questions"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          Questions <span class="count">400</span>
+        </button>
+      </div>
+
+      <!-- Concepts: levels are in-page anchors #basic | #intermediate | #advanced -->
+      <section role="tabpanel" id="p-concepts" aria-labelledby="t-concepts">
+        <div class="level" id="basic">
+          <h3>Basic <span class="small">7 concepts</span></h3>
+          <ul class="rows">
+            <li>
+              <div class="row">
+                <span class="dot"></span>
+                <div class="title">
+                  <a href="learn-concept.html">Caching</a>
+                  <p class="small">Keep hot data close to the app</p>
+                </div>
+                <div class="meta">
+                  <span class="badge sim">sim</span>
+                  <span class="bar" role="img" aria-label="2 of 5 done" style="--p: 40"
+                    ><i></i
+                  ></span>
+                  <span class="small num hide-sm">2/5</span>
+                  <button
+                    class="star"
+                    type="button"
+                    aria-pressed="true"
+                    aria-label="Favorite Caching"
+                  ></button>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="row">
+                <span class="dot done"></span>
+                <div class="title">
+                  <a href="#">Load balancing</a>
+                  <p class="small">Spread requests across servers</p>
+                </div>
+                <div class="meta">
+                  <span class="badge sim">sim</span>
+                  <span class="bar" role="img" aria-label="Done" style="--p: 100"><i></i></span>
+                  <span class="small num hide-sm">5/5</span>
+                  <button
+                    class="star"
+                    type="button"
+                    aria-pressed="false"
+                    aria-label="Favorite Load balancing"
+                  ></button>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="row">
+                <span class="dot"></span>
+                <div class="title">
+                  <a href="#">Databases and indexes</a>
+                  <p class="small">Why reads are fast or slow</p>
+                </div>
+                <div class="meta">
+                  <span class="badge sim">sim</span>
+                  <span class="bar" role="img" aria-label="Not started" style="--p: 0"
+                    ><i></i
+                  ></span>
+                  <span class="small num hide-sm">0/4</span>
+                  <button
+                    class="star"
+                    type="button"
+                    aria-pressed="false"
+                    aria-label="Favorite Databases and indexes"
+                  ></button>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="level" id="intermediate">
+          <h3>Intermediate <span class="small">8 concepts</span></h3>
+          <ul class="rows">
+            <li>
+              <div class="row">
+                <span class="dot"></span>
+                <div class="title">
+                  <a href="#">Replication</a>
+                  <p class="small">Copies for speed and survival</p>
+                </div>
+                <div class="meta">
+                  <span class="badge sim">sim</span>
+                  <span class="bar" role="img" aria-label="Not started" style="--p: 0"
+                    ><i></i
+                  ></span>
+                  <span class="small num hide-sm">0/6</span>
+                  <button
+                    class="star"
+                    type="button"
+                    aria-pressed="false"
+                    aria-label="Favorite Replication"
+                  ></button>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="row">
+                <span class="dot"></span>
+                <div class="title">
+                  <a href="#">Message queues</a>
+                  <p class="small">Decouple producers from consumers</p>
+                </div>
+                <div class="meta">
+                  <span class="badge sim">sim</span>
+                  <span class="bar" role="img" aria-label="Not started" style="--p: 0"
+                    ><i></i
+                  ></span>
+                  <span class="small num hide-sm">0/5</span>
+                  <button
+                    class="star"
+                    type="button"
+                    aria-pressed="false"
+                    aria-label="Favorite Message queues"
+                  ></button>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="level" id="advanced">
+          <h3>Advanced <span class="small">6 concepts</span></h3>
+          <ul class="rows">
+            <li>
+              <div class="row">
+                <span class="dot"></span>
+                <div class="title">
+                  <a href="#">Consensus and locking</a>
+                  <p class="small">Agreeing on one truth</p>
+                </div>
+                <div class="meta">
+                  <span class="badge sim">sim</span>
+                  <span class="bar" role="img" aria-label="Not started" style="--p: 0"
+                    ><i></i
+                  ></span>
+                  <span class="small num hide-sm">0/6</span>
+                  <button
+                    class="star"
+                    type="button"
+                    aria-pressed="false"
+                    aria-label="Favorite Consensus and locking"
+                  ></button>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Problems -->
+      <section role="tabpanel" id="p-problems" aria-labelledby="t-problems" hidden>
+        <div class="level">
+          <h3>Easy <span class="small">10 problems</span></h3>
+          <ul class="rows">
+            <li>
+              <div class="row">
+                <span class="dot done"></span>
+                <div class="title">
+                  <a href="#">Design a URL shortener</a>
+                  <p class="small">Hashing, storage, redirects</p>
+                </div>
+                <div class="meta">
+                  <span class="badge sim">sim</span>
+                  <span class="bar" role="img" aria-label="Seen" style="--p: 100"><i></i></span>
+                  <button
+                    class="star"
+                    type="button"
+                    aria-pressed="true"
+                    aria-label="Priority: URL shortener"
+                  ></button>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="row">
+                <span class="dot"></span>
+                <div class="title">
+                  <a href="#">Design a rate limiter</a>
+                  <p class="small">Counters, windows, fairness</p>
+                </div>
+                <div class="meta">
+                  <span class="badge sim">sim</span>
+                  <span class="bar" role="img" aria-label="Not started" style="--p: 0"
+                    ><i></i
+                  ></span>
+                  <button
+                    class="star"
+                    type="button"
+                    aria-pressed="false"
+                    aria-label="Priority: rate limiter"
+                  ></button>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="level">
+          <h3>Medium <span class="small">17 problems</span></h3>
+          <ul class="rows">
+            <li>
+              <div class="row">
+                <span class="dot"></span>
+                <div class="title">
+                  <a href="#">Design a news feed</a>
+                  <p class="small">Fan-out on write or read</p>
+                </div>
+                <div class="meta">
+                  <span class="badge sim">sim</span>
+                  <span class="bar" role="img" aria-label="Not started" style="--p: 0"
+                    ><i></i
+                  ></span>
+                  <button
+                    class="star"
+                    type="button"
+                    aria-pressed="true"
+                    aria-label="Priority: news feed"
+                  ></button>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="level">
+          <h3>Hard <span class="small">10 problems</span></h3>
+          <ul class="rows">
+            <li>
+              <div class="row">
+                <span class="dot"></span>
+                <div class="title">
+                  <a href="#">Design a distributed lock service</a>
+                  <p class="small">Leases, fencing, failure</p>
+                </div>
+                <div class="meta">
+                  <span class="badge sim">sim</span>
+                  <span class="bar" role="img" aria-label="Not started" style="--p: 0"
+                    ><i></i
+                  ></span>
+                  <button
+                    class="star"
+                    type="button"
+                    aria-pressed="false"
+                    aria-label="Priority: lock service"
+                  ></button>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Questions: sets list -->
+      <section role="tabpanel" id="p-questions" aria-labelledby="t-questions" hidden>
+        <div class="filters" role="group" aria-label="Filter question sets">
+          <label
+            >Concept
+            <select class="select">
+              <option>Any</option>
+              <option>Caching</option>
+              <option>Replication</option>
+            </select></label
+          >
+          <label
+            >Level
+            <select class="select">
+              <option>Any</option>
+              <option>Basic</option>
+              <option>Intermediate</option>
+              <option>Advanced</option>
+            </select></label
+          >
+          <button class="chip" type="button" aria-pressed="false">In progress</button>
+          <button class="chip" type="button" aria-pressed="false">Favorited</button>
+        </div>
+        <div class="level">
+          <h3>Concept sets <span class="small">21 sets</span></h3>
+          <ul class="rows">
+            <li>
+              <div class="row">
+                <div class="title">
+                  <a href="learn-questions.html">Caching</a>
+                  <p class="small num">12 questions</p>
+                </div>
+                <div class="meta">
+                  <span class="bar" role="img" aria-label="7 of 12" style="--p: 58"><i></i></span>
+                  <span class="small num">7/12</span>
+                  <a class="btn sm outline" href="learn-questions.html">Open</a>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="row">
+                <div class="title">
+                  <a href="#">Replication</a>
+                  <p class="small num">9 questions</p>
+                </div>
+                <div class="meta">
+                  <span class="bar" role="img" aria-label="0 of 9" style="--p: 0"><i></i></span>
+                  <span class="small num">0/9</span>
+                  <a class="btn sm outline" href="#">Open</a>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="level">
+          <h3>Mixed sets <span class="small">2 sets</span></h3>
+          <ul class="rows">
+            <li>
+              <div class="row">
+                <div class="title">
+                  <a href="#">Mixed: caching and consistency</a>
+                  <p class="small num">10 questions</p>
+                </div>
+                <div class="meta">
+                  <span class="bar" role="img" aria-label="0 of 10" style="--p: 0"><i></i></span>
+                  <span class="small num">0/10</span>
+                  <a class="btn sm outline" href="#">Open</a>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="row">
+                <div class="title">
+                  <a href="#">Mixed: scaling reads</a>
+                  <p class="small num">12 questions</p>
+                </div>
+                <div class="meta">
+                  <span class="bar" role="img" aria-label="0 of 12" style="--p: 0"><i></i></span>
+                  <span class="small num">0/12</span>
+                  <a class="btn sm outline" href="#">Open</a>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+    </main>
+    <script src="learn.js"></script>
+  </body>
+</html>

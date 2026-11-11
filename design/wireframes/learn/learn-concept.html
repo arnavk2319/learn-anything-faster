@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Learn: Caching (wireframe) /learn/system-design/concepts/caching</title>
+    <link rel="stylesheet" href="../../theme.css" />
+    <link rel="stylesheet" href="learn.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="logo" href="#"><i></i>Trailhead</a>
+      <nav class="nav" aria-label="Main">
+        <a href="#">Roadmaps</a>
+        <a href="learn-landing.html" aria-current="page">Learn</a>
+      </nav>
+    </header>
+
+    <main class="page">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="learn-landing.html">Learn</a> / <a href="learn-track.html">System design</a> /
+        Caching
+      </nav>
+
+      <div class="concept-head">
+        <div class="grow">
+          <h1>Caching</h1>
+          <p class="small">Basic concept &middot; 2 of 5 done</p>
+        </div>
+        <span class="ring" style="--p: 40" role="img" aria-label="2 of 5 done"><b>2/5</b></span>
+        <button
+          class="star"
+          type="button"
+          aria-pressed="true"
+          aria-label="Favorite Caching"
+        ></button>
+      </div>
+
+      <!-- Sim frame. Server renders the poster (frame 0) plus the transcript; the island hydrates on scroll into view. -->
+      <section class="sim" id="sim" aria-labelledby="sim-title">
+        <h2 id="sim-title" class="sr-only">LRU cache read path simulation</h2>
+
+        <div
+          class="sim-canvas"
+          tabindex="0"
+          role="group"
+          aria-label="LRU cache read path. Space plays or pauses, left and right arrows step, R restarts. Tab to a node and press Enter to inspect it."
+        >
+          <p class="sim-hint">Swipe sideways to pan the diagram.</p>
+          <svg
+            viewBox="0 0 760 270"
+            role="img"
+            aria-label="App sends GET to an LRU cache of three keys, then a Hit? decision, then the database on a miss"
+          >
+            <defs>
+              <marker
+                id="chev"
+                viewBox="0 0 10 10"
+                refX="9"
+                refY="5"
+                markerUnits="userSpaceOnUse"
+                markerWidth="10"
+                markerHeight="10"
+                orient="auto"
+              >
+                <path class="chev" d="M1 1 L9 5 L1 9 Z" />
+              </marker>
+            </defs>
+            <!-- contour backdrop (decorative, as ContourLayer on the roadmap) -->
+            <g aria-hidden="true">
+              <path class="contour" d="M-10 40 C120 10 220 70 360 40 S640 10 780 50" />
+              <path class="contour" d="M-10 70 C130 40 230 100 370 70 S650 40 780 80" />
+              <path class="contour" d="M-10 238 C140 210 240 262 380 236 S650 212 780 246" />
+              <path class="contour" d="M-10 262 C150 236 250 286 390 260 S660 236 780 270" />
+            </g>
+
+            <!-- edges -->
+            <path id="e1" class="edge" d="M130 130 L200 130" marker-end="url(#chev)" />
+            <path id="e2" class="edge" d="M390 130 L444 130" marker-end="url(#chev)" />
+            <path id="e3" class="edge" d="M556 130 L640 130" marker-end="url(#chev)" />
+            <path id="e4" class="edge" d="M295 84 C295 30 75 30 75 110" marker-end="url(#chev)" />
+            <path
+              id="e5"
+              class="edge"
+              d="M690 150 C690 250 295 250 295 210"
+              marker-end="url(#chev)"
+            />
+            <text class="elabel" x="598" y="118" text-anchor="middle">miss</text>
+            <text class="elabel" x="185" y="44" text-anchor="middle">value</text>
+            <text class="elabel" x="500" y="266" text-anchor="middle">fill cache</text>
+
+            <!-- nodes: pills with a station dot, as topic nodes -->
+            <g
+              class="node"
+              data-node="app"
+              tabindex="0"
+              role="button"
+              aria-label="App. Press Enter to inspect."
+            >
+              <rect class="shape" x="20" y="110" width="110" height="40" rx="20" />
+              <circle class="station" cx="40" cy="130" r="5.5" />
+              <text x="56" y="135">App</text>
+            </g>
+            <g
+              class="node"
+              data-node="cache"
+              tabindex="0"
+              role="button"
+              aria-label="LRU cache, capacity 3. Press Enter to inspect."
+            >
+              <rect class="shape" x="200" y="84" width="190" height="126" rx="16" />
+              <text x="295" y="108" text-anchor="middle">LRU cache (3)</text>
+              <!-- node-state widget: LRU slots, most recent on the left -->
+              <g transform="translate(0 0)">
+                <g class="slot" data-slot="a">
+                  <rect x="209" y="138" width="52" height="40" rx="10" />
+                  <text x="235" y="163">a</text>
+                </g>
+                <g class="slot" data-slot="b">
+                  <rect x="209" y="138" width="52" height="40" rx="10" />
+                  <text x="235" y="163">b</text>
+                </g>
+                <g class="slot" data-slot="c">
+                  <rect x="209" y="138" width="52" height="40" rx="10" />
+                  <text x="235" y="163">c</text>
+                </g>
+                <g class="slot" data-slot="d">
+                  <rect x="209" y="138" width="52" height="40" rx="10" />
+                  <text x="235" y="163">d</text>
+                </g>
+              </g>
+              <text class="sub" x="295" y="198" text-anchor="middle">
+                most recent to least recent
+              </text>
+            </g>
+            <g
+              class="node"
+              data-node="hit"
+              tabindex="0"
+              role="button"
+              aria-label="Hit? decision. Press Enter to inspect."
+            >
+              <polygon class="shape" points="500,96 556,130 500,164 444,130" />
+              <text x="500" y="135" text-anchor="middle">Hit?</text>
+              <text id="decideResult" class="sub" x="500" y="186" text-anchor="middle"></text>
+            </g>
+            <g
+              class="node"
+              data-node="db"
+              tabindex="0"
+              role="button"
+              aria-label="Database. Press Enter to inspect."
+            >
+              <rect class="shape" x="640" y="110" width="100" height="40" rx="20" />
+              <circle class="station" cx="660" cy="130" r="5.5" />
+              <text x="676" y="135">Database</text>
+            </g>
+
+            <g id="tokens"></g>
+          </svg>
+        </div>
+
+        <aside id="inspector" class="inspector" data-open="false" aria-label="Node inspector">
+          <button id="inspClose" class="btn sm close outline" type="button">Close</button>
+          <div>
+            <p class="kind" id="inspKind"></p>
+            <h3 id="inspTitle"></h3>
+          </div>
+          <p id="inspText"></p>
+          <dl id="inspState"></dl>
+        </aside>
+
+        <div class="legend" aria-label="Token colours">
+          <span><i class="l-req"></i>Request</span>
+          <span><i class="l-res"></i>Response</span>
+          <span><i class="l-rep"></i>Replicate or fill</span>
+          <span><i class="l-err"></i>Error</span>
+        </div>
+        <div class="caption" aria-live="polite">
+          <span class="step num" id="stepLbl"></span>
+          <span id="caption"></span>
+        </div>
+        <div class="sim-bar" role="group" aria-label="Simulation controls">
+          <button id="play" class="btn" type="button" aria-pressed="false">
+            <span class="ic" aria-hidden="true"></span><span class="lbl">Pause</span>
+          </button>
+          <button id="restart" class="btn outline" type="button">
+            <span aria-hidden="true">&#8634;</span><span class="lbl">Restart</span>
+          </button>
+          <button id="back" class="btn outline" type="button" aria-label="Step back">
+            <span aria-hidden="true">&#9664;</span><span class="lbl">Back</span>
+          </button>
+          <button id="fwd" class="btn outline" type="button" aria-label="Step forward">
+            <span aria-hidden="true">&#9654;</span><span class="lbl">Step</span>
+          </button>
+          <div class="seg" role="group" aria-label="Speed">
+            <button type="button" data-speed="0.5" aria-pressed="false">0.5x</button>
+            <button type="button" data-speed="1" aria-pressed="true">1x</button>
+            <button type="button" data-speed="2" aria-pressed="false">2x</button>
+          </div>
+          <span class="spacer"></span>
+          <span class="reduced-note">Reduced motion is on: step through, or press Play.</span>
+          <label class="sr-only" for="scenario">Scenario</label>
+          <select id="scenario" class="select">
+            <option value="hit">Scenario: Cache hit</option>
+            <option value="miss">Scenario: Miss and eviction</option>
+            <option value="error">Scenario: Database timeout</option>
+          </select>
+        </div>
+        <div class="scrim" id="scrim" data-open="false"></div>
+      </section>
+
+      <details class="transcript">
+        <summary>Read this as text (transcript, Cache hit)</summary>
+        <ol>
+          <li>The app asks the cache for key c.</li>
+          <li>The cache looks c up.</li>
+          <li>Hit: c is in the cache.</li>
+          <li>c moves to the most recent slot. The database is never touched.</li>
+          <li>The value returns to the app.</li>
+        </ol>
+      </details>
+
+      <div class="stack">
+        <div class="prose">
+          <h2 style="margin-bottom: 12px">Why cache</h2>
+          <p>
+            A cache keeps copies of hot data in fast memory so most reads never reach the database.
+          </p>
+          <p>
+            The cost is staleness: a cached value can be out of date until it expires or is
+            replaced.
+          </p>
+        </div>
+
+        <div class="panel" style="max-width: 640px; overflow: hidden">
+          <table class="table" style="border: 0; border-radius: 0">
+            <thead>
+              <tr>
+                <th scope="col">Strategy</th>
+                <th scope="col">Writes go to</th>
+                <th scope="col">Good for</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Cache-aside</td>
+                <td>Database, app fills cache</td>
+                <td>Read-heavy data</td>
+              </tr>
+              <tr>
+                <td>Write-through</td>
+                <td>Cache and database</td>
+                <td>Fresh reads</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="compare">
+          <div>
+            <h4>LRU</h4>
+            <p class="small">Evicts the key not used for the longest time. Simple, good default.</p>
+          </div>
+          <div>
+            <h4>LFU</h4>
+            <p class="small">Evicts the least frequently used key. Better for stable hot sets.</p>
+          </div>
+        </div>
+
+        <aside class="callout pitfall" aria-label="Pitfall">
+          <h4>Pitfall: stale reads</h4>
+          <p class="small" style="color: inherit">
+            After a write, the cache can still serve the old value. Decide how you expire or
+            invalidate it.
+          </p>
+        </aside>
+
+        <!-- Quick check -->
+        <section class="panel qcard" data-q data-answer="a" aria-labelledby="qc">
+          <div class="qhead">
+            <h3 id="qc">Quick check</h3>
+            <span class="badge">1 of 2</span>
+          </div>
+          <fieldset style="border: 0; padding: 0; margin: 0; display: grid; gap: 8px">
+            <legend style="font-weight: 600; margin-bottom: 8px">
+              The cache holds b, c, a (most recent first). A read for d misses. Which key is
+              evicted?
+            </legend>
+            <label class="opt"><input type="radio" name="qc" value="a" /> a</label>
+            <label class="opt"><input type="radio" name="qc" value="b" /> b</label>
+            <label class="opt"><input type="radio" name="qc" value="c" /> c</label>
+          </fieldset>
+          <div class="actions"><button class="btn sm" type="button" data-check>Check</button></div>
+          <div
+            class="explain"
+            role="status"
+            data-text="a is the least recently used. Replay the Miss and eviction scenario to watch it leave."
+          ></div>
+        </section>
+
+        <p><a class="btn" href="learn-questions.html">Practice all 12 questions for Caching</a></p>
+      </div>
+    </main>
+    <script src="learn.js"></script>
+    <script src="sim.js"></script>
+  </body>
+</html>
