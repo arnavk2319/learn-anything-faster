@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Learn: Caching questions (wireframe) /learn/system-design/questions/caching</title>
+    <link rel="stylesheet" href="../../theme.css" />
+    <link rel="stylesheet" href="learn.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="logo" href="#"><i></i>Trailhead</a>
+      <nav class="nav" aria-label="Main">
+        <a href="#">Roadmaps</a>
+        <a href="learn-landing.html" aria-current="page">Learn</a>
+      </nav>
+    </header>
+
+    <main class="page">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="learn-landing.html">Learn</a> / <a href="learn-track.html">System design</a> /
+        Questions / Caching
+      </nav>
+
+      <div class="tabs" aria-label="Track sections" role="navigation">
+        <button type="button" onclick="location.href = 'learn-track.html'">Concepts</button>
+        <button type="button" onclick="location.href = 'learn-track.html'">Problems</button>
+        <button type="button" aria-selected="true" aria-current="page">Questions</button>
+      </div>
+
+      <div class="set-progress">
+        <h2>Caching questions</h2>
+        <span class="bar" role="img" aria-label="7 of 12 answered" style="--p: 58"><i></i></span>
+        <span class="small num">7 of 12 answered &middot; 5 right</span>
+      </div>
+
+      <div class="filters" role="group" aria-label="Filter questions">
+        <label
+          >Concept
+          <select class="select">
+            <option>Caching</option>
+            <option>All concepts</option>
+          </select></label
+        >
+        <label
+          >Type
+          <select class="select">
+            <option>Any</option>
+            <option>Multiple choice</option>
+            <option>Short explain</option>
+          </select></label
+        >
+        <label
+          >Level
+          <select class="select">
+            <option>Any</option>
+            <option>Basic</option>
+            <option>Intermediate</option>
+            <option>Advanced</option>
+          </select></label
+        >
+        <label
+          >Difficulty
+          <select class="select">
+            <option>Any</option>
+            <option>Easy</option>
+            <option>Medium</option>
+            <option>Hard</option>
+          </select></label
+        >
+        <div class="chips" style="align-self: flex-end">
+          <button class="chip" type="button" aria-pressed="false">Unanswered</button>
+          <button class="chip" type="button" aria-pressed="false">Wrong</button>
+          <button class="chip" type="button" aria-pressed="false">Favorited</button>
+        </div>
+      </div>
+      <p class="small" style="margin-bottom: 16px">
+        Filtered views are not indexed and link back to the full set.
+      </p>
+
+      <div class="stack" style="margin-top: 0">
+        <!-- mcq -->
+        <article class="panel qcard" data-q data-answer="b">
+          <div class="qhead">
+            <b>Q3</b><span class="badge">Multiple choice</span
+            ><span class="badge">Intermediate</span><span class="diff">Medium</span>
+            <button
+              class="star"
+              type="button"
+              aria-pressed="false"
+              aria-label="Favorite question 3"
+            ></button>
+          </div>
+          <fieldset style="border: 0; padding: 0; margin: 0; display: grid; gap: 8px">
+            <legend style="font-weight: 600; margin-bottom: 8px">
+              The LRU cache holds b, c, a (most recent first). A read for d misses. Which key is
+              evicted?
+            </legend>
+            <label class="opt"><input type="radio" name="q3" value="a" /> a</label>
+            <label class="opt"><input type="radio" name="q3" value="b" /> b</label>
+            <label class="opt"><input type="radio" name="q3" value="c" /> c</label>
+          </fieldset>
+          <div class="actions"><button class="btn sm" type="button" data-check>Check</button></div>
+          <div
+            class="explain"
+            role="status"
+            data-text="a is the least recently used, so it is evicted and d takes the front slot. (Try picking b to see the wrong state.)"
+          ></div>
+        </article>
+
+        <!-- short-explain -->
+        <article class="panel qcard" data-q>
+          <div class="qhead">
+            <b>Q4</b><span class="badge">Short explain</span><span class="badge">Basic</span
+            ><span class="diff">Easy</span>
+            <button
+              class="star"
+              type="button"
+              aria-pressed="true"
+              aria-label="Favorite question 4"
+            ></button>
+          </div>
+          <p style="font-weight: 600">Explain cache-aside in two sentences.</p>
+          <label class="sr-only" for="a4">Your answer</label>
+          <textarea
+            id="a4"
+            class="input"
+            placeholder="Write your answer. It stays on this device and is never sent."
+          ></textarea>
+          <div class="actions">
+            <button class="btn sm" type="button" data-reveal>Show model answer</button>
+          </div>
+          <div class="explain">
+            <b>Model answer.</b> The app checks the cache first; on a miss it reads the database and
+            writes the value into the cache for next time.
+            <ul class="rubric">
+              <li>Names the read-through order: cache, then database</li>
+              <li>Says the app, not the cache, fills it on a miss</li>
+            </ul>
+          </div>
+          <div class="grade actions" hidden>
+            <span class="small">Self-grade against the rubric:</span>
+            <button class="btn sm outline" type="button" data-grade="yes">I got it</button>
+            <button class="btn sm outline" type="button" data-grade="no">Not yet</button>
+          </div>
+        </article>
+
+        <article class="panel qcard" data-q data-answer="a">
+          <div class="qhead">
+            <b>Q5</b><span class="badge">Multiple choice</span><span class="badge">Basic</span
+            ><span class="diff">Easy</span>
+            <button
+              class="star"
+              type="button"
+              aria-pressed="false"
+              aria-label="Favorite question 5"
+            ></button>
+          </div>
+          <fieldset style="border: 0; padding: 0; margin: 0; display: grid; gap: 8px">
+            <legend style="font-weight: 600; margin-bottom: 8px">
+              Which read path is fastest?
+            </legend>
+            <label class="opt"><input type="radio" name="q5" value="a" /> Cache hit</label>
+            <label class="opt"
+              ><input type="radio" name="q5" value="b" /> Cache miss then database</label
+            >
+          </fieldset>
+          <div class="actions"><button class="btn sm" type="button" data-check>Check</button></div>
+          <div class="explain" role="status" data-text="A hit never touches the database."></div>
+        </article>
+      </div>
+    </main>
+    <script src="learn.js"></script>
+  </body>
+</html>

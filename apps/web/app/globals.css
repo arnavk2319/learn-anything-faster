@@ -80,6 +80,25 @@
   --canvas: var(--background); /* graph surface equals the page */
   --lane-band: color-mix(in srgb, var(--paper) 62%, transparent); /* resting area lane */
   --edge-unmet: var(--stone); /* resting prerequisite edges */
+
+  /* Learn module (T-038): sim token colours. Never colour alone: tokens also differ by shape and carry a text label. */
+  --sim-request: var(--trail); /* request token: filled pill */
+  --sim-response: #2d5f8b; /* response token: outlined pill (6.9:1 on Paper) */
+  --sim-replicate: var(--sand-edge); /* replicate / cache fill: dashed pill */
+  --sim-error: var(--danger); /* error token: filled pill with "!" */
+
+  /* Learn module: sizes and durations */
+  --bubble-size: 184px; /* track bubble diameter (148px under 768px via --bubble-size-sm) */
+  --bubble-size-sm: 148px;
+  --ring-sm: 32px; /* progress ring: row, 48 on cards, 72 in the track header */
+  --ring-md: 48px;
+  --ring-lg: 72px;
+  --ring-thickness: 6px;
+  --bubble-float-dur: 7s; /* idle float, removed under reduced motion */
+  --bubble-float-dist: 6px;
+  --sim-hop-dur: 1400ms; /* one token crossing one edge at 1x */
+  --sim-pulse-dur: 600ms; /* node highlight pulse on decide/state events */
+  --sim-state-dur: var(--dur-base); /* LRU slot reorder */
 }
 
 /* Dark ("night trail"). Defined so tokens are complete; ship light first. */
@@ -119,6 +138,9 @@
   --canvas: var(--background);
   --lane-band: color-mix(in srgb, var(--card) 55%, transparent);
   --edge-unmet: #6f8775;
+  --sim-response: #7fb2e0;
+  --sim-replicate: #d9b95c;
+  --sim-error: #e58a76;
 }
 
 /* Expose tokens to Tailwind utilities: bg-primary, text-muted-foreground, bg-highlight, rounded-panel, font-display ... */

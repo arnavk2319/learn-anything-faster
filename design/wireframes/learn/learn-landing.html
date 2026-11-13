@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Learn: tracks (wireframe) /learn</title>
+    <link rel="stylesheet" href="../../theme.css" />
+    <link rel="stylesheet" href="learn.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="logo" href="#"><i></i>Trailhead</a>
+      <nav class="nav" aria-label="Main">
+        <a href="#">Roadmaps</a>
+        <a href="#" aria-current="page">Learn</a>
+      </nav>
+    </header>
+
+    <main class="page" data-view="bubbles">
+      <h1>Learn</h1>
+      <p class="small" style="margin-top: 8px; max-width: 560px">
+        Pick a track. Each concept has a live diagram you can play, step and inspect.
+      </p>
+
+      <div class="toolbar">
+        <label class="sr-only" for="q">Search tracks, concepts, problems and questions</label>
+        <input
+          id="q"
+          class="input"
+          type="search"
+          placeholder="Search concepts, problems, questions"
+        />
+        <div class="seg" role="group" aria-label="View">
+          <button type="button" data-view-btn="bubbles" aria-pressed="true">Bubbles</button>
+          <button type="button" data-view-btn="list" aria-pressed="false">List</button>
+        </div>
+      </div>
+      <div class="chips" role="group" aria-label="Filter tracks">
+        <button class="chip" type="button" data-filter="all" aria-pressed="true">All</button>
+        <button class="chip" type="button" data-filter="live" aria-pressed="false">Live</button>
+        <button class="chip" type="button" data-filter="soon" aria-pressed="false">Soon</button>
+        <button class="chip" type="button" data-filter="favorites" aria-pressed="false">
+          Favorites
+        </button>
+        <button class="chip" type="button" data-filter="progress" aria-pressed="false">
+          In progress
+        </button>
+      </div>
+
+      <!-- Bubbles view: ordered list, live first. Idle float is CSS only and removed under reduced motion. -->
+      <ol class="bubbles" aria-label="Tracks">
+        <li data-status="live" data-progress="38">
+          <div class="bubble-wrap">
+            <a
+              class="bubble live"
+              href="learn-track.html"
+              aria-label="System design, live. 21 concepts, 37 problems, 400 questions, 38% done"
+            >
+              <h3>System design</h3>
+              <span class="counts">21c &middot; 37p &middot; 400q</span>
+              <span class="ring" style="--p: 38"><b>38%</b></span>
+            </a>
+            <button
+              class="star"
+              type="button"
+              aria-pressed="true"
+              aria-label="Favorite System design"
+            ></button>
+          </div>
+        </li>
+        <li data-status="soon" data-progress="0">
+          <div class="bubble-wrap">
+            <div class="bubble soon" role="group" aria-label="AI engineering, coming soon">
+              <h3>AI engineering</h3>
+              <span class="badge soon">Coming soon</span>
+            </div>
+            <button
+              class="star"
+              type="button"
+              aria-pressed="false"
+              aria-label="Favorite AI engineering"
+            ></button>
+          </div>
+        </li>
+        <li data-status="soon" data-progress="0">
+          <div class="bubble-wrap">
+            <div class="bubble soon" role="group" aria-label="Software architecture, coming soon">
+              <h3>Software architecture</h3>
+              <span class="badge soon">Coming soon</span>
+            </div>
+            <button
+              class="star"
+              type="button"
+              aria-pressed="false"
+              aria-label="Favorite Software architecture"
+            ></button>
+          </div>
+        </li>
+        <li data-status="soon" data-progress="0">
+          <div class="bubble-wrap">
+            <div class="bubble soon" role="group" aria-label="Data engineering, coming soon">
+              <h3>Data engineering</h3>
+              <span class="badge soon">Coming soon</span>
+            </div>
+            <button
+              class="star"
+              type="button"
+              aria-pressed="false"
+              aria-label="Favorite Data engineering"
+            ></button>
+          </div>
+        </li>
+        <li data-status="soon" data-progress="0">
+          <div class="bubble-wrap">
+            <div class="bubble soon" role="group" aria-label="Frontend engineering, coming soon">
+              <h3>Frontend engineering</h3>
+              <span class="badge soon">Coming soon</span>
+            </div>
+            <button
+              class="star"
+              type="button"
+              aria-pressed="false"
+              aria-label="Favorite Frontend engineering"
+            ></button>
+          </div>
+        </li>
+      </ol>
+
+      <!-- List view: the default fallback for keyboard users and small screens. A real table. -->
+      <div class="list-view">
+        <table class="table">
+          <caption class="sr-only">
+            Tracks
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Track</th>
+              <th scope="col">Status</th>
+              <th scope="col" class="hide-sm">Concepts</th>
+              <th scope="col" class="hide-sm">Problems</th>
+              <th scope="col" class="hide-sm">Questions</th>
+              <th scope="col">Progress</th>
+              <th scope="col"><span class="sr-only">Favorite</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="live" data-status="live" data-progress="38">
+              <td><a href="learn-track.html">System design</a></td>
+              <td><span class="badge live">Live</span></td>
+              <td class="num hide-sm">21</td>
+              <td class="num hide-sm">37</td>
+              <td class="num hide-sm">400</td>
+              <td>
+                <span class="sm ring" style="--p: 38" role="img" aria-label="38% done"></span>
+                <span class="small num">38%</span>
+              </td>
+              <td>
+                <button
+                  class="star"
+                  type="button"
+                  aria-pressed="true"
+                  aria-label="Favorite System design"
+                ></button>
+              </td>
+            </tr>
+            <tr data-status="soon" data-progress="0">
+              <td>AI engineering</td>
+              <td><span class="badge soon">Coming soon</span></td>
+              <td class="num hide-sm">&ndash;</td>
+              <td class="num hide-sm">&ndash;</td>
+              <td class="num hide-sm">&ndash;</td>
+              <td class="small">&ndash;</td>
+              <td>
+                <button
+                  class="star"
+                  type="button"
+                  aria-pressed="false"
+                  aria-label="Favorite AI engineering"
+                ></button>
+              </td>
+            </tr>
+            <tr data-status="soon" data-progress="0">
+              <td>Software architecture</td>
+              <td><span class="badge soon">Coming soon</span></td>
+              <td class="num hide-sm">&ndash;</td>
+              <td class="num hide-sm">&ndash;</td>
+              <td class="num hide-sm">&ndash;</td>
+              <td class="small">&ndash;</td>
+              <td>
+                <button
+                  class="star"
+                  type="button"
+                  aria-pressed="false"
+                  aria-label="Favorite Software architecture"
+                ></button>
+              </td>
+            </tr>
+            <tr data-status="soon" data-progress="0">
+              <td>Data engineering</td>
+              <td><span class="badge soon">Coming soon</span></td>
+              <td class="num hide-sm">&ndash;</td>
+              <td class="num hide-sm">&ndash;</td>
+              <td class="num hide-sm">&ndash;</td>
+              <td class="small">&ndash;</td>
+              <td>
+                <button
+                  class="star"
+                  type="button"
+                  aria-pressed="false"
+                  aria-label="Favorite Data engineering"
+                ></button>
+              </td>
+            </tr>
+            <tr data-status="soon" data-progress="0">
+              <td>Frontend engineering</td>
+              <td><span class="badge soon">Coming soon</span></td>
+              <td class="num hide-sm">&ndash;</td>
+              <td class="num hide-sm">&ndash;</td>
+              <td class="num hide-sm">&ndash;</td>
+              <td class="small">&ndash;</td>
+              <td>
+                <button
+                  class="star"
+                  type="button"
+                  aria-pressed="false"
+                  aria-label="Favorite Frontend engineering"
+                ></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="empty" class="empty" role="status">
+        <h3>No tracks match</h3>
+        <p class="small">Clear the search or pick All.</p>
+      </div>
+    </main>
+    <script src="learn.js"></script>
+  </body>
+</html>

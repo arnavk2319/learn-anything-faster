@@ -369,3 +369,113 @@ Rules
 - [ ] Reduced motion respected
 - [ ] Copy follows section 11
 - [ ] Screenshot compared against the matching wireframe board
+
+---
+
+## 14. Learn module addendum (T-038, ADR-0015)
+
+Applies to `/learn` and below. Wireframes: `design/wireframes/learn/` (see its README). New tokens are in `design/theme.css`;
+**syncing them into `app/globals.css` and the `@theme inline` block is T-042's job**, not T-038's. Everything here reuses sections
+1 to 13; where this section is more specific for Learn, it wins. Voice, sentence case and the no-gradient rule still apply.
+
+### 14.1 Tokens added
+
+| Token                                                        | Value                                      | Use                                                       |
+| ------------------------------------------------------------ | ------------------------------------------ | --------------------------------------------------------- |
+| `--sim-request`                                              | `--trail`                                  | Request token and its edge: filled pill                   |
+| `--sim-response`                                             | `#2d5f8b` (dark `#7fb2e0`), 6.9:1 on Paper | Response token and edge: outlined pill                    |
+| `--sim-replicate`                                            | `--sand-edge` (dark `#d9b95c`)             | Replicate, cache fill, sync: dashed outlined pill         |
+| `--sim-error`                                                | `--danger` (dark `#e58a76`)                | Error token and edge: filled pill with "!"                |
+| `--bubble-size` / `--bubble-size-sm`                         | 184px / 148px (< 768)                      | Track bubble diameter                                     |
+| `--ring-sm` / `--ring-md` / `--ring-lg` / `--ring-thickness` | 32 / 48 / 72 / 6px                         | Progress ring: row, card, track header                    |
+| `--bubble-float-dur` / `--bubble-float-dist`                 | 7s / 6px                                   | Idle float                                                |
+| `--sim-hop-dur` / `--sim-pulse-dur` / `--sim-state-dur`      | 1400ms / 600ms / `--dur-base`              | Token crossing one edge at 1x / node pulse / slot reorder |
+
+Colour is never the only signal: tokens differ by shape (filled, outlined, dashed, "!") and always carry a text label ("GET c",
+"value c", "fill d", "! 503"). The legend under every sim names the four kinds. Components use these tokens, never hex values.
+
+### 14.2 Bubbles (`/learn`)
+
+- Ordered grid, `repeat(auto-fill, minmax(--bubble-size, 1fr))`, 32px gap (20px under 768). Live tracks first, then soon, in curated order.
+- Bubble: circle, Paper (live: `--known` fill, 1.5px Trail border; soon: Lane band fill, dashed Bark border, Moss text). Title `h4` centred,
+  counts `micro` ("21c · 37p · 400q", tabular), progress ring `--ring-md` below. Centred text is allowed here: it is inside a circle.
+- Favorite star sits top right, 40px, Paper chip with a Lichen border. Soon bubbles are a `div` (not a link) with a "Coming soon" badge.
+- Idle float: translateY 0 to -6px, 7s ease-in-out, staggered by negative delays. This is the one deliberate exception to the
+  "no looping animation" rule in section 9, limited to bubbles and the sim. Hover: border Pine, no lift.
+- Toolbar: search (Input), Bubbles | List (segmented), chips All, Live, Soon, Favorites, In progress (single-select, selected = Blaze, as "chosen").
+- **List view** is a real `Table` (Track, Status, Concepts, Problems, Questions, Progress, Favorite), live row has the 4px Trail left border.
+  It is the default for keyboard-first use and under 768px (as the roadmap list view), and the no-JS fallback. Counts columns hide under 768.
+- Empty search result: Paper panel, `h4` "No tracks match", one line.
+
+### 14.3 Tabs, rows, progress ring, favorite star
+
+- **Tabs** (Concepts | Problems | Questions): underline tabs, height 48, 3px Trail underline on the selected one, `aria-selected`, arrow keys move,
+  count in `micro` Moss. In the app these are links to real routes (the Concepts tab is the track root); the wireframe switches panels.
+- **Row** (concept, problem, set): Paper list in a 16px panel, min height 68, 1px Sage dividers, hover Lane. Left: station dot 14px (filled Trail
+  when done). Title 16/600 link in Pine, subline `small` Moss. Right: `sim` badge (Trail text and border), 96px progress bar, "2/5" (hidden under
+  768), favorite star. Levels are `h4` headings with the count in `small` ("Basic 7 concepts"), anchors `#basic|#intermediate|#advanced`.
+- **Progress ring**: conic ring, Trail value on a Border track, thickness `--ring-thickness`, centre label `micro` 600 tabular ("38%"); `sm` has no
+  label. Always has `role="img"` and an `aria-label` ("38% done"). Derivation is in ADR-0015 section 6.
+- **Favorite star**: 44px target, outline star Stone when off, solid Pine star on a Blaze disc when on, `aria-pressed`, label "Favorite <name>".
+  Blaze here means "chosen by you". Never changes layout.
+- **Continue** card: Paper panel, dot, "Continue where you left off", item name and level, primary button.
+
+### 14.4 Question card
+
+Paper panel, radius 16, padding 20 24, max width 760. Header row: "Q3", type badge, level badge, difficulty chip, star at the end.
+**mcq**: fieldset and legend (the prompt), options as 44px+ rows with a native radio, Check button (primary 40). After Check: right option gets
+Known fill and Trail border, a wrong pick gets a Danger border, the explanation reveals below (Lane panel, 4px Trail left border, Danger when wrong),
+`role="status"`. **short-explain**: textarea (stays on device), "Show model answer", then model answer plus a rubric list, then "I got it" and "Not yet"
+(outline). The self-grade is stored as `selfGraded`. Set progress: `h2`, 8px bar, "7 of 12 answered, 5 right". Filters: Concept, Type, Level,
+Difficulty selects plus Unanswered, Wrong, Favorited chips; filtered views are noindex and link back to the full set.
+
+### 14.5 Sim frame
+
+One bordered Paper panel (radius 16) containing, top to bottom: canvas (with the right-hand inspector on desktop), token legend, caption region, control bar.
+
+- **Canvas**: plain SVG on `--canvas` with 3 to 4 decorative contour lines (`--contour`, 1.5px, `aria-hidden`), as the roadmap `ContourLayer`. Never behind text
+  without a node on top. Minimum diagram width 680px; under that the canvas pans sideways inside the panel (hint "Swipe sideways to pan the diagram").
+- **Nodes** reuse the roadmap look: pill 40px tall, 1.5px Bark border, Paper fill, station dot 14px ring 3px Trail, label `ui`. Kinds: app, db, client,
+  worker, queue as pills; **decision** is a diamond; **cache** (and any node with state) is a 16px-radius card holding its state widget. Hover Pine border;
+  focus-visible 3px Trail; selected = Blaze fill and Pine border (one selected at a time); a decide or state event pulses the border Trail for `--sim-pulse-dur`.
+- **Edges**: dashed Stone 1.5px with a chevron at the target (the resting prerequisite edge). While a token travels an edge, that edge turns solid 3.5px in the
+  token colour. Labels `micro` Moss ("miss", "value", "fill cache"). Geometry comes from the shared `roundedPath`.
+- **Tokens**: pill 24px tall, `micro` 600 label, travels one edge in `--sim-hop-dur` at 1x (speed scales it). Request filled Trail with Paper text; response
+  outlined `--sim-response`; replicate dashed `--sim-replicate`; error filled `--sim-error`. Transform and opacity only.
+- **State widgets** (by `state.type`: lru, queue, kv, counter, ring): live inside the node. LRU: slots 52 x 40, radius 10, most recent on the left, caption
+  "most recent to least recent". Touched slot Blaze, newly inserted Known fill, slot about to be evicted dashed Danger border; slots reorder in `--sim-state-dur`.
+- **Caption region**: Lane strip under the legend, `aria-live="polite"`, `body` size, with "Step 3 of 5" in `micro`. One sentence per step, states what changed and why.
+- **Controls** (always visible, labelled, 44px targets): Play/Pause (primary, label and icon swap), Restart, Back, Step, speed segmented 0.5x, 1x, 2x,
+  scenario select on the right. Under 768 labels collapse to icons (aria-labels stay) and the select takes its own row.
+- **Inspector**: opens on node click or Enter. Desktop (1024 and up): 320px right-hand panel inside the frame, as the roadmap topic panel (kind in `small`,
+  title `h3`, the `inspect` text, then a definition list of live state such as capacity, order, next to evict), Close button on top. Under 1024 it stacks under
+  the canvas. **Mobile (under 768): bottom sheet** (Drawer), min 40% and max 90% of the viewport, 16px top radius, grab handle, scrim, slides in `--dur-slow`.
+  Focus moves to Close on open and returns to the node on close.
+- **Poster and transcript**: the server renders frame 0 and a numbered transcript (`details`: "Read this as text"); the island hydrates when scrolled into view and
+  animates only while visible.
+
+### 14.6 Reduced motion, keyboard
+
+- `prefers-reduced-motion: reduce`: **no autoplay** (sim opens paused on frame 0, a note says "Reduced motion is on: step through, or press Play"); **no bubble
+  float**; step mode (Back/Step jump between captioned frames, tokens shown at rest on their edge); inspector sheet appears without a slide; pulses and slot motion
+  are instant. **Pause is always present**, also when playing by choice (WCAG 2.2.2). The global reduced-motion rule in `theme.css` already shortens transitions.
+- Keyboard: Tab reaches the canvas, then each node, then the controls. On the canvas: **Space** play/pause, **Left/Right** step back/forward, **R** restart. On a
+  node: **Enter** opens the inspector, **Esc** closes it (from anywhere in the frame) and returns focus. Tabs: arrow keys. Stars and chips: Space/Enter.
+- Contrast: all token colours at least 3:1 on Paper and Canvas; text inside tokens at least 4.5:1.
+
+### 14.7 Sim visual polish bar (exit criterion (d) checklist)
+
+A sim passes only if every line is true when replaying all its scenarios at 1x, 0.5x and 2x on desktop and at 375px:
+
+- [ ] Looks like the roadmap: pill nodes with station dots, dashed Stone edges, contour backdrop, Sage and Paper only, no new colours outside section 14.1.
+- [ ] No overlapping text or tokens; labels never clipped; token labels are readable at every point of the path.
+- [ ] Every token has a colour from the four tokens, a distinguishing shape and a text label; the legend matches what the scenario uses.
+- [ ] Each scenario tells one story in 5 captioned steps or fewer; captions say what changed and why, in plain sentences (section 11).
+- [ ] Motion is smooth (transform and opacity only), loops cleanly with no jump, and stays under 9 seconds per loop.
+- [ ] State widgets always agree with the caption (the evicted key leaves exactly when the caption says so).
+- [ ] Controls: play/pause, restart, step back and forward, speed, scenario select, all labelled, 44px targets, visible focus.
+- [ ] Inspector: every node has `inspect` text; desktop panel and mobile bottom sheet both open, close with Esc, and return focus.
+- [ ] Reduced motion: opens paused, step mode works, nothing floats or autoplays.
+- [ ] Keyboard-only run-through (Space, arrows, R, Enter, Esc) works and the caption region announces each step.
+- [ ] Works at 375, 768, 1024, 1280px without page-level horizontal scroll (only the canvas may pan); transcript present.
+- [ ] No hex values, font names, radii or durations in the component; tokens only.
