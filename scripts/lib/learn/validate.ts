@@ -234,6 +234,19 @@ const stripCode = (s: string) => s.replace(/```[\s\S]*?```/g, " ").replace(/`[^`
 
 const words = (text: string): string[] => text.toLowerCase().match(/[\p{L}\p{N}_]+/gu) ?? [];
 
+const WORD_CHAR = /[\p{L}\p{N}_]/u;
+const lower = (t: string): string => t.toLowerCase();
+
+// Case-insensitive, Unicode-aware whole-word search; `term` must already be lowercased.
+function hasWholeWord(hay: string, term: string): boolean {
+  for (let i = hay.indexOf(term); i !== -1; i = hay.indexOf(term, i + 1)) {
+    const before = Array.from(hay.slice(Math.max(0, i - 2), i)).pop() ?? "";
+    const after = Array.from(hay.slice(i + term.length, i + term.length + 2))[0] ?? "";
+    if (!WORD_CHAR.test(before) && !WORD_CHAR.test(after)) return true;
+  }
+  return false;
+}
+
 export function validateLearn(raw: unknown): ValidateResult {
   const parsed = parsePack(raw);
   const errors: Issue[] = [...parsed.issues];
@@ -249,16 +262,10 @@ export function validateLearn(raw: unknown): ValidateResult {
     stringsOf(r[k], k, texts, new Set());
   for (const [g, md] of Object.entries(rec(r.guides)))
     if (typeof md === "string") texts.push({ path: `guide ${g}`, text: md });
-  const plain = denyTerms.map((t) => ({
-    n: t,
-    re: new RegExp(
-      `(?<![\\p{L}\\p{N}_])${t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![\\p{L}\\p{N}_])`,
-      "iu",
-    ),
-  }));
+  const plain = denyTerms.map((t) => t.toLowerCase());
   const denyHit = new Set<string>();
   for (const { path, text } of texts) {
-    if (plain.some((p) => p.re.test(text))) denyHit.add(path);
+    if (plain.some((t) => hasWholeWord(lower(text), t))) denyHit.add(path);
     else if (denyHashes.size > 0) {
       const w = words(text);
       for (let i = 0; i < w.length; i++) {
