@@ -10,6 +10,7 @@ const steps: [string, string[]][] = [
   ["security", ["test:security"]],
   ["data", ["test:data"]],
   ["content:validate", ["content:validate"]],
+  ["learn:validate", ["learn:validate"]],
 ];
 
 const MAX_LINES = 50;
