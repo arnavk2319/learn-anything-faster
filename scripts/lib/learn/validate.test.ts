@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- tests mutate raw, intentionally untyped packs into malformed shapes */
 import { describe, expect, it } from "vitest";
 import {
   GUIDE_ID,

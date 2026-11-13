@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- tests mutate raw, intentionally untyped packs into malformed shapes */
 // Fixtures for the Learn content validator (T-039). In-memory raw objects (pre-Zod), cloned per test.
 // Mutate a clone with `makePack()` then pass to parsePack/validateLearn. Never import from content/.
 import { createHash } from "node:crypto";
