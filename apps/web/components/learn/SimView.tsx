@@ -3,7 +3,7 @@
 import type { KeyboardEvent, RefObject } from "react";
 import { useId } from "react";
 import type { Sim } from "@/lib/learn/schemas";
-import type { Frame, FrameToken } from "@/lib/learn/sim/engine";
+import { transcript, type Frame, type FrameToken } from "@/lib/learn/sim/engine";
 import {
   CARD_H,
   PILL_H,
@@ -41,6 +41,7 @@ export type SimViewProps = {
   onRestart?: () => void;
   onStep?: (dir: 1 | -1) => void;
   onSpeed?: (s: Speed) => void;
+  onSeek?: (atMs: number) => void;
   onScenario?: (id: string) => void;
   onSelect?: (id: string | null) => void;
   nodeRefs?: RefObject<Record<string, SVGGElement | null>>;
@@ -86,6 +87,9 @@ const EDGE_HOT: Record<TokenKind, string> = {
 
 const btn =
   "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-md border border-input bg-card px-3 text-sm font-medium text-foreground hover:bg-lane disabled:opacity-50 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring";
+// Compact icon control: small visible box, hit area padded out to 44px with a pseudo-element.
+const ibtn =
+  "relative inline-flex size-7 items-center justify-center rounded-md border border-input bg-card text-xs font-semibold tabular-nums text-foreground hover:bg-lane disabled:opacity-50 before:absolute before:-inset-2 before:content-[''] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring";
 
 function Icon({ d }: { d: string }) {
   return (
@@ -285,6 +289,7 @@ export function SimView(p: SimViewProps) {
   for (const tk of frame.tokens) if (tk.edge) hotEdges.set(tk.edge, kindOf(tk.color));
   for (const e of frame.highlights.edges) if (!hotEdges.has(e)) hotEdges.set(e, "request");
   const idx = stepIndex(p.steps, frame.t);
+  const stepList = transcript(sim, scenarioId);
   const sel = p.selected ? sim.nodes.find((n) => n.id === p.selected) : undefined;
   const scenarios = sim.scenarios;
   const w = layout.width;
@@ -521,14 +526,33 @@ export function SimView(p: SimViewProps) {
           </ul>
 
           <div className="mt-3 rounded-md bg-lane px-4 py-3">
-            <div aria-live="polite" aria-atomic="true" data-testid="sim-caption">
-              <p className="text-xs text-muted-foreground tabular-nums">
-                Step {idx} of {p.steps.length}
-              </p>
-              <p className="text-base text-foreground">
-                {frame.caption ?? "Press Play or Step to begin."}
-              </p>
-            </div>
+            <p
+              aria-live="polite"
+              aria-atomic="true"
+              data-testid="sim-caption"
+              className="text-xs text-muted-foreground tabular-nums"
+            >
+              Step {idx} of {p.steps.length}
+            </p>
+            <ol aria-label="Steps" data-testid="sim-steps" className="mt-1 space-y-1">
+              {stepList.map((st) => {
+                const active = st.n === idx;
+                return (
+                  <li key={st.n}>
+                    <button
+                      type="button"
+                      disabled={!p.interactive}
+                      aria-current={active ? "step" : undefined}
+                      onClick={() => p.onSeek?.(st.atMs)}
+                      className={`flex w-full items-start gap-2 rounded-md px-2 py-1 text-left text-base focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-default ${active ? "bg-highlight text-highlight-foreground" : "text-foreground enabled:hover:bg-card"}`}
+                    >
+                      <span className="tabular-nums">{st.n}.</span>
+                      <span>{st.text}</span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ol>
             {p.reduced && (
               <p className="mt-1 text-xs text-muted-foreground">
                 Reduced motion is on: step through, or press Play.
@@ -537,7 +561,7 @@ export function SimView(p: SimViewProps) {
           </div>
 
           <div
-            className="mt-3 flex flex-wrap items-center gap-2"
+            className="mt-3 flex flex-wrap items-center gap-3"
             role="toolbar"
             aria-label="Simulation controls"
           >
@@ -545,51 +569,53 @@ export function SimView(p: SimViewProps) {
               type="button"
               disabled={!p.interactive}
               onClick={p.onPlayPause}
-              className={`${btn} border-primary bg-primary text-primary-foreground hover:bg-primary-hover`}
+              className={`${ibtn} border-primary bg-primary text-primary-foreground hover:bg-primary-hover`}
               aria-label={p.playing ? "Pause" : "Play"}
+              title={p.playing ? "Pause" : "Play"}
             >
               <Icon d={p.playing ? ICON.pause : ICON.play} />
-              <span className="max-md:sr-only">{p.playing ? "Pause" : "Play"}</span>
             </button>
             <button
               type="button"
               disabled={!p.interactive}
               onClick={p.onRestart}
-              className={btn}
+              className={ibtn}
               aria-label="Restart"
+              title="Restart"
             >
               <Icon d={ICON.restart} />
-              <span className="max-md:sr-only">Restart</span>
             </button>
             <button
               type="button"
               disabled={!p.interactive}
               onClick={() => p.onStep?.(-1)}
-              className={btn}
+              className={ibtn}
               aria-label="Step back"
+              title="Step back"
             >
               <Icon d={ICON.back} />
-              <span className="max-md:sr-only">Back</span>
             </button>
             <button
               type="button"
               disabled={!p.interactive}
               onClick={() => p.onStep?.(1)}
-              className={btn}
+              className={ibtn}
               aria-label="Step forward"
+              title="Step forward"
             >
               <Icon d={ICON.step} />
-              <span className="max-md:sr-only">Step</span>
             </button>
-            <div role="group" aria-label="Speed" className="flex gap-1">
+            <div role="group" aria-label="Speed" className="flex gap-2">
               {SPEEDS.map((s) => (
                 <button
                   key={s}
                   type="button"
                   disabled={!p.interactive}
                   aria-pressed={p.speed === s}
+                  aria-label={`Speed ${s}x`}
+                  title={`Speed ${s}x`}
                   onClick={() => p.onSpeed?.(s)}
-                  className={`${btn} ${p.speed === s ? "border-primary bg-highlight text-highlight-foreground" : ""}`}
+                  className={`${ibtn} ${p.speed === s ? "border-primary bg-highlight text-highlight-foreground" : ""}`}
                 >
                   {s}x
                 </button>
@@ -604,7 +630,7 @@ export function SimView(p: SimViewProps) {
                 disabled={!p.interactive || scenarios.length < 2}
                 value={scenarioId}
                 onChange={(e) => p.onScenario?.(e.target.value)}
-                className={`${btn} max-md:w-full`}
+                className="h-7 rounded-md border border-input bg-card px-2 text-xs text-foreground focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring max-md:w-full"
               >
                 {scenarios.map((s) => (
                   <option key={s.id} value={s.id}>
@@ -653,6 +679,22 @@ export function SimView(p: SimViewProps) {
           </>
         )}
       </div>
+
+      <details className="mt-3 border-t border-border pt-3">
+        <summary className="cursor-pointer text-sm font-medium text-foreground focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring">
+          Read this as text
+        </summary>
+        {sim.scenarios.map((sc) => (
+          <div key={sc.id} className="mt-3">
+            <h4 className="text-base font-semibold text-foreground">{sc.title}</h4>
+            <ol className="mt-1 list-decimal pl-6 text-base text-foreground">
+              {transcript(sim, sc).map((st) => (
+                <li key={st.n}>{st.text}</li>
+              ))}
+            </ol>
+          </div>
+        ))}
+      </details>
     </div>
   );
 }
