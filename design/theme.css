@@ -181,6 +181,10 @@
   --color-canvas: var(--canvas);
   --color-lane-band: var(--lane-band);
   --color-edge-unmet: var(--edge-unmet);
+  --color-sim-request: var(--sim-request);
+  --color-sim-response: var(--sim-response);
+  --color-sim-replicate: var(--sim-replicate);
+  --color-sim-error: var(--sim-error);
 
   --radius-sm: 6px;
   --radius-md: var(--radius);
@@ -300,4 +304,11 @@ path.edge-unmet {
 
 .trail-line[data-muted="true"] {
   background: repeating-linear-gradient(90deg, var(--bark) 0 14px, transparent 14px 24px);
+}
+
+/* Learn sim inspector bottom sheet (DESIGN.md 14.5): slides in over --dur-slow; reduced motion shortens it globally. */
+@keyframes sim-sheet-in {
+  from {
+    transform: translateY(100%);
+  }
 }

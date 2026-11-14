@@ -26,6 +26,7 @@
     "e2e:ui": "playwright test --ui",
     "uicheck": "tsx scripts/uicheck.ts",
     "content:validate": "tsx scripts/content-validate.ts",
+    "learn:layout": "tsx apps/web/lib/learn/sim-render/generate-layouts.ts",
     "learn:validate": "tsx scripts/learn-validate.ts",
     "content:seed": "tsx scripts/content-seed.ts",
     "budget": "tsx scripts/budget-report.ts",
