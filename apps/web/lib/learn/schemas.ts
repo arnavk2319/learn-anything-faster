@@ -107,8 +107,17 @@ export const SimSchema = z.strictObject({
   src: SrcSchema,
 });
 
+/** YAML input shape for a template-based sim; expanded by resolveSimRef/compileTemplate. */
+export const TemplateSimSchema = z.strictObject({
+  id: slug,
+  template: z.string().min(1),
+  parameters: z.record(z.string(), z.unknown()).optional(),
+  overrides: z.record(z.string(), z.unknown()).optional(),
+});
+
 const SimRefSchema = z.union([
   SimSchema,
+  TemplateSimSchema,
   z.strictObject({ ref: slug }),
   z.strictObject({
     exception: z.strictObject({
@@ -250,3 +259,4 @@ export type Problem = z.infer<typeof ProblemSchema>;
 export type Question = z.infer<typeof QuestionSchema>;
 export type QuestionSet = z.infer<typeof QuestionSetSchema>;
 export type Sim = z.infer<typeof SimSchema>;
+export type TemplateSim = z.infer<typeof TemplateSimSchema>;
