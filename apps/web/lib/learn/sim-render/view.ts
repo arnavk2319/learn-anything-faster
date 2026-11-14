@@ -54,9 +54,38 @@ export function tokenKindsUsed(sim: Sim, scenarioId: string): string[] {
 export function frameAt(sim: Sim, scenarioId: string, t: number, reduced: boolean): Frame {
   const f = run(sim, scenarioId, t);
   if (!reduced) return f;
-  return { ...f, tokens: f.tokens.map((k) => (k.progress === undefined ? k : { ...k, progress: 0.5 })) };
+  return {
+    ...f,
+    tokens: f.tokens.map((k) => (k.progress === undefined ? k : { ...k, progress: 0.5 })),
+  };
 }
 
 export function tokenWidth(label: string, color: string | undefined): number {
   return 20 + label.length * 7 + (color === "error" ? 12 : 0);
+}
+
+/** Key an upcoming `put` on a full LRU will evict, or null. Lets the widget mark the slot before it leaves. */
+export function evictingKey(
+  sim: Sim,
+  scenarioId: string,
+  t: number,
+  nodeId: string,
+  keys: readonly string[],
+  capacity: number,
+): string | null {
+  if (keys.length < capacity) return null;
+  const sc = sim.scenarios.find((s) => s.id === scenarioId);
+  for (const ev of sc?.events ?? [])
+    if (ev.at > t && "state" in ev && ev.state.node === nodeId && ev.state.op === "put")
+      return keys.includes(ev.state.key ?? "") ? null : (keys[keys.length - 1] ?? null);
+  return null;
+}
+
+/** Short chips for a non-LRU state widget (ring: node names, kv: k=v, counter: the number). */
+export function widgetItems(state: { type: string; init: unknown }): string[] {
+  const v = state.init;
+  if (Array.isArray(v)) return v.map(String);
+  if (typeof v === "number") return [String(v)];
+  if (v && typeof v === "object") return Object.entries(v).map(([k, x]) => `${k}=${String(x)}`);
+  return [];
 }

@@ -1,7 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { compileTemplate } from "../sim/templates";
 import { fallbackLayout, getLayout, pointAlong, roundedPath } from "./layout";
-import { frameAt, pulsedNodes, stepIndex, stepTarget, stepTimes, tokenKindsUsed } from "./view";
+import {
+  evictingKey,
+  widgetItems,
+  frameAt,
+  pulsedNodes,
+  stepIndex,
+  stepTarget,
+  stepTimes,
+  tokenKindsUsed,
+} from "./view";
 
 const r = compileTemplate({ id: "cache-aside-read", template: "cache-aside-read" });
 if (!r.ok) throw new Error("fixture");
@@ -36,6 +45,19 @@ describe("frame helpers", () => {
   });
 });
 
+describe("widgets", () => {
+  it("marks the eviction victim only before a put of a new key on a full LRU", () => {
+    expect(evictingKey(sim, "miss", 0, "cache", ["b", "c", "a"], 3)).toBe("a");
+    expect(evictingKey(sim, "miss", 1900, "cache", ["d", "b", "c"], 3)).toBeNull();
+    expect(evictingKey(sim, "miss", 0, "cache", ["b"], 3)).toBeNull();
+  });
+  it("turns state into chips", () => {
+    expect(widgetItems({ type: "kv", init: { k: "v" } })).toEqual(["k=v"]);
+    expect(widgetItems({ type: "counter", init: 3 })).toEqual(["3"]);
+    expect(widgetItems({ type: "ring", init: ["a", "b"] })).toEqual(["a", "b"]);
+  });
+});
+
 describe("layout geometry", () => {
   it("generated layout is used for template sims and fallback covers the rest", () => {
     const l = getLayout(sim);
@@ -45,7 +67,11 @@ describe("layout geometry", () => {
     expect(fb.edges.e1?.length).toBeGreaterThanOrEqual(2);
   });
   it("interpolates along a route and rounds corners", () => {
-    const pts = [{ x: 0, y: 0 }, { x: 10, y: 0 }, { x: 10, y: 10 }];
+    const pts = [
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 10, y: 10 },
+    ];
     expect(pointAlong(pts, 0.5)).toEqual({ x: 10, y: 0 });
     expect(pointAlong(pts, 1)).toEqual({ x: 10, y: 10 });
     expect(roundedPath(pts, 4)).toContain("Q 10 0");

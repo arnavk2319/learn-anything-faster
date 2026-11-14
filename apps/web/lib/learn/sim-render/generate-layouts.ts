@@ -14,7 +14,9 @@ export function templateSims(): Sim[] {
   });
 }
 
-export async function buildLayouts(sims: Sim[] = templateSims()): Promise<Record<string, SimLayout>> {
+export async function buildLayouts(
+  sims: Sim[] = templateSims(),
+): Promise<Record<string, SimLayout>> {
   const elk = new ELK();
   const out: Record<string, SimLayout> = {};
   for (const sim of sims) out[sim.id] = fromElk(await elk.layout(elkInput(sim)));

@@ -12,10 +12,12 @@ describe("generated sim layouts", () => {
   it("client code never imports elkjs or @xyflow (ELK is build-time only)", () => {
     const dirs = [__dirname, join(__dirname, "../../../components/learn")];
     for (const dir of dirs)
-      for (const f of readdirSync(dir).filter((x) => /\.tsx?$/.test(x) && x !== "generate-layouts.ts")) {
+      for (const f of readdirSync(dir).filter(
+        (x) => /\.tsx?$/.test(x) && x !== "generate-layouts.ts" && !x.includes(".test."),
+      )) {
         const src = strip(readFileSync(join(dir, f), "utf8"));
         expect(src, f).not.toMatch(/@xyflow|elk-worker|from\s+["']elkjs/);
-        if (f !== "layouts.test.ts") expect(src, f).not.toMatch(/\bnew Worker\b/);
+        expect(src, f).not.toMatch(/\bnew Worker\b/);
       }
   });
 });

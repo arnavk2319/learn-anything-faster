@@ -28,9 +28,7 @@ export function nodeSize(n: SimNode): { w: number; h: number } {
   if (n.kind === "decision") return { w: 120, h: 72 };
   if (!n.state) return { w: NODE_W, h: PILL_H };
   const w =
-    n.state.type === "lru"
-      ? Math.max(NODE_W, n.state.capacity * (SLOT_W + SLOT_GAP) + 16)
-      : NODE_W;
+    n.state.type === "lru" ? Math.max(NODE_W, n.state.capacity * (SLOT_W + SLOT_GAP) + 16) : NODE_W;
   return { w, h: CARD_H };
 }
 
@@ -210,8 +208,14 @@ export function roundedPath(pts: readonly Pt[], radius = 12): string {
       d += ` L ${cur.x} ${cur.y}`;
       continue;
     }
-    const a = { x: cur.x - ((cur.x - prev.x) / inLen) * r, y: cur.y - ((cur.y - prev.y) / inLen) * r };
-    const b = { x: cur.x + ((next.x - cur.x) / outLen) * r, y: cur.y + ((next.y - cur.y) / outLen) * r };
+    const a = {
+      x: cur.x - ((cur.x - prev.x) / inLen) * r,
+      y: cur.y - ((cur.y - prev.y) / inLen) * r,
+    };
+    const b = {
+      x: cur.x + ((next.x - cur.x) / outLen) * r,
+      y: cur.y + ((next.y - cur.y) / outLen) * r,
+    };
     d += ` L ${a.x} ${a.y} Q ${cur.x} ${cur.y} ${b.x} ${b.y}`;
   }
   return d;
