@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "@playwright/test";
 
 const port = Number(process.env.PORT ?? 3000);
@@ -22,6 +23,8 @@ export default defineConfig({
             process.env.DATABASE_URL_TEST ??
             "postgres://postgres:postgres@localhost:54329/laf_test",
           FORM_RATE_LIMIT: "1000",
+          // Learn pages only build approved content; e2e uses approved copies of the T-037 sample (T-045).
+          LEARN_CONTENT_DIR: fileURLToPath(new URL("./e2e/fixtures/learn", import.meta.url)),
         },
       },
 });
