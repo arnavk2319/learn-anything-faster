@@ -3,6 +3,7 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parse } from "yaml";
+import { upgradeLegacy } from "../apps/web/lib/learn/legacy.ts";
 import { validateLearn } from "./lib/learn/validate.ts";
 
 const root = resolve(process.argv[2] ?? "content/learn");
@@ -25,31 +26,9 @@ function knownTopicIds(): string[] {
   });
 }
 
-// T-037 sample packs predate ADR-0015 rev 4: sim blocks use `sim: {ref}` and faq blocks carry one block-level `src`.
-// Map those two shapes to the rev 4 shape here (the schema stays strict) and warn until the content is migrated.
+// T-037 sample packs predate ADR-0015 rev 4; the shared mapping lives in apps/web/lib/learn/legacy.ts.
 let legacy = 0;
-function upgradeLegacy(doc: unknown): unknown {
-  if (Array.isArray(doc)) return doc.map(upgradeLegacy);
-  if (doc === null || typeof doc !== "object") return doc;
-  const o = { ...(doc as Record<string, unknown>) };
-  if (
-    o.type === "sim" &&
-    o.ref === undefined &&
-    typeof (o.sim as { ref?: unknown } | undefined)?.ref === "string"
-  ) {
-    o.ref = (o.sim as { ref: string }).ref;
-    delete o.sim;
-    legacy++;
-  }
-  if (o.type === "faq" && o.src !== undefined && Array.isArray(o.items)) {
-    const src = o.src;
-    o.items = (o.items as Record<string, unknown>[]).map((it) => ({ src, ...it }));
-    delete o.src;
-    legacy++;
-  }
-  for (const [k, v] of Object.entries(o)) o[k] = upgradeLegacy(v);
-  return o;
-}
+const upgrade = (doc: unknown): unknown => upgradeLegacy(doc, () => legacy++);
 
 function loadPack(track: string) {
   const dir = join(root, track);
@@ -75,8 +54,8 @@ function loadPack(track: string) {
     : {};
   return {
     track: trackDoc,
-    concepts: yamlFiles(join(dir, "concepts")).map(readYaml).map(upgradeLegacy),
-    problems: yamlFiles(join(dir, "problems")).map(readYaml).map(upgradeLegacy),
+    concepts: yamlFiles(join(dir, "concepts")).map(readYaml).map(upgrade),
+    problems: yamlFiles(join(dir, "problems")).map(readYaml).map(upgrade),
     questions: yamlFiles(join(dir, "questions")).flatMap(
       (f) => (readYaml(f) as unknown[] | null) ?? [],
     ),
