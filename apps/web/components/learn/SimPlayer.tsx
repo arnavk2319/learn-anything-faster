@@ -115,6 +115,10 @@ export default function SimPlayer({
         if (to !== null) setTime(to);
       }}
       onSpeed={setSpeed}
+      onSeek={(at) => {
+        setPlaying(false);
+        setTime(at);
+      }}
       onScenario={(id) => {
         setScenarioId(id);
         setTime(0);

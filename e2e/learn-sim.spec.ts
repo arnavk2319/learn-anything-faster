@@ -22,10 +22,10 @@ test.describe("learn sim renderer", () => {
     await page.goto(URL);
     await expect(page.locator(`${SIM} svg`).first()).toBeVisible();
     await expect(page.locator(`${SIM} [data-node="cache"]`)).toBeAttached();
-    const transcript = page.locator("details", { hasText: "Read this as text" }).first();
+    const transcript = page.locator(`${SIM} details`, { hasText: "Read this as text" }).first();
     await transcript.locator("summary").click();
     await expect(transcript.locator("ol li").first()).toHaveText(
-      "Miss: loaded from the database and cached",
+      "Hit: c is served from the cache and becomes most recent",
     );
     await ctx.close();
   });
@@ -37,13 +37,28 @@ test.describe("learn sim renderer", () => {
     await root.getByRole("button", { name: "Restart" }).click();
     await root.getByRole("group", { name: /diagram/ }).focus();
     await page.keyboard.press("ArrowRight");
-    await expect(caption).toContainText("Miss: loaded from the database and cached");
+    const active = root.getByTestId("sim-steps").locator('[aria-current="step"]');
+    await expect(active).toContainText("Hit: c is served from the cache and becomes most recent");
     await expect(caption).toContainText("Step 1 of 1");
-    await expect(root.locator("svg text").filter({ hasText: /^d$/ })).toBeVisible();
     await page.keyboard.press("ArrowLeft");
     await expect(caption).toContainText("Step 0 of 1");
+    await expect(active).toHaveCount(0);
     await page.keyboard.press("Space");
     await expect(root.getByRole("button", { name: "Pause" })).toBeVisible();
+  });
+
+  test("controls are icon-only; all steps stay listed; transcript lives inside the sim card", async ({
+    page,
+  }) => {
+    const root = await liveSim(page);
+    await expect(root.getByRole("button", { name: "Restart" })).toHaveText("");
+    await expect(root.getByRole("button", { name: "Restart" })).toHaveAttribute("title", "Restart");
+    await expect(root.getByTestId("sim-steps").locator("li")).not.toHaveCount(0);
+    await expect(root.locator("details", { hasText: "Read this as text" })).toHaveCount(1);
+    await root.getByRole("button", { name: "Pause" }).click();
+    await root.getByRole("button", { name: "Restart" }).click();
+    await root.getByTestId("sim-steps").getByRole("button").first().click();
+    await expect(root.getByTestId("sim-steps").locator('[aria-current="step"]')).toHaveCount(1);
   });
 
   test("inspector opens on Enter, closes on Escape and returns focus", async ({ page }) => {
@@ -51,7 +66,7 @@ test.describe("learn sim renderer", () => {
     const node = root.locator('[data-node="cache"]');
     await node.focus();
     await page.keyboard.press("Enter");
-    await expect(root.getByRole("complementary", { name: /Cache details/ })).toBeVisible();
+    await expect(root.getByRole("complementary", { name: /Cache.*details/ })).toBeVisible();
     await expect(root.getByRole("button", { name: "Close" })).toBeFocused();
     await page.keyboard.press("Escape");
     await expect(root.getByRole("complementary")).toHaveCount(0);
@@ -68,7 +83,9 @@ test.describe("learn sim renderer", () => {
     await page.waitForTimeout(1200);
     await expect(caption).toContainText("Step 0 of 1");
     await root.getByRole("button", { name: "Step forward" }).click();
-    await expect(caption).toContainText("Miss: loaded from the database and cached");
+    await expect(root.getByTestId("sim-steps").locator('[aria-current="step"]')).toContainText(
+      "Hit: c is served from the cache and becomes most recent",
+    );
     await expectNoA11yViolations(page, { label: "learn sim preview" });
   });
 
