@@ -181,6 +181,10 @@
   --color-canvas: var(--canvas);
   --color-lane-band: var(--lane-band);
   --color-edge-unmet: var(--edge-unmet);
+  --color-sim-request: var(--sim-request);
+  --color-sim-response: var(--sim-response);
+  --color-sim-replicate: var(--sim-replicate);
+  --color-sim-error: var(--sim-error);
 
   --radius-sm: 6px;
   --radius-md: var(--radius);
