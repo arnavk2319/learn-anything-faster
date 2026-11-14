@@ -17,6 +17,11 @@ import {
   type Src,
   type Track,
 } from "../../../apps/web/lib/learn/schemas.ts";
+import {
+  compileTemplate,
+  countTemplateSims,
+  TEMPLATE_NAMES,
+} from "../../../apps/web/lib/learn/sim/templates.ts";
 
 export interface Issue {
   rule: string;
@@ -51,16 +56,6 @@ export interface ValidateResult {
   exceptions: number;
   report: string;
 }
-
-/** Plain list until the sim engine (T-044) exports its template registry. */
-export const SIM_TEMPLATES = [
-  "cache-aside",
-  "load-balancer",
-  "leader-follower",
-  "producer-consumer",
-  "consistent-hash-ring",
-  "sharded-lookup",
-];
 
 export const GAP_RATIO_CAP = 0.35;
 export const GAP_COUNT_CAP = 15;
@@ -122,7 +117,7 @@ export function parsePack(raw: unknown): ParseResult {
       Object.entries(rec(r.guides)).filter((e): e is [string, string] => typeof e[1] === "string"),
     ),
     previousApprovedIds: strs(r.previousApprovedIds),
-    templates: r.templates === undefined ? SIM_TEMPLATES : strs(r.templates),
+    templates: r.templates === undefined ? [...TEMPLATE_NAMES] : strs(r.templates),
     denylist: { terms: strs(dl.terms), hashes: strs(dl.hashes) },
     knownTopicIds: r.knownTopicIds === undefined ? undefined : strs(r.knownTopicIds),
   };
@@ -363,7 +358,7 @@ export function validateLearn(raw: unknown): ValidateResult {
       exceptions++;
       continue;
     }
-    const own = "nodes" in it.sim ? it.sim.id : it.sim.ref;
+    const own = "ref" in it.sim ? it.sim.ref : it.sim.id;
     if ("ref" in it.sim && !sharedSimIds.has(it.sim.ref))
       err(
         "sim-ref-unresolved",
@@ -577,9 +572,18 @@ export function validateLearn(raw: unknown): ValidateResult {
   }
 
   // ---- sims ----
+  // Template-shaped sims ({id, template, parameters?, overrides?}) are expanded via the engine compiler.
+  const expand = (owner: string, sim: Concept["sim"]): Sim[] => {
+    if ("nodes" in sim) return [sim];
+    if (!("template" in sim)) return [];
+    const r = compileTemplate(sim);
+    if (r.ok) return [r.sim];
+    for (const m of r.errors) err("sim-template", `${owner}: ${m}`, owner);
+    return [];
+  };
   const allSims: Sim[] = [
-    ...pack.concepts.flatMap((c) => ("nodes" in c.sim ? [c.sim] : [])),
-    ...pack.problems.flatMap((p) => ("nodes" in p.sim ? [p.sim] : [])),
+    ...pack.concepts.flatMap((c) => expand(c.id, c.sim)),
+    ...pack.problems.flatMap((p) => expand(p.id, p.sim)),
     ...pack.sims,
   ];
   for (const s of allSims) checkSim(s, pack.templates, err);
@@ -626,7 +630,7 @@ export function validateLearn(raw: unknown): ValidateResult {
   const pct = (x: number) => `${(x * 100).toFixed(1)}%`;
   const report =
     `learn:validate: gap ${gap.count}/${gap.items} approved items = ${pct(gap.ratio)} (cap ${GAP_RATIO_CAP * 100}% and ${GAP_COUNT_CAP}); ` +
-    `all items incl. proposed ${gapAll.count}/${gapAll.items} = ${pct(gapAll.ratio)}; sim exceptions ${exceptions}/${EXCEPTION_CAP}`;
+    `all items incl. proposed ${gapAll.count}/${gapAll.items} = ${pct(gapAll.ratio)}; sim exceptions ${exceptions}/${EXCEPTION_CAP}; template sims ${countTemplateSims(allSims)}/${allSims.length}`;
   return { errors, gap, exceptions, report };
 }
 

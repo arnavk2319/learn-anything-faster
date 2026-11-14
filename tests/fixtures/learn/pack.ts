@@ -33,7 +33,7 @@ export const gapSrc = () => ({ kind: "gap", note: "Not stated in the guide; illu
 
 export const goodSim = (id = "cache-aside-read") => ({
   id,
-  template: "cache-aside",
+  template: "cache-aside-read",
   durationMs: 9000,
   loop: true,
   nodes: [
@@ -176,7 +176,7 @@ export function makePack(): any /* raw fixture, intentionally untyped: tests mut
     sims: [{ ...goodSim("shared-lb"), template: undefined, src: guideSrc(Q_LB, "Load balancing") }],
     guides: { [GUIDE_ID]: GUIDE_MD },
     previousApprovedIds: [] as string[],
-    templates: ["cache-aside", "load-balancer"],
+    templates: ["cache-aside-read", "load-balancer"],
     denylist: { terms: ["acmecorp"], hashes: [hashTerm("globex")] },
   };
 }
