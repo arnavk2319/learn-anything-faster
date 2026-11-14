@@ -400,7 +400,7 @@ const TEMPLATES: Record<string, Template> = {
   },
 };
 
-// ADR-0015 example and committed content use the short name `cache-aside` for the read flow.
+// Legacy alias, kept because committed content/ still uses `cache-aside` for the read flow.
 TEMPLATES["cache-aside"] = TEMPLATES["cache-aside-read"] as Template;
 
 export const TEMPLATE_NAMES: readonly string[] = Object.keys(TEMPLATES);

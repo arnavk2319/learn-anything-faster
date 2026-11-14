@@ -3,7 +3,8 @@
 // resolveSimRef(simOrRef, sharedSims) returns {ok:true, sim} | {ok:false, errors}; it also expands template sims.
 import { describe, expect, it } from "vitest";
 import { lruSim } from "../../../../../tests/fixtures/learn/sim";
-import { SimSchema } from "../schemas";
+import { SimSchema, type Sim } from "../schemas";
+import { run } from "./engine";
 import { compileTemplate, resolveSimRef, TEMPLATE_NAMES } from "./templates";
 
 describe("TEMPLATE_NAMES registry", () => {
@@ -96,9 +97,6 @@ describe("resolveSimRef", () => {
 });
 
 // ---- T-044 library outcomes ----
-import { run } from "./engine";
-import type { Sim } from "../schemas";
-
 const build = (template: string, parameters?: Record<string, unknown>): Sim => {
   const r = compileTemplate({ id: "t", template, parameters });
   if (!r.ok) throw new Error(r.errors.join(";"));
@@ -174,13 +172,21 @@ describe("template outcomes", () => {
       init: { apple: "shard1", kiwi: "shard2", zebra: "shard3" },
     });
   });
-  it("each template honours parameter ranges", () => {
-    expect(
-      compileTemplate({ id: "x", template: "load-balancer", parameters: { servers: 9 } }).ok,
-    ).toBe(false);
-    expect(
-      compileTemplate({ id: "x", template: "load-balancer", parameters: { servers: 2.5 } }).ok,
-    ).toBe(false);
+  it("every parameter rejects out-of-range and non-integer values", () => {
+    const cases: [string, string, number][] = [
+      ["cache-aside-read", "capacity", 0],
+      ["load-balancer", "servers", 9],
+      ["load-balancer", "servers", 2.5],
+      ["leader-follower", "followers", 4],
+      ["producer-consumer", "jobs", 5],
+      ["consistent-hash-ring", "nodes", 1],
+      ["sharded-lookup", "shards", 5],
+    ];
+    for (const [template, k, v] of cases)
+      expect(
+        compileTemplate({ id: "x", template, parameters: { [k]: v } }).ok,
+        `${template}.${k}=${v}`,
+      ).toBe(false);
   });
 });
 
