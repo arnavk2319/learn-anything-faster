@@ -11,6 +11,7 @@ import { layoutInWorker } from "../../lib/roadmap/layout-client";
 import { buildListModel } from "../../lib/roadmap/list-model";
 import type { RoleOption } from "../../lib/roadmap/roles";
 import { selectTopic } from "../../lib/roadmap/selection-store";
+import { summarizeRoadmap } from "../../lib/roadmap/summary";
 import { EmptyState, ErrorState, LoadingState, UnmappedState } from "./CanvasStates";
 import { RoadmapCanvas } from "./RoadmapCanvas";
 import { RoadmapList } from "./RoadmapList";
@@ -224,7 +225,7 @@ export function RoadmapScreen({
   }
 
   const meta = data
-    ? `Built from ${data.nodes.length} topics and ${data.edges.length} prerequisite links. ${data.covered.length} topics skipped because your role covers them.`
+    ? (summarizeRoadmap({ topics: data.nodes, coveredCount: data.covered.length }).sentence ?? " ")
     : q.isError && isUnmapped(q.error)
       ? "Nothing curated for this move yet."
       : " ";

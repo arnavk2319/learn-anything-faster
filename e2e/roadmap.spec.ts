@@ -332,3 +332,26 @@ for (const [width, size] of [
     expect(await page.evaluate("document.documentElement.scrollWidth <= innerWidth")).toBe(true);
   });
 }
+
+// T-059: the header sentence. The e2e DB holds this file's fixture (not data/seed), so the expected hours are summed
+// from the same API response the page renders.
+test("summary sentence shows total hours, ignores the covered toggle, fits at every width", async ({
+  page,
+  request,
+}) => {
+  const res = await request.get("/api/roadmap?from=dev&to=ml-dev");
+  const body = (await res.json()) as { nodes: { estHours: number }[]; covered: unknown[] };
+  const hours = body.nodes.reduce((s, n) => s + n.estHours, 0);
+  const n = body.nodes.length;
+  const expected = `${n} topic${n === 1 ? "" : "s"} to learn, about ${hours} hour${hours === 1 ? "" : "s"}. Your role already covers ${body.covered.length}.`;
+  for (const width of [375, 768, 1024, 1280]) {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto("/roadmap/dev/ml-dev");
+    await expect(page.getByText(expected)).toBeVisible();
+    await expect(page.getByText(/Built from|prerequisite links/)).toHaveCount(0);
+    expect(await page.evaluate("document.documentElement.scrollWidth <= innerWidth")).toBe(true);
+  }
+  await page.goto("/roadmap/dev/ml-dev?view=list");
+  await page.getByRole("button", { name: /Show what you already know/ }).click();
+  await expect(page.getByText(expected)).toBeVisible();
+});
