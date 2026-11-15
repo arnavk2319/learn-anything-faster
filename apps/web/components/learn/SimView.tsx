@@ -128,7 +128,7 @@ function Widget({
     const initKeys = node.state.init;
     const victim = evictingKey(sim, scenarioId, t, node.id, st.init, st.capacity);
     return (
-      <g aria-hidden="true">
+      <g aria-hidden="true" className="pointer-events-none">
         {st.init.map((k, i) => {
           const fresh = !initKeys.includes(k);
           const touched = i === 0 && !fresh && k !== initKeys[0];
@@ -169,7 +169,7 @@ function Widget({
   const items = widgetItems(st);
   const shown = items.slice(0, 3);
   return (
-    <g aria-hidden="true">
+    <g aria-hidden="true" className="pointer-events-none">
       {shown.map((k, i) => (
         <g key={`${k}-${i}`} transform={`translate(${12 + i * 60} ${y + 4})`}>
           <rect
@@ -279,6 +279,30 @@ function NodeShape({
       className={`${r} ${cls}`}
     />
   );
+}
+
+const FOCUSABLE =
+  "button:not([disabled]), [href], select:not([disabled]), [tabindex]:not([tabindex='-1'])";
+
+// On a phone the inspector is a modal bottom sheet: keep Tab inside it. On desktop it is an
+// inline panel, so Tab flows on normally.
+function trapSheetTab(e: KeyboardEvent<HTMLElement>) {
+  if (e.key !== "Tab" || !window.matchMedia("(max-width: 767px)").matches) return;
+  const items = [...e.currentTarget.querySelectorAll<HTMLElement>(FOCUSABLE)];
+  const first = items[0];
+  const last = items[items.length - 1];
+  if (!first || !last) return;
+  const at = document.activeElement;
+  if (e.shiftKey && at === first) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && at === last) {
+    e.preventDefault();
+    first.focus();
+  } else if (!e.currentTarget.contains(at)) {
+    e.preventDefault();
+    first.focus();
+  }
 }
 
 export function SimView(p: SimViewProps) {
@@ -651,6 +675,7 @@ export function SimView(p: SimViewProps) {
             />
             <aside
               aria-label={`${sel.label} details`}
+              onKeyDown={trapSheetTab}
               className="mt-4 rounded-md border border-border bg-lane p-4 max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:z-50 max-md:mt-0 max-md:max-h-[90vh] max-md:min-h-[40vh] max-md:overflow-auto max-md:rounded-t-lg max-md:rounded-b-none max-md:bg-card motion-safe:max-md:animate-[sim-sheet-in_var(--dur-slow)_var(--ease-trail)] lg:mt-0"
             >
               <div
@@ -658,9 +683,9 @@ export function SimView(p: SimViewProps) {
                 className="mx-auto mb-3 h-1 w-10 rounded-pill bg-border md:hidden"
               />
               <div className="flex items-start justify-between gap-2">
-                <div>
+                <div className="min-w-0">
                   <p className="text-sm text-muted-foreground">{sel.kind}</p>
-                  <h3 className="font-display text-lg font-semibold text-foreground">
+                  <h3 className="font-display text-lg font-semibold break-words text-foreground">
                     {sel.label}
                   </h3>
                 </div>
