@@ -62,24 +62,42 @@ export interface TrackPack {
   sims: Sim[];
 }
 
-/** Loads one track's approved content, or null when the track does not exist or is not live. */
-export const loadTrack = cache((trackId: string): TrackPack | null => {
-  if (!isSafeId(trackId)) return null;
-  const dir = join(contentRoot(), trackId);
-  if (!existsSync(dir)) return null;
+/** "system-design" -> "System design": the title used until a track.yaml authors one. */
+export function titleFromId(id: string): string {
+  const words = id.replace(/-/g, " ");
+  return words.charAt(0).toUpperCase() + words.slice(1);
+}
+
+function readTrackDoc(trackId: string, dir: string): unknown {
   const trackFile = join(dir, "track.yaml");
   // track.yaml is optional until the pilot content ticket adds it (same stub as learn:validate).
-  const trackDoc = existsSync(trackFile)
+  return existsSync(trackFile)
     ? readYaml(trackFile)
     : {
         id: trackId,
-        title: trackId,
+        title: titleFromId(trackId),
         summary: "Track metadata not yet authored.",
         category: "engineering",
         status: "live",
         order: 0,
       };
-  const track = TrackSchema.safeParse(trackDoc);
+}
+
+/** Track metadata for any status (live or coming-soon), or null when absent or invalid. */
+export const loadTrackMeta = cache((trackId: string): Track | null => {
+  if (!isSafeId(trackId)) return null;
+  const dir = join(contentRoot(), trackId);
+  if (!existsSync(dir)) return null;
+  const r = TrackSchema.safeParse(readTrackDoc(trackId, dir));
+  return r.success && r.data.id === trackId ? r.data : null;
+});
+
+/** Loads one track's approved content, or null when the track does not exist or is not live. */
+export const loadTrack = cache((trackId: string): TrackPack | null => {
+  if (!isSafeId(trackId)) return null;
+  const dir = join(contentRoot(), trackId);
+  if (!existsSync(dir)) return null;
+  const track = TrackSchema.safeParse(readTrackDoc(trackId, dir));
   if (!track.success || track.data.id !== trackId || track.data.status !== "live") return null;
 
   const concepts: Concept[] = [];
