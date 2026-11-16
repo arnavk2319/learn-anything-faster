@@ -6,7 +6,7 @@ stage: basic
 order: 5
 topicIds: []
 prerequisites: []
-status: proposed
+status: approved
 sim:
   id: cache-aside-read
   template: cache-aside
