@@ -1,6 +1,9 @@
 // Build-time Learn indexes (ADR-0015 sections 1 and 4). Approved items only.
 import type { Pack } from "./validate.ts";
 
+/** What the index needs from a pack, so the web loader can pass its approved subset. */
+export type IndexSource = Pick<Pack, "concepts" | "problems" | "questions">;
+
 export interface SearchEntry {
   id: string;
   type: "concept" | "problem" | "question";
@@ -20,7 +23,7 @@ const clip = (s: string, n: number) => {
   return t.length <= n ? t : `${t.slice(0, n - 1)}…`;
 };
 
-export function buildSearchIndex(pack: Pack, trackId: string): SearchEntry[] {
+export function buildSearchIndex(pack: IndexSource, trackId: string): SearchEntry[] {
   const base = `/learn/${trackId}`;
   const out: SearchEntry[] = [];
   for (const c of pack.concepts)
