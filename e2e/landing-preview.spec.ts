@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import pg from "pg";
+import { expectNoA11yViolations } from "./helpers/a11y";
 
 const DB = process.env.DATABASE_URL_TEST ?? "postgres://postgres:postgres@localhost:54329/laf_test";
 let pool: pg.Pool | undefined;
@@ -65,4 +66,55 @@ test("landing preview falls back to abstract when the API errors", async ({ page
   await page.getByLabel("I am a").selectOption("p35-a");
   await page.getByLabel("and I want to be a").selectOption("p35-b");
   await expect(page.getByTestId("route-line")).toHaveAttribute("data-state", "abstract");
+});
+
+test.describe("landing hero and popular cards (T-075)", () => {
+  test("one h1 sized 32-36px at 1280 and at most 34px at 375", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("/");
+    await expect(page.locator("h1")).toHaveCount(1);
+    const size = () =>
+      page.evaluate(
+        "parseFloat(getComputedStyle(document.querySelector('h1')).fontSize)",
+      ) as Promise<number>;
+    const wide = await size();
+    expect(wide).toBeGreaterThanOrEqual(32);
+    expect(wide).toBeLessThanOrEqual(36);
+    await page.setViewportSize({ width: 375, height: 800 });
+    expect(await size()).toBeLessThanOrEqual(34);
+  });
+
+  for (const [width, cols] of [
+    [1280, 3],
+    [1024, 3],
+    [375, 1],
+  ] as const) {
+    test(`cards use ${cols} column(s) with no horizontal scroll at ${width}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 800 });
+      await page.goto("/");
+      const cards = page.getByTestId("popular-card");
+      await expect(cards).toHaveCount(3);
+      const lefts = () =>
+        cards.evaluateAll(
+          (els) => new Set(els.map((e) => Math.round(e.getBoundingClientRect().left))).size,
+        );
+      await expect.poll(lefts).toBe(cols);
+      const overflow = await page.evaluate("document.documentElement.scrollWidth > innerWidth");
+      expect(overflow).toBe(false);
+    });
+  }
+
+  test("no horizontal scroll at 768", async ({ page }) => {
+    await page.setViewportSize({ width: 768, height: 800 });
+    await page.goto("/");
+    const overflow = await page.evaluate("document.documentElement.scrollWidth > innerWidth");
+    expect(overflow).toBe(false);
+  });
+
+  test("cards name their status and have no serious axe violations", async ({ page }) => {
+    await page.goto("/");
+    const names = await page.getByTestId("popular-card").allInnerTexts();
+    for (const name of names) expect(name).toMatch(/^(Live|Soon)/);
+    await expectNoA11yViolations(page, { label: "/" });
+  });
 });
