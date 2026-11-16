@@ -6,6 +6,7 @@ import { NavLinks, type NavItem } from "./NavLinks";
 
 export const NAV_ITEMS: NavItem[] = [
   { href: "/roadmaps", label: "Browse roadmaps" },
+  { href: "/learn", label: "Learn" },
   { href: roadmapHref(SEED_FROM_ID, SEED_TO_ID), label: "See an example" },
 ];
 

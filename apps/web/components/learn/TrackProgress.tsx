@@ -22,7 +22,7 @@ import {
   type ProblemRow,
 } from "@/lib/learn/track-view";
 
-function useLearnProgress(): {
+export function useLearnProgress(): {
   progress: Progress;
   toggle: (k: FavoriteKind, id: string) => void;
 } {
@@ -43,7 +43,7 @@ function useLearnProgress(): {
 const focusRing =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
 
-function Star({
+export function Star({
   pressed,
   label,
   onClick,
