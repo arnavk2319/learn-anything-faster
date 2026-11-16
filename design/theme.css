@@ -312,3 +312,25 @@ path.edge-unmet {
     transform: translateY(100%);
   }
 }
+
+/* Learn landing: bubble idle float (DESIGN.md 14.2). CSS only; absent under reduced motion. */
+@keyframes bubble-float {
+  50% {
+    transform: translateY(calc(var(--bubble-float-dist) * -1));
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bubble-float {
+    animation: bubble-float var(--bubble-float-dur) ease-in-out infinite;
+  }
+  .bubbles > li:nth-child(2n) .bubble-float {
+    animation-delay: -2s;
+  }
+  .bubbles > li:nth-child(3n) .bubble-float {
+    animation-delay: -4s;
+  }
+  .bubbles > li:nth-child(5n) .bubble-float {
+    animation-delay: -5.5s;
+  }
+}
