@@ -13,7 +13,7 @@
   explanation: "Cache-aside trades freshness for resilience; write-through trades write latency for consistency."
   difficulty: 2
   tags: [patterns]
-  status: proposed
+  status: approved
   src:
     {
       kind: guide,
@@ -36,7 +36,7 @@
   explanation: "An update can persist a losing write; a delete cannot."
   difficulty: 3
   tags: [invalidation]
-  status: proposed
+  status: approved
   src:
     {
       kind: guide,
@@ -59,7 +59,7 @@
   explanation: "Collapse the herd into one rebuild and spread expiries out."
   difficulty: 3
   tags: [failure-modes]
-  status: proposed
+  status: approved
   src:
     {
       kind: guide,
@@ -83,7 +83,7 @@
   explanation: "Only 10% of requests reach the database, so load drops 10 times; at 99% it drops 100 times."
   difficulty: 1
   tags: [metrics]
-  status: proposed
+  status: approved
   src:
     {
       kind: guide,
@@ -107,7 +107,7 @@
   explanation: "This is cache penetration; negatives and a Bloom filter stop repeated misses. Randomised TTLs address avalanche and key replication addresses hot keys."
   difficulty: 3
   tags: [failure-modes]
-  status: proposed
+  status: approved
   src:
     {
       kind: guide,
@@ -134,7 +134,7 @@
   explanation: "Hot read-heavy data is what caches are for. The others risk staleness, wasted memory, or data loss."
   difficulty: 2
   tags: [fundamentals]
-  status: proposed
+  status: approved
   src:
     {
       kind: guide,

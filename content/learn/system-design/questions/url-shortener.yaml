@@ -14,7 +14,7 @@
   explanation: "Leasing ranges moves coordination off the hot path."
   difficulty: 3
   tags: [code-generation]
-  status: proposed
+  status: approved
   src:
     {
       kind: guide,
@@ -37,7 +37,7 @@
   explanation: "A 301 is cached by clients and hides repeat clicks from you; a 302 costs more load but each click reaches the service."
   difficulty: 1
   tags: [redirect]
-  status: proposed
+  status: approved
   src:
     {
       kind: guide,
@@ -60,7 +60,7 @@
   explanation: "Hash-based codes need no shared state but collide; the coordinated counter belongs to the counter approach."
   difficulty: 2
   tags: [code-generation]
-  status: proposed
+  status: approved
   src:
     {
       kind: guide,
@@ -84,7 +84,7 @@
   explanation: "Hot links are served from the earliest layer that has them; the database is the last resort."
   difficulty: 1
   tags: [read-path]
-  status: proposed
+  status: approved
   src:
     {
       kind: guide,
