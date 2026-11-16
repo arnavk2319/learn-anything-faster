@@ -1,12 +1,13 @@
 import { expect, test, type Page } from "@playwright/test";
 import { expectNoA11yViolations } from "./helpers/a11y.ts";
+import { mountCombobox } from "./helpers/mount-combobox.ts";
 
-// T-072. Mounts the component through the dev-only route /test-role-combobox.
+// T-072. Mounts the component through e2e/helpers/mount-combobox.ts (no app route).
 const field = (page: Page) => page.getByRole("combobox", { name: "I want to be a" });
 
 test.beforeEach(async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
-  await page.goto("/test-role-combobox");
+  await mountCombobox(page);
 });
 
 test("keyboard: arrows wrap, Home/End, Enter selects, Escape keeps focus, Tab closes", async ({
