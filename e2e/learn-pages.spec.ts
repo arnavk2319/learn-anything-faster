@@ -20,11 +20,18 @@ test.describe("learn concept and problem pages", () => {
     await expect(page.locator("table").first()).toBeVisible();
     await expect(page.locator('[data-sim="cache-aside-read"]')).toBeVisible();
     await expectNoA11yViolations(page, { label: "learn concept" });
-    await page.getByRole("link", { name: "URL shortener" }).click();
+    // T-079: the shell outline and next-up also link here, so scope to the in-page Related nav.
+    await page
+      .getByRole("navigation", { name: "Related" })
+      .getByRole("link", { name: "URL shortener" })
+      .click();
     await expect(page).toHaveURL(PROBLEM);
     await expect(page.getByRole("heading", { level: 1, name: "URL shortener" })).toBeVisible();
     await expectNoA11yViolations(page, { label: "learn problem" });
-    await page.getByRole("link", { name: "Caching" }).last().click();
+    await page
+      .getByRole("navigation", { name: "Related" })
+      .getByRole("link", { name: "Caching" })
+      .click();
     await expect(page).toHaveURL(CONCEPT);
   });
 
