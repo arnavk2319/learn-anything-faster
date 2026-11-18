@@ -1,13 +1,15 @@
 // Presentational sim frame (DESIGN.md 14.5): canvas, legend, caption, controls, inspector.
 // Plain SVG, no @xyflow. Used for the server-rendered poster (interactive=false) and by SimPlayer.
-import type { KeyboardEvent, RefObject } from "react";
-import { useId, useSyncExternalStore } from "react";
+import type { CSSProperties, KeyboardEvent, RefObject } from "react";
+import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { useShellSlots } from "@/lib/shell/context";
 import type { Sim } from "@/lib/learn/schemas";
 import { transcript, type Frame, type FrameToken } from "@/lib/learn/sim/engine";
 import {
   CARD_H,
+  NARROW_LABEL,
+  pickMode,
   PILL_H,
   pointAlong,
   roundedPath,
@@ -32,6 +34,8 @@ export type SimViewProps = {
   title: string;
   sim: Sim;
   layout: SimLayout;
+  /** Vertical layout for panes <= 480px (T-090). Without it the wide layout is used at every width. */
+  narrowLayout?: SimLayout;
   scenarioId: string;
   frame: Frame;
   pulsed: string[];
@@ -322,7 +326,23 @@ const useIsWide = () =>
   );
 
 export function SimView(p: SimViewProps) {
-  const { sim, layout, frame, scenarioId } = p;
+  const { sim, frame, scenarioId } = p;
+  // The first render (server, poster, hydration) is always wide; the measured pane width picks the mode in an
+  // effect, so there is no hydration mismatch. The svg is width:100% so the pane width never depends on the mode.
+  const [mode, setMode] = useState<"wide" | "narrow">("wide");
+  const canvasRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const el = canvasRef.current;
+    if (!el || !p.narrowLayout) return;
+    const measure = () => setMode(pickMode(el.clientWidth));
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [p.narrowLayout]);
+  const narrow = mode === "narrow" && !!p.narrowLayout;
+  const layout = narrow && p.narrowLayout ? p.narrowLayout : p.layout;
   // Inside the Learn shell at >= 1024px the inspector lives in the right rail (T-080); everywhere else it stays
   // inline (side panel on tablet, bottom sheet on phone) exactly as in T-043.
   const shell = useShellSlots();
@@ -418,6 +438,7 @@ export function SimView(p: SimViewProps) {
           </div>
           {/* The scroll container is the focusable canvas: Space, arrows and R act here. */}
           <div
+            ref={canvasRef}
             tabIndex={0}
             role="group"
             aria-label={`${p.title} diagram. Space plays or pauses, left and right arrows step, R restarts.`}
@@ -426,8 +447,13 @@ export function SimView(p: SimViewProps) {
           >
             <svg
               viewBox={`0 0 ${w} ${h}`}
-              className="block w-full min-w-[680px]"
-              style={{ aspectRatio: `${w} / ${h}` }}
+              data-layout={narrow ? "narrow" : "wide"}
+              // Narrow: labels are set in viewBox units, so raise them to stay >= 11px once scaled to the pane.
+              className={`block w-full ${narrow ? "[&_text]:[font-size:var(--sim-narrow-label)]" : ""}`}
+              style={{
+                aspectRatio: `${w} / ${h}`,
+                ...(narrow ? ({ "--sim-narrow-label": `${NARROW_LABEL}px` } as CSSProperties) : {}),
+              }}
             >
               <title>{p.title}</title>
               <defs>
@@ -596,9 +622,6 @@ export function SimView(p: SimViewProps) {
               ))}
             </svg>
           </div>
-          <p className="mt-1 text-[length:var(--text-small)] text-muted-foreground md:hidden">
-            Swipe sideways to pan the diagram
-          </p>
 
           <ul
             aria-label="Token legend"

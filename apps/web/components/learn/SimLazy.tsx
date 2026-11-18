@@ -9,7 +9,17 @@ import { SimView } from "./SimView";
 
 const SimPlayer = lazy(() => import("./SimPlayer"));
 
-export function SimLazy({ title, sim, layout }: { title: string; sim: Sim; layout: SimLayout }) {
+export function SimLazy({
+  title,
+  sim,
+  layout,
+  narrowLayout,
+}: {
+  title: string;
+  sim: Sim;
+  layout: SimLayout;
+  narrowLayout?: SimLayout;
+}) {
   const [live, setLive] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -38,6 +48,7 @@ export function SimLazy({ title, sim, layout }: { title: string; sim: Sim; layou
       title={title}
       sim={sim}
       layout={layout}
+      narrowLayout={narrowLayout}
       scenarioId={sc}
       frame={frameAt(sim, sc, 0, true)}
       pulsed={[]}
@@ -53,7 +64,7 @@ export function SimLazy({ title, sim, layout }: { title: string; sim: Sim; layou
     <div ref={ref} data-sim-island={live ? "live" : "poster"}>
       {live ? (
         <Suspense fallback={poster}>
-          <SimPlayer title={title} sim={sim} layout={layout} />
+          <SimPlayer title={title} sim={sim} layout={layout} narrowLayout={narrowLayout} />
         </Suspense>
       ) : (
         poster
