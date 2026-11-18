@@ -450,3 +450,80 @@ path.edge-unmet {
     animation-delay: -5.5s;
   }
 }
+
+/* T-083 reward layer: stamp settle and one-shot burst. Only drawn when motion is allowed (the burst is not
+   rendered at all under reduced motion). Dots: 12 angles on a ring of --burst-r. */
+@media (prefers-reduced-motion: no-preference) {
+  .reward-stamp {
+    animation: reward-stamp var(--dur-spring) var(--ease-spring) both;
+  }
+  .reward-dot {
+    --burst-r: 36px;
+    animation: reward-burst var(--burst-dur) var(--ease-out) forwards;
+  }
+  .reward-dot:nth-child(1) {
+    --bx: 1;
+    --by: 0;
+  }
+  .reward-dot:nth-child(2) {
+    --bx: 0.87;
+    --by: 0.5;
+  }
+  .reward-dot:nth-child(3) {
+    --bx: 0.5;
+    --by: 0.87;
+  }
+  .reward-dot:nth-child(4) {
+    --bx: 0;
+    --by: 1;
+  }
+  .reward-dot:nth-child(5) {
+    --bx: -0.5;
+    --by: 0.87;
+  }
+  .reward-dot:nth-child(6) {
+    --bx: -0.87;
+    --by: 0.5;
+  }
+  .reward-dot:nth-child(7) {
+    --bx: -1;
+    --by: 0;
+  }
+  .reward-dot:nth-child(8) {
+    --bx: -0.87;
+    --by: -0.5;
+  }
+  .reward-dot:nth-child(9) {
+    --bx: -0.5;
+    --by: -0.87;
+  }
+  .reward-dot:nth-child(10) {
+    --bx: 0;
+    --by: -1;
+  }
+  .reward-dot:nth-child(11) {
+    --bx: 0.5;
+    --by: -0.87;
+  }
+  .reward-dot:nth-child(12) {
+    --bx: 0.87;
+    --by: -0.5;
+  }
+}
+@keyframes reward-stamp {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+}
+@keyframes reward-burst {
+  from {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translate(calc(var(--bx) * var(--burst-r)), calc(var(--by) * var(--burst-r)))
+      scale(0.4);
+    opacity: 0;
+  }
+}
