@@ -7,6 +7,7 @@ import Link from "next/link";
 import {
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
   useSyncExternalStore,
@@ -34,6 +35,7 @@ import {
   type RailAction,
   type RailMetrics,
 } from "@/lib/shell/rail";
+import { ShellSlotsContext, type ShellSlots } from "@/lib/shell/context";
 import { cn } from "@/lib/utils";
 
 type Pane = "outline" | "content" | "next";
@@ -159,6 +161,16 @@ export function LearnShell({
   const [rightCollapsed, setRightCollapsed] = useState(false);
   const [dragging, setDragging] = useState(false);
   const railRef = useRef<HTMLElement>(null);
+  const [inspectorEl, setInspectorEl] = useState<HTMLElement | null>(null);
+  const [onPageEl, setOnPageEl] = useState<HTMLElement | null>(null);
+  const slots = useMemo<ShellSlots>(
+    () => ({
+      inspector: inspectorEl,
+      onPage: onPageEl,
+      expandRight: () => setRightCollapsed(false),
+    }),
+    [inspectorEl, onPageEl],
+  );
 
   const metrics = measured ?? estimateMetrics(groups);
   const bounds = railBounds(metrics);
@@ -242,197 +254,207 @@ export function LearnShell({
   ];
 
   return (
-    <div
-      data-ui="v2"
-      data-density="compact"
-      className={cn(
-        "relative flex h-dvh flex-col overflow-hidden bg-background text-foreground",
-        dragging && "select-none",
-      )}
-      style={{ "--rail-w": `${width}px` } as CSSProperties}
-    >
-      <a
-        href="#main-content"
+    <ShellSlotsContext.Provider value={slots}>
+      <div
+        data-ui="v2"
+        data-density="compact"
         className={cn(
-          "sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-mark focus:bg-card focus:px-3 focus:py-2 focus:text-foreground",
-          ring,
+          "relative flex h-dvh flex-col overflow-hidden bg-background text-foreground",
+          dragging && "select-none",
         )}
+        style={{ "--rail-w": `${width}px` } as CSSProperties}
       >
-        Skip to content
-      </a>
-      <header className="flex h-(--header-h) shrink-0 items-center justify-between gap-4 border-b border-border bg-card px-3 md:px-4">
-        <Link
-          href="/"
-          className="text-foreground no-underline hover:text-foreground focus-visible:rounded-mark"
-        >
-          <Logo />
-        </Link>
-        <div className="flex items-center gap-4 md:gap-6">
-          <nav
-            aria-label="Learn"
-            className="hidden items-center gap-5 text-(length:--text-ui) font-medium md:flex"
-          >
-            <Link href="/learn" className="text-foreground no-underline hover:underline">
-              Learn
-            </Link>
-            <Link
-              href={`/learn/${trackId}`}
-              className="text-foreground no-underline hover:underline"
-            >
-              {trackTitle}
-            </Link>
-            <Link href="/roadmaps" className="text-foreground no-underline hover:underline">
-              Roadmaps
-            </Link>
-          </nav>
-          <Link
-            href="/learn"
-            className={cn(
-              "inline-flex min-h-(--hit-min) items-center rounded-mark border border-border-firm bg-background px-3 text-(length:--text-ui) text-muted-foreground no-underline hover:text-foreground md:min-h-(--control-h-md)",
-              ring,
-            )}
-          >
-            Search
-          </Link>
-        </div>
-      </header>
-
-      <div className="flex min-h-0 flex-1">
-        <aside
-          ref={railRef}
-          aria-label="Track outline"
-          data-testid="outline-rail"
+        <a
+          href="#main-content"
           className={cn(
-            "relative min-h-0 w-full shrink-0 overflow-hidden border-r border-border bg-card md:block md:w-(--rail-w)",
-            pane === "outline" ? "block" : "hidden",
+            "sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-mark focus:bg-card focus:px-3 focus:py-2 focus:text-foreground",
+            ring,
           )}
         >
-          <div className="h-full overflow-y-auto px-1">
-            <OutlineList
-              groups={groups}
-              currentId={currentId}
-              onNavigate={() => setPane("content")}
-            />
-          </div>
-          {!isMobile ? (
-            <div
-              role="separator"
-              aria-orientation="vertical"
-              aria-label="Resize outline"
-              aria-valuenow={width}
-              aria-valuemin={bounds.min}
-              aria-valuemax={bounds.max}
-              aria-valuetext={`Outline width ${width} pixels`}
-              tabIndex={0}
-              data-testid="rail-handle"
-              onKeyDown={onKey}
-              onPointerDown={onPointerDown}
-              onPointerMove={onPointerMove}
-              onPointerUp={endDrag}
-              onPointerCancel={endDrag}
-              onDoubleClick={() => commit({ type: "max" })}
+          Skip to content
+        </a>
+        <header className="flex h-(--header-h) shrink-0 items-center justify-between gap-4 border-b border-border bg-card px-3 md:px-4">
+          <Link
+            href="/"
+            className="text-foreground no-underline hover:text-foreground focus-visible:rounded-mark"
+          >
+            <Logo />
+          </Link>
+          <div className="flex items-center gap-4 md:gap-6">
+            <nav
+              aria-label="Learn"
+              className="hidden items-center gap-5 text-(length:--text-ui) font-medium md:flex"
+            >
+              <Link href="/learn" className="text-foreground no-underline hover:underline">
+                Learn
+              </Link>
+              <Link
+                href={`/learn/${trackId}`}
+                className="text-foreground no-underline hover:underline"
+              >
+                {trackTitle}
+              </Link>
+              <Link href="/roadmaps" className="text-foreground no-underline hover:underline">
+                Roadmaps
+              </Link>
+            </nav>
+            <Link
+              href="/learn"
               className={cn(
-                "absolute inset-y-0 right-0 w-3 cursor-col-resize touch-none after:absolute after:inset-y-0 after:right-0 after:w-0.5 after:bg-border-firm hover:after:bg-route",
-                dragging && "after:bg-route",
+                "inline-flex min-h-(--hit-min) items-center rounded-mark border border-border-firm bg-background px-3 text-(length:--text-ui) text-muted-foreground no-underline hover:text-foreground md:min-h-(--control-h-md)",
                 ring,
               )}
-            />
-          ) : null}
-        </aside>
+            >
+              Search
+            </Link>
+          </div>
+        </header>
 
-        <div className="flex min-w-0 flex-1 flex-col overflow-y-auto lg:flex-row lg:overflow-hidden">
-          <main
-            id="main-content"
-            tabIndex={-1}
-            className={cn(
-              "min-w-0 focus:outline-none lg:flex-1 lg:overflow-y-auto",
-              pane === "content" ? "block" : "hidden md:block",
-            )}
-          >
-            {children}
-          </main>
+        <div className="flex min-h-0 flex-1">
           <aside
-            aria-label="Next up and inspector"
-            data-testid="right-rail"
-            data-collapsed={rightCollapsed}
+            ref={railRef}
+            aria-label="Track outline"
+            data-testid="outline-rail"
             className={cn(
-              "shrink-0 border-t border-border bg-card lg:min-h-0 lg:overflow-y-auto lg:border-t-0 lg:border-l",
-              rightCollapsed ? "lg:w-12" : "lg:w-(--rail-right-w)",
-              pane === "next" ? "block" : "hidden md:block",
+              "relative min-h-0 w-full shrink-0 overflow-hidden border-r border-border bg-card md:block md:w-(--rail-w)",
+              pane === "outline" ? "block" : "hidden",
             )}
           >
-            <div className="flex items-center justify-between gap-2 px-3 py-2">
-              <h2
-                className={cn("font-display text-sm font-semibold", rightCollapsed && "lg:sr-only")}
-              >
-                Next up
-              </h2>
-              <button
-                type="button"
-                aria-expanded={!rightCollapsed}
-                aria-controls="right-rail-body"
-                onClick={toggleRight}
+            <div className="h-full overflow-y-auto px-1">
+              <OutlineList
+                groups={groups}
+                currentId={currentId}
+                onNavigate={() => setPane("content")}
+              />
+            </div>
+            {!isMobile ? (
+              <div
+                role="separator"
+                aria-orientation="vertical"
+                aria-label="Resize outline"
+                aria-valuenow={width}
+                aria-valuemin={bounds.min}
+                aria-valuemax={bounds.max}
+                aria-valuetext={`Outline width ${width} pixels`}
+                tabIndex={0}
+                data-testid="rail-handle"
+                onKeyDown={onKey}
+                onPointerDown={onPointerDown}
+                onPointerMove={onPointerMove}
+                onPointerUp={endDrag}
+                onPointerCancel={endDrag}
+                onDoubleClick={() => commit({ type: "max" })}
                 className={cn(
-                  "hidden min-h-(--hit-min) min-w-(--hit-min) items-center justify-center rounded-mark border border-border-firm bg-background text-(length:--text-ui) hover:bg-muted lg:inline-flex",
+                  "absolute inset-y-0 right-0 w-3 cursor-col-resize touch-none after:absolute after:inset-y-0 after:right-0 after:w-0.5 after:bg-border-firm hover:after:bg-route",
+                  dragging && "after:bg-route",
                   ring,
                 )}
-              >
-                {rightCollapsed ? "Show" : "Hide"}
-                <span className="sr-only"> next up panel</span>
-              </button>
-            </div>
-            <div id="right-rail-body" className={cn("px-3 pb-3", rightCollapsed && "lg:hidden")}>
-              {next.length > 0 ? (
-                <ul className="flex flex-col">
-                  {next.map((i) => (
-                    <li key={i.id}>
-                      <Link
-                        href={i.href}
-                        onClick={() => setPane("content")}
-                        className={cn(
-                          "flex min-h-(--hit-min) items-center rounded-mark px-2 text-(length:--text-ui) text-foreground no-underline hover:bg-muted lg:min-h-8",
-                          ring,
-                        )}
-                      >
-                        <span className="min-w-0 flex-1 truncate" title={i.title}>
-                          {i.title}
-                        </span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-(length:--text-small) text-muted-foreground">
-                  You have reached the end of this track.
-                </p>
-              )}
-              {/* Slot for the T-043 sim inspector; T-080 moves the inspector panel here. */}
-              <div data-shell-slot="inspector" className="mt-3 empty:hidden" />
-            </div>
+              />
+            ) : null}
           </aside>
-        </div>
-      </div>
 
-      <nav
-        aria-label="Sections"
-        className="flex shrink-0 border-t border-border bg-card pb-[env(safe-area-inset-bottom)] md:hidden"
-      >
-        {navItems.map((n) => (
-          <button
-            key={n.pane}
-            type="button"
-            aria-pressed={pane === n.pane}
-            onClick={() => setPane(n.pane)}
-            className={cn(
-              "min-h-(--bottom-nav-h) flex-1 text-(length:--text-ui) font-medium text-foreground",
-              "aria-pressed:bg-muted aria-pressed:font-semibold aria-pressed:underline",
-              ring,
-            )}
-          >
-            {n.label}
-          </button>
-        ))}
-      </nav>
-    </div>
+          <div className="flex min-w-0 flex-1 flex-col overflow-y-auto lg:flex-row lg:overflow-hidden">
+            <main
+              id="main-content"
+              tabIndex={-1}
+              className={cn(
+                "min-w-0 focus:outline-none lg:flex-1 lg:overflow-y-auto",
+                pane === "content" ? "block" : "hidden md:block",
+              )}
+            >
+              {children}
+            </main>
+            <aside
+              aria-label="Next up and inspector"
+              data-testid="right-rail"
+              data-collapsed={rightCollapsed}
+              className={cn(
+                "shrink-0 border-t border-border bg-card lg:min-h-0 lg:overflow-y-auto lg:border-t-0 lg:border-l",
+                rightCollapsed ? "lg:w-12" : "lg:w-(--rail-right-w)",
+                pane === "next" ? "block" : "hidden md:block",
+              )}
+            >
+              <div className="flex items-center justify-between gap-2 px-3 py-2">
+                <h2
+                  className={cn(
+                    "font-display text-sm font-semibold",
+                    rightCollapsed && "lg:sr-only",
+                  )}
+                >
+                  Next up
+                </h2>
+                <button
+                  type="button"
+                  aria-expanded={!rightCollapsed}
+                  aria-controls="right-rail-body"
+                  onClick={toggleRight}
+                  className={cn(
+                    "hidden min-h-(--hit-min) min-w-(--hit-min) items-center justify-center rounded-mark border border-border-firm bg-background text-(length:--text-ui) hover:bg-muted lg:inline-flex",
+                    ring,
+                  )}
+                >
+                  {rightCollapsed ? "Show" : "Hide"}
+                  <span className="sr-only"> next up panel</span>
+                </button>
+              </div>
+              <div id="right-rail-body" className={cn("px-3 pb-3", rightCollapsed && "lg:hidden")}>
+                <div data-shell-slot="onpage" ref={setOnPageEl} className="mb-3 empty:hidden" />
+                {next.length > 0 ? (
+                  <ul className="flex flex-col">
+                    {next.map((i) => (
+                      <li key={i.id}>
+                        <Link
+                          href={i.href}
+                          onClick={() => setPane("content")}
+                          className={cn(
+                            "flex min-h-(--hit-min) items-center rounded-mark px-2 text-(length:--text-ui) text-foreground no-underline hover:bg-muted lg:min-h-8",
+                            ring,
+                          )}
+                        >
+                          <span className="min-w-0 flex-1 truncate" title={i.title}>
+                            {i.title}
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-(length:--text-small) text-muted-foreground">
+                    You have reached the end of this track.
+                  </p>
+                )}
+                {/* T-080: in-page heading outline and the T-043 sim inspector render here via portals. */}
+                <div
+                  data-shell-slot="inspector"
+                  ref={setInspectorEl}
+                  className="mt-3 empty:hidden"
+                />
+              </div>
+            </aside>
+          </div>
+        </div>
+
+        <nav
+          aria-label="Sections"
+          className="flex shrink-0 border-t border-border bg-card pb-[env(safe-area-inset-bottom)] md:hidden"
+        >
+          {navItems.map((n) => (
+            <button
+              key={n.pane}
+              type="button"
+              aria-pressed={pane === n.pane}
+              onClick={() => setPane(n.pane)}
+              className={cn(
+                "min-h-(--bottom-nav-h) flex-1 text-(length:--text-ui) font-medium text-foreground",
+                "aria-pressed:bg-muted aria-pressed:font-semibold aria-pressed:underline",
+                ring,
+              )}
+            >
+              {n.label}
+            </button>
+          ))}
+        </nav>
+      </div>
+    </ShellSlotsContext.Provider>
   );
 }
