@@ -28,6 +28,7 @@ async function applyDown(client: pg.PoolClient): Promise<void> {
 }
 
 const TABLES = [
+  "learn_feedback",
   "rate_limits",
   "resource_suggestions",
   "resources",

@@ -22,6 +22,13 @@
       "when": 1793838813638,
       "tag": "0002_concerned_squirrel_girl",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1794965593662,
+      "tag": "0003_whole_khan",
+      "breakpoints": true
     }
   ]
 }
