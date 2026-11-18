@@ -12,3 +12,8 @@ overrides:
   "esbuild@<0.24.3": "0.25.12"
 blockExoticSubdeps: true
 trustPolicy: no-downgrade
+# TEMPORARY (2026-11-18): ignore picomatch high advisory GHSA-fc5q-39xc-vjpf. Patched 4.0.8 is not yet
+# published (npm latest is 4.0.7). Remove this block when picomatch>=4.0.8 is available.
+auditConfig:
+  ignoreGhsas:
+    - GHSA-fc5q-39xc-vjpf
