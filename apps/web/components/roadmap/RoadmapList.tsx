@@ -6,7 +6,7 @@ import { cn } from "../../lib/utils";
 import type { ListArea } from "../../lib/roadmap/list-model";
 import { selectTopic, useSelectedTopicId } from "../../lib/roadmap/selection-store";
 
-export function RoadmapList({ areas }: { areas: ListArea[] }) {
+export function RoadmapList({ areas, startId }: { areas: ListArea[]; startId: string | null }) {
   const selected = useSelectedTopicId();
   return (
     <nav aria-label="Roadmap topics" data-testid="roadmap-list" className="flex flex-col gap-4">
@@ -48,7 +48,14 @@ export function RoadmapList({ areas }: { areas: ListArea[] }) {
                         "border-[1.5px] border-primary bg-highlight text-highlight-foreground",
                     )}
                   >
-                    <span className="font-medium">{t.name}</span>
+                    <span className="font-medium">
+                      {t.name}
+                      {t.id === startId && (
+                        <span className="ml-2 rounded-sm border border-primary px-1 text-xs font-semibold">
+                          Start here
+                        </span>
+                      )}
+                    </span>
                     {t.needs.length > 0 && (
                       <span
                         className={cn(
