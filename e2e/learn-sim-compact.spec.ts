@@ -19,7 +19,7 @@ async function open(page: Page, w: number, h = 800) {
   await expect(page.locator(SIM).getByRole("button", { name: /^(Play|Pause)$/ })).toBeEnabled();
 }
 
-for (const w of [1280, 1024]) {
+for (const w of [1280, 1024, 390]) {
   test(`${w}: svg fills the sim pane and keeps its aspect ratio`, async ({ page }) => {
     await open(page, w);
     const root = page.locator(SIM);
@@ -27,8 +27,8 @@ for (const w of [1280, 1024]) {
     const wrap = canvas.locator("xpath=..");
     const wb = (await wrap.boundingBox())!;
     const sb = (await canvas.boundingBox())!;
-    // Fills the pane, or overflows it into the canvas scroller when the pane is narrower than the legibility floor.
-    expect(sb.width).toBeGreaterThanOrEqual(wb.width - 4);
+    // Fills the pane exactly: no minimum width, no sideways scroll (T-090).
+    expect(Math.abs(sb.width - wb.width)).toBeLessThanOrEqual(4);
     const vb = (await canvas.getAttribute("viewBox"))!.split(" ").map(Number);
     expect(Math.abs(sb.width / sb.height - vb[2]! / vb[3]!)).toBeLessThan(0.02);
     // The canvas wrapper sits within 4px of the card's content box (padding only, no extra gutters).
@@ -36,30 +36,31 @@ for (const w of [1280, 1024]) {
     expect(wb.width).toBeGreaterThan(rb.width - 2 * 12 - 4);
   });
 
-  test(`${w}: controls and legend use compact sizes`, async ({ page }) => {
-    await open(page, w);
-    const root = page.locator(SIM);
-    const play = root.getByRole("button", { name: /^(Play|Pause)$/ });
-    const hb = (await play.boundingBox())!;
-    expect(hb.height).toBeGreaterThanOrEqual(28);
-    expect(hb.height).toBeLessThanOrEqual(36);
-    // 44px hit area via pseudo-element.
-    const hit = await page.evaluate(`(() => {
+  // Control sizes are covered at desktop widths only.
+  if (w >= 1024)
+    test(`${w}: controls and legend use compact sizes`, async ({ page }) => {
+      await open(page, w);
+      const root = page.locator(SIM);
+      const play = root.getByRole("button", { name: /^(Play|Pause)$/ });
+      const hb = (await play.boundingBox())!;
+      expect(hb.height).toBeGreaterThanOrEqual(28);
+      expect(hb.height).toBeLessThanOrEqual(36);
+      // 44px hit area via pseudo-element.
+      const hit = await page.evaluate(`(() => {
       const el = document.querySelector('${SIM} [role="toolbar"] button');
       const cs = getComputedStyle(el, "::after");
       return [parseFloat(cs.width), parseFloat(cs.height)];
     })()`);
-    expect((hit as number[])[0]).toBeGreaterThanOrEqual(44);
-    expect((hit as number[])[1]).toBeGreaterThanOrEqual(44);
-    await expect(root.getByLabel("Scenario")).toHaveCSS("font-size", /^1[23](\.\d+)?px$/);
-    await expect(root.getByRole("list", { name: "Token legend" })).toHaveCSS(
-      "font-size",
-      /^1[23](\.\d+)?px$/,
-    );
-  });
+      expect((hit as number[])[0]).toBeGreaterThanOrEqual(44);
+      expect((hit as number[])[1]).toBeGreaterThanOrEqual(44);
+      await expect(root.getByLabel("Scenario")).toHaveCSS("font-size", /^1[23](\.\d+)?px$/);
+      await expect(root.getByRole("list", { name: "Token legend" })).toHaveCSS(
+        "font-size",
+        /^1[23](\.\d+)?px$/,
+      );
+    });
 
-  // Known gap (see T-082 Findings): the 1056x144 layout in a ~350px pane cannot reach 11px without scrolling.
-  test.fixme(`${w}: node labels render at 11px or more`, async ({ page }) => {
+  test(`${w}: node labels render at 11px or more`, async ({ page }) => {
     await open(page, w);
     const sizes =
       (await page.evaluate(`[...document.querySelectorAll('${SIM} svg text')].map((el) => {
