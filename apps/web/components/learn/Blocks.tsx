@@ -5,6 +5,7 @@ import { toPublic } from "@/lib/learn/quickcheck";
 import { Md, MdInline } from "./Md";
 import { QuickCheck } from "./QuickCheck";
 import { SimFrame } from "./SimFrame";
+import { BlockFeedback } from "./Feedback";
 
 export interface BlockContext {
   /** Resolve a sim block's ref to a sim (the item's own or a shared one). */
@@ -144,11 +145,18 @@ export function BlockView({ block, ctx }: { block: Block; ctx: BlockContext }) {
   }
 }
 
+/** Sim and quiz blocks carry their own feedback icons (sim card corner, each question). */
+function FeedbackBlock({ block, ctx }: { block: Block; ctx: BlockContext }) {
+  const view = <BlockView block={block} ctx={ctx} />;
+  if (block.type === "sim" || block.type === "quiz") return view;
+  return <BlockFeedback blockId={block.id}>{view}</BlockFeedback>;
+}
+
 export function Blocks({ blocks, ctx }: { blocks: Block[]; ctx: BlockContext }) {
   return (
     <div className="flex flex-col gap-4">
       {blocks.map((b) => (
-        <BlockView key={b.id} block={b} ctx={ctx} />
+        <FeedbackBlock key={b.id} block={b} ctx={ctx} />
       ))}
     </div>
   );

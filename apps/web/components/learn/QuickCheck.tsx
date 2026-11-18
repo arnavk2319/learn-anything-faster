@@ -11,6 +11,7 @@ import {
 } from "@/lib/learn/quickcheck";
 import { readProgress, recordAnswer, writeProgress } from "@/lib/learn/progress";
 import { Md, MdInline } from "./Md";
+import { FeedbackButton } from "./Feedback";
 import { useRewards } from "@/components/rewards/RewardsProvider";
 
 const gradingCache = new Map<string, Promise<Record<string, GradingEntry>>>();
@@ -187,6 +188,7 @@ export function QuestionCard({
         <span className="rounded-pill border px-2 py-0.5">{q.type}</span>
         <span className="rounded-pill border px-2 py-0.5">{q.level}</span>
         {earlier && !done ? <span>Answered before</span> : null}
+        <FeedbackButton kind="question" targetId={q.id} label="question" className="ml-auto" />
       </div>
       <fieldset className="min-w-0">
         <legend className="mb-3 font-semibold">

@@ -24,6 +24,8 @@ import {
   type Speed,
 } from "@/lib/learn/sim-render/view";
 
+import { FeedbackButton } from "./Feedback";
+
 type SimNode = Sim["nodes"][number];
 
 export type SimViewProps = {
@@ -410,7 +412,9 @@ export function SimView(p: SimViewProps) {
               {p.title}
             </p>
             {/* Reserved corner for the feedback icon (T-085). */}
-            <span data-slot="sim-feedback" className="size-control-sm shrink-0" />
+            <span data-slot="sim-feedback" className="size-control-sm shrink-0">
+              <FeedbackButton kind="sim" targetId={sim.id} label="simulation" />
+            </span>
           </div>
           {/* The scroll container is the focusable canvas: Space, arrows and R act here. */}
           <div
