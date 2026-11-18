@@ -9,6 +9,7 @@ import {
   pgEnum,
   pgTable,
   primaryKey,
+  smallint,
   text,
   timestamp,
   unique,
@@ -155,6 +156,37 @@ export const rateLimits = pgTable(
   ],
 );
 
+/**
+ * Anonymous Learn feedback (ADR-0017): one row per browser per target. `client_hash` is the sha256 of a random
+ * browser UUID, never an IP, email or user agent. `target_kind` has no CHECK: Zod is the gate. `note` is free text
+ * (PII risk): never selected by any API, nulled after 180 days.
+ */
+export const learnFeedback = pgTable(
+  "learn_feedback",
+  {
+    trackId: text("track_id").notNull(),
+    targetKind: text("target_kind").notNull(),
+    targetId: text("target_id").notNull(),
+    clientHash: text("client_hash").notNull(),
+    rating: smallint("rating").notNull(),
+    note: text("note"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    primaryKey({
+      name: "learn_feedback_pk",
+      columns: [t.trackId, t.targetKind, t.targetId, t.clientHash],
+    }),
+    index("learn_feedback_note_idx")
+      .on(t.updatedAt)
+      .where(sql`${t.note} IS NOT NULL`),
+    check("learn_feedback_rating_range", sql`${t.rating} BETWEEN 1 AND 5`),
+    check("learn_feedback_note_len", sql`${t.note} IS NULL OR char_length(${t.note}) <= 280`),
+    check("learn_feedback_client_hash_hex", sql`${t.clientHash} ~ '^[0-9a-f]{64}$'`),
+  ],
+);
+
 export type Role = typeof roles.$inferSelect;
 export type NewRole = typeof roles.$inferInsert;
 export type Topic = typeof topics.$inferSelect;
@@ -167,6 +199,7 @@ export type Resource = typeof resources.$inferSelect;
 export type NewResource = typeof resources.$inferInsert;
 export type TransitionRequest = typeof transitionRequests.$inferSelect;
 export type NewTransitionRequest = typeof transitionRequests.$inferInsert;
+export type LearnFeedback = typeof learnFeedback.$inferSelect;
 export type ResourceSuggestion = typeof resourceSuggestions.$inferSelect;
 export type NewResourceSuggestion = typeof resourceSuggestions.$inferInsert;
 export type RateLimit = typeof rateLimits.$inferSelect;
