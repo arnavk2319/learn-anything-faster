@@ -99,6 +99,99 @@
   --sim-hop-dur: 1400ms; /* one token crossing one edge at 1x */
   --sim-pulse-dur: 600ms; /* node highlight pulse on decide/state events */
   --sim-state-dur: var(--dur-base); /* LRU slot reorder */
+
+  /* T-077 / ADR-0016: base-scope defaults so unscoped code never sees an undefined variable */
+  --border-firm: var(--border);
+  --shadow-1: none;
+  --shadow-2: none;
+  --inset-hi: inset 0 0 0 0 transparent;
+  --dur-press: 90ms;
+  --dur-lift: 140ms;
+  --dur-spring: 280ms;
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --press-y: 1px;
+  --press-scale: 0.98;
+  --lift-y: -1px;
+  --burst-dur: 600ms;
+
+  /* Density tier, default values (compact overrides under [data-density="compact"]) */
+  --text-body: 16px;
+  --text-body-lh: 1.6;
+  --text-ui: 15px;
+  --text-ui-lh: 1.5;
+  --text-small: 13px;
+  --text-small-lh: 1.5;
+  --text-h1: 44px;
+  --text-h2: 24px;
+  --control-h-sm: 32px;
+  --control-h-md: 40px;
+  --control-h-lg: 48px;
+  --hit-min: 44px;
+  --row-h: 68px;
+  --pad-panel: 20px;
+  --gap: 16px;
+  --header-h: 64px;
+
+  /* App shell */
+  --rail-w-min: 192px; /* set at runtime from the measured longest label */
+  --rail-w-max: 240px;
+  --rail-right-w: 320px;
+  --bottom-nav-h: 48px;
+}
+
+/* T-077 / ADR-0016: "Trailhead warmed" surface, light mode only. Opt in with data-ui="v2" on a layout wrapper (never <html>). */
+:root:not(.dark) [data-ui="v2"] {
+  --background: #f6f3ea; /* Parchment */
+  --muted: #eef2e6; /* Lane */
+  --border: #ddd8c6; /* Hairline, decorative dividers */
+  --border-firm: #c4bea6; /* Firm, decorative panel outlines */
+  --canvas: var(--background);
+  --shadow-1: 0 1px 0 rgb(29 59 42 / 0.05), 0 1px 3px rgb(29 59 42 / 0.08);
+  --shadow-2: 0 1px 0 rgb(29 59 42 / 0.05), 0 4px 10px -2px rgb(29 59 42 / 0.12);
+  --inset-hi: inset 0 1px 0 rgb(255 255 255 / 0.16);
+}
+
+/* Compact density tier. Opt in with data-density="compact"; :root keeps the default tier. */
+[data-density="compact"] {
+  --text-body: 14px;
+  --text-body-lh: 1.5;
+  --text-ui: 13px;
+  --text-ui-lh: 1.4;
+  --text-small: 12px;
+  --text-small-lh: 1.4;
+  --text-h1: clamp(24px, 2.2vw, 28px);
+  --text-h2: clamp(17px, 1.6vw, 20px);
+  --control-h-sm: 28px;
+  --control-h-md: 32px;
+  --control-h-lg: 36px;
+  --hit-min: 44px;
+  --row-h: 40px;
+  --pad-panel: 12px;
+  --gap: 8px;
+  --header-h: 48px;
+  font-size: var(--text-body);
+  line-height: var(--text-body-lh);
+}
+[data-density="compact"] h1 {
+  font-size: var(--text-h1);
+}
+[data-density="compact"] h2 {
+  font-size: var(--text-h2);
+}
+
+/* 44px effective target for controls under 44px: transparent centred ::after. Clamping near neighbours is per-component. */
+.hit-area {
+  position: relative;
+}
+.hit-area::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(100%, var(--hit-min));
+  height: max(100%, var(--hit-min));
+  transform: translate(-50%, -50%);
 }
 
 /* Dark ("night trail"). Defined so tokens are complete; ship light first. */
@@ -185,6 +278,7 @@
   --color-sim-response: var(--sim-response);
   --color-sim-replicate: var(--sim-replicate);
   --color-sim-error: var(--sim-error);
+  --color-border-firm: var(--border-firm);
 
   --radius-sm: 6px;
   --radius-md: var(--radius);
@@ -197,6 +291,15 @@
   --font-sans: var(--font-hanken), "Hanken Grotesk", system-ui, sans-serif;
 
   --ease-trail: var(--ease-trail);
+
+  --shadow-1: var(--shadow-1);
+  --shadow-2: var(--shadow-2);
+  --spacing-control-sm: var(--control-h-sm);
+  --spacing-control-md: var(--control-h-md);
+  --spacing-control-lg: var(--control-h-lg);
+  --text-body: var(--text-body);
+  --text-ui: var(--text-ui);
+  --text-small: var(--text-small);
 }
 
 @layer base {
@@ -299,6 +402,19 @@ path.edge-unmet {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* T-077: reduced motion zeroes the new motion tokens (the burst is also not rendered) */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --press-y: 0px;
+    --press-scale: 1;
+    --lift-y: 0px;
+    --dur-press: 0ms;
+    --dur-lift: 0ms;
+    --dur-spring: 0ms;
+    --burst-dur: 0ms;
   }
 }
 
