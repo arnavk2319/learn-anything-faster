@@ -4,7 +4,7 @@ import { z } from "zod";
 // Only ids, booleans and timestamps are stored: no PII, no free text.
 
 export const STORAGE_KEY = "laf:learn:v1";
-export const CURRENT_VERSION = 1;
+export const CURRENT_VERSION = 2;
 
 const IdList = z.array(z.string().min(1).max(200));
 
@@ -28,6 +28,8 @@ export const ProgressSchema = z.strictObject({
     z.string(),
     z.strictObject({ seenAt: z.number().optional(), simViewed: z.boolean().optional() }),
   ),
+  // T-083: per-topic "first module opened" flag. Flags only: no timestamps, answers or text (ADR-0016 clarification).
+  firstOpened: z.record(z.string().min(1).max(200), z.literal(true)),
   answers: z.record(
     z.string(),
     z.strictObject({
@@ -47,6 +49,7 @@ export function emptyProgress(): Progress {
     favorites: { tracks: [], concepts: [], problems: [], questions: [] },
     items: {},
     answers: {},
+    firstOpened: {},
   };
 }
 
@@ -70,6 +73,16 @@ const MIGRATIONS: Record<number, (old: Record<string, unknown>) => Record<string
       items,
       answers: old.answers ?? {},
     };
+  },
+  // v1 -> v2 adds firstOpened. A learner who already has a last-visited track has opened it, so it is flagged
+  // and the "first opened" reward does not fire for work done before the reward layer existed.
+  1: (old) => {
+    const last = old.last as { trackId?: unknown } | undefined;
+    const firstOpened: Record<string, true> = {};
+    if (typeof last?.trackId === "string" && last.trackId.length > 0) {
+      firstOpened[last.trackId] = true;
+    }
+    return { ...old, v: 2, firstOpened };
   },
 };
 
@@ -149,6 +162,16 @@ export function recordAnswer(
 ): Progress {
   const entry = selfGraded === undefined ? { correct, at } : { correct, at, selfGraded };
   return { ...p, answers: { ...p.answers, [questionId]: entry } };
+}
+
+export function isTopicOpened(p: Progress, trackId: string): boolean {
+  return p.firstOpened[trackId] === true;
+}
+
+/** Sets the per-topic first-opened flag (idempotent). */
+export function markTopicOpened(p: Progress, trackId: string): Progress {
+  if (isTopicOpened(p, trackId)) return p;
+  return { ...p, firstOpened: { ...p.firstOpened, [trackId]: true } };
 }
 
 export function setLast(p: Progress, last: NonNullable<Progress["last"]>): Progress {
