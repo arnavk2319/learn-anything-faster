@@ -1,13 +1,18 @@
 import { expect, test, type Page } from "@playwright/test";
 import { expectNoA11yViolations } from "./helpers/a11y.ts";
 
+// The e2e tsconfig has no DOM lib; declare the browser globals the evaluate callbacks need.
+/* eslint-disable @typescript-eslint/no-explicit-any -- DOM types are unavailable here; callbacks run in the browser */
+declare const getComputedStyle: (el: any, pseudo?: string) => any;
+declare const document: any;
+/* eslint-enable @typescript-eslint/no-explicit-any */
+
 const URL = "/learn/token-preview";
 
 async function measure(page: Page, scope: string) {
   return page.evaluate((s) => {
-    const q = (sel: string) =>
-      document.querySelector(sel ? `#${s} ${sel}` : `#${s}`) as HTMLElement;
-    const cs = (el: HTMLElement) => getComputedStyle(el);
+    const q = (sel: string) => document.querySelector(sel ? `#${s} ${sel}` : `#${s}`);
+    const cs = (el: unknown) => getComputedStyle(el);
     const ctl = q('[data-sample="control"]');
     return {
       body: cs(q('[data-sample="body"]')).fontSize,
