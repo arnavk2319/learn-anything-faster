@@ -4,3 +4,5 @@ export { CycleError, findCycle } from "./cycle";
 export { topoSort } from "./toposort";
 export { computeDelta, transitivePrerequisites } from "./delta";
 export type { Delta, DeltaInput } from "./delta";
+export { suggestStart } from "./suggest-start";
+export type { StartCandidate } from "./suggest-start";

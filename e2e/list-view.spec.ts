@@ -306,3 +306,53 @@ test("toggle is visible on a direct ?view=list load and after a role change", as
   await toggle.getByRole("button", { name: "Graph" }).click();
   await expect(topic(page, "stats")).toBeVisible();
 });
+
+test.describe("Start with", () => {
+  const startBtn = (page: Page) => page.getByRole("button", { name: "Start with Algebra" });
+
+  test("opens the panel with focus inside; marker shows in graph and list", async ({ page }) => {
+    await page.goto("/roadmap/dev/ml-dev");
+    await expect(startBtn(page)).toBeVisible();
+    await expect(topic(page, "algebra")).toContainText("Start here");
+    await expect(topic(page, "stats")).not.toContainText("Start here");
+    await startBtn(page).click();
+    const panel = page.getByTestId("topic-panel");
+    await expect(panel.getByRole("heading", { name: "Algebra" })).toBeVisible();
+    await expect(panel).toBeFocused();
+    await expectNoA11yViolations(page, { label: "graph start panel open" });
+
+    await page.keyboard.press("Escape");
+    await expectNoA11yViolations(page, { label: "graph start panel closed" });
+
+    await page.goto("/roadmap/dev/ml-dev?view=list");
+    await expect(topic(page, "algebra")).toContainText("Start here");
+    const first = await list(page)
+      .locator("button[data-topic-id]", { hasText: "Start here" })
+      .first()
+      .getAttribute("data-topic-id");
+    expect(first).toBe("algebra");
+    await expectNoA11yViolations(page, { label: "list start marker" });
+  });
+
+  for (const width of [375, 768, 1024, 1280]) {
+    test(`touch target and no horizontal scroll at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 800 });
+      await page.goto("/roadmap/dev/ml-dev");
+      const box = await startBtn(page).boundingBox();
+      expect(box?.height).toBeGreaterThanOrEqual(44);
+      expect(box?.width).toBeGreaterThanOrEqual(44);
+      const overflow = await page.locator("html").evaluate((el) => el.scrollWidth > el.clientWidth);
+      expect(overflow).toBe(false);
+    });
+  }
+
+  test("hidden when the roadmap is empty", async ({ page }) => {
+    await page.route("**/api/roadmap**", async (route) => {
+      const res = await route.fetch();
+      const body = await res.json();
+      await route.fulfill({ response: res, json: { ...body, nodes: [], edges: [] } });
+    });
+    await page.goto("/roadmap/dev/ml-dev");
+    await expect(page.getByRole("button", { name: /^Start with/ })).toHaveCount(0);
+  });
+});
