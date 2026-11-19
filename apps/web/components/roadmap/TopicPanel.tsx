@@ -120,7 +120,7 @@ export function TopicPanel({ data }: { data: RoadmapResponse | undefined }) {
               document.querySelector<HTMLElement>(`button[data-topic-id="${current}"]`)?.focus(),
             );
           }}
-          className="h-8 w-8 shrink-0 cursor-pointer rounded-pill border border-border text-sm hover:border-primary"
+          className="h-11 w-11 shrink-0 cursor-pointer rounded-pill border border-border text-sm hover:border-primary"
         >
           <span aria-hidden="true">×</span>
         </button>
@@ -135,8 +135,8 @@ export function TopicPanel({ data }: { data: RoadmapResponse | undefined }) {
           You already know this from your current role, so it's not on your route.
         </p>
       )}
-      <Chips label="Needs first" items={needs} empty="Nothing, start here" />
-      <Chips label="Unlocks" items={unlocks} empty="End of this branch" />
+      <Chips label="Learn these first" items={needs} empty="Nothing, start here" />
+      <Chips label="Opens up" items={unlocks} empty="End of this branch" />
       {node && (
         <section aria-label="Resources" className="flex flex-col border-t border-border">
           {node.resources.length === 0 ? (
@@ -158,7 +158,7 @@ export function TopicPanel({ data }: { data: RoadmapResponse | undefined }) {
                         <span className="text-[15px] font-semibold">{r.title}</span>
                         <span className="text-[13px] text-muted-foreground">
                           {TYPE_LABEL[r.type]}
-                          {" · "}
+                          {", "}
                           <span
                             className={cn(
                               "rounded-pill px-2 py-px text-xs font-medium",
