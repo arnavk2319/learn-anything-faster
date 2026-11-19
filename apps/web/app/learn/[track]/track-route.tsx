@@ -1,7 +1,6 @@
 // Shared by the track root (Concepts tab) and /problems: metadata and the live / coming-soon split.
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { SiteHeader } from "@/components/brand/SiteHeader";
 import { ComingSoonTrack, TrackPage } from "@/components/learn/TrackPage";
 import { contentRoot, loadTrack, loadTrackMeta } from "@/lib/learn/content";
 import { getSiteUrl } from "@/lib/site";
@@ -31,19 +30,9 @@ export function renderTrack(trackId: string, active: "concepts" | "problems") {
   if (meta.status !== "live") {
     // Coming-soon: no packs, and no Problems tab either (that URL is a 404).
     if (active === "problems") notFound();
-    return (
-      <>
-        <SiteHeader />
-        <ComingSoonTrack track={meta} />
-      </>
-    );
+    return <ComingSoonTrack track={meta} />;
   }
   const pack = loadTrack(trackId);
   if (!pack) notFound();
-  return (
-    <>
-      <SiteHeader />
-      <TrackPage pack={pack} active={active} />
-    </>
-  );
+  return <TrackPage pack={pack} active={active} />;
 }

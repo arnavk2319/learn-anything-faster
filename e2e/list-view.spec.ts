@@ -353,6 +353,9 @@ test.describe("Start with", () => {
       await route.fulfill({ response: res, json: { ...body, nodes: [], edges: [] } });
     });
     await page.goto("/roadmap/dev/ml-dev");
+    // Wait for the emptied response to be rendered; otherwise the count below passes while the data is still loading
+    // and the test ends before the route handler has read the response ("Response has been disposed").
+    await expect(page.getByText("Nothing new to learn for this move.")).toBeVisible();
     await expect(page.getByRole("button", { name: /^Start with/ })).toHaveCount(0);
   });
 });

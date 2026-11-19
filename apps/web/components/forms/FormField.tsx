@@ -14,12 +14,16 @@ export function FormField({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm font-medium">
+      <label htmlFor={id} className="text-[length:var(--text-ui)] font-medium">
         {label}
       </label>
       {children}
       {error ? (
-        <p id={`${id}-error`} role="alert" className="text-destructive text-sm">
+        <p
+          id={`${id}-error`}
+          role="alert"
+          className="text-[length:var(--text-small)] text-destructive"
+        >
           {error}
         </p>
       ) : null}
@@ -27,12 +31,8 @@ export function FormField({
   );
 }
 
+// Inputs keep a 44px box (the hit-area pseudo-element does not render on inputs); type and radius follow the density tier.
 export const inputClass =
-  "h-11 rounded-[10px] border border-input bg-card px-3 text-base placeholder:text-muted-foreground " +
-  "transition-colors duration-150 hover:border-primary focus-visible:border-ring focus-visible:outline-none " +
+  "min-h-(--hit-min) rounded-md border border-input bg-card px-3 text-[length:var(--text-body)] placeholder:text-muted-foreground " +
+  "transition-colors duration-(--dur-fast) hover:border-primary focus-visible:border-ring focus-visible:outline-none " +
   "focus-visible:ring-[3px] focus-visible:ring-ring aria-invalid:border-destructive aria-invalid:ring-destructive";
-
-export const buttonClass =
-  "h-11 rounded-[10px] bg-primary px-6 font-semibold text-primary-foreground transition-colors duration-150 " +
-  "hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring " +
-  "focus-visible:ring-offset-2 active:scale-[0.98] disabled:opacity-40";
