@@ -93,7 +93,7 @@ test("unmet edges are dashed; selecting a topic draws solid hot edges, deselect 
   await expect(page.locator(".edge-hot")).toHaveCount(0);
   const dash = await css(page, ".react-flow__edge .edge-unmet", "stroke-dasharray");
   expect(dash).not.toBe("none");
-  expect(await css(page, ".react-flow__edge .edge-unmet", "stroke-width")).toBe("1.5px");
+  expect(await css(page, ".react-flow__edge .edge-unmet", "stroke-width")).toBe("2px");
 
   await topic(page, "stats").click();
   const hot = page.locator(".edge-hot");
