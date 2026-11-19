@@ -7,6 +7,7 @@ priority: true
 conceptIds: [caching]
 topicIds: []
 status: approved
+estMin: 60
 sim:
   id: url-shortener-redirect
   template: cache-aside

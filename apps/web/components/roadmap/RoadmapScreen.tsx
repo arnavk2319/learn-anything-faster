@@ -13,6 +13,7 @@ import { buildListModel } from "../../lib/roadmap/list-model";
 import type { RoleOption } from "../../lib/roadmap/roles";
 import { selectTopic, useSelectedTopicId } from "../../lib/roadmap/selection-store";
 import { cn } from "../../lib/utils";
+import { BottomNav } from "../shell/BottomNav";
 import { buttonVariants } from "../ui/button";
 import { focusRing } from "../ui/tactile";
 import { summarizeRoadmap } from "../../lib/roadmap/summary";
@@ -267,70 +268,101 @@ export function RoadmapScreen({
       ? "Nothing curated for this move yet."
       : " ";
 
+  const selectedId = useSelectedTopicId();
+  const focusPanel = () =>
+    document.querySelector<HTMLElement>('[data-testid="topic-panel"]')?.focus();
+  const navItems = [
+    {
+      id: "graph",
+      label: "Graph",
+      current: view === "graph",
+      href: "?view=graph",
+      onSelect: () => setView("graph"),
+    },
+    {
+      id: "list",
+      label: "List",
+      current: view === "list",
+      href: "?view=list",
+      onSelect: () => setView("list"),
+    },
+    {
+      id: "topic",
+      label: "Topic",
+      current: selectedId !== null,
+      disabled: selectedId === null,
+      reason: "Select a topic first",
+      onSelect: focusPanel,
+    },
+  ];
+
   return (
-    <div className="flex min-h-0 flex-1">
-      <main id="main-content" tabIndex={-1} className="flex min-w-0 flex-1 flex-col outline-none">
-        <div className="flex shrink-0 flex-col gap-2 border-b border-border px-4 py-2 md:px-6">
-          <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-            {/* Fixed 20/24px (existing e2e): the important modifiers beat the compact tier h1 rule. */}
-            <h1 className="flex flex-wrap items-baseline gap-3 text-xl! font-semibold tracking-tight md:text-2xl!">
-              <RoleSelect
-                label="Current role"
-                value={from}
-                roles={roles}
-                onChange={(id) => go(id, to)}
-              />
-              <span className="font-normal text-muted-foreground">to</span>
-              <RoleSelect
-                label="Target role"
-                value={to}
-                roles={roles}
-                onChange={(id) => go(from, id)}
-                highlight
-              />
-            </h1>
-            {pending ? (
-              <div
-                aria-hidden="true"
-                className="h-5 w-full max-w-96 rounded-md bg-lane motion-safe:animate-pulse"
-              />
-            ) : (
-              <p className="text-(length:--text-ui) text-muted-foreground">{meta}</p>
-            )}
+    <>
+      <div className="flex min-h-0 flex-1">
+        <main id="main-content" tabIndex={-1} className="flex min-w-0 flex-1 flex-col outline-none">
+          <div className="flex shrink-0 flex-col gap-2 border-b border-border px-4 py-2 md:px-6">
+            <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+              {/* Fixed 20/24px (existing e2e): the important modifiers beat the compact tier h1 rule. */}
+              <h1 className="flex flex-wrap items-baseline gap-3 text-xl! font-semibold tracking-tight md:text-2xl!">
+                <RoleSelect
+                  label="Current role"
+                  value={from}
+                  roles={roles}
+                  onChange={(id) => go(id, to)}
+                />
+                <span className="font-normal text-muted-foreground">to</span>
+                <RoleSelect
+                  label="Target role"
+                  value={to}
+                  roles={roles}
+                  onChange={(id) => go(from, id)}
+                  highlight
+                />
+              </h1>
+              {pending ? (
+                <div
+                  aria-hidden="true"
+                  className="h-5 w-full max-w-96 rounded-md bg-lane motion-safe:animate-pulse"
+                />
+              ) : (
+                <p className="text-(length:--text-ui) text-muted-foreground">{meta}</p>
+              )}
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              {pending && (
+                <div
+                  aria-hidden="true"
+                  data-testid="strip-skeleton"
+                  className="h-11 w-36 rounded-md bg-lane motion-safe:animate-pulse"
+                />
+              )}
+              {startName && (
+                <button
+                  type="button"
+                  onClick={startHere}
+                  className={cn(
+                    buttonVariants({ variant: "secondary", size: "md" }),
+                    "min-h-11 w-fit",
+                  )}
+                >
+                  Start with {startName}
+                </button>
+              )}
+              <ShareLink from={from} to={to} />
+              {pending && (
+                <div
+                  aria-hidden="true"
+                  className="h-8.5 w-32 rounded-md bg-lane motion-safe:animate-pulse"
+                />
+              )}
+              {data && data.nodes.length > 0 && <ViewToggle view={view} onChange={setView} />}
+            </div>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
-            {pending && (
-              <div
-                aria-hidden="true"
-                data-testid="strip-skeleton"
-                className="h-11 w-36 rounded-md bg-lane motion-safe:animate-pulse"
-              />
-            )}
-            {startName && (
-              <button
-                type="button"
-                onClick={startHere}
-                className={cn(
-                  buttonVariants({ variant: "secondary", size: "md" }),
-                  "min-h-11 w-fit",
-                )}
-              >
-                Start with {startName}
-              </button>
-            )}
-            <ShareLink from={from} to={to} />
-            {pending && (
-              <div
-                aria-hidden="true"
-                className="h-8.5 w-32 rounded-md bg-lane motion-safe:animate-pulse"
-              />
-            )}
-            {data && data.nodes.length > 0 && <ViewToggle view={view} onChange={setView} />}
-          </div>
-        </div>
-        {body}
-      </main>
-      <TopicPanel data={data} />
-    </div>
+          {body}
+        </main>
+        <TopicPanel data={data} />
+      </div>
+      <BottomNav label="Roadmap views" items={navItems} />
+    </>
   );
 }

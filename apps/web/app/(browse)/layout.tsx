@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { BottomNav } from "@/components/shell/BottomNav";
 import { SiteHeader } from "@/components/brand/SiteHeader";
 
 // Browse shell (ADR-0016, T-088): v2 tokens + compact tier, 48px header; the page's main scrolls inside the viewport.
@@ -17,6 +18,13 @@ export default function BrowseLayout({ children }: { children: ReactNode }) {
       </a>
       <SiteHeader dense />
       {children}
+      <BottomNav
+        label="Browse"
+        items={[
+          { id: "roadmaps", label: "Roadmaps", href: "/roadmaps", current: true },
+          { id: "learn", label: "Learn", href: "/learn" },
+        ]}
+      />
     </div>
   );
 }
