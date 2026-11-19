@@ -21,13 +21,21 @@ const MOTION = { transition: "transform var(--dur-slow) var(--ease-trail)" };
 
 interface Props {
   graph: FlowGraph;
+  startId: string | null;
   onToggleArea: (areaKey: string) => void;
   coveredCount: number;
   showCovered: boolean;
   onToggleCovered: () => void;
 }
 
-function Inner({ graph, onToggleArea, coveredCount, showCovered, onToggleCovered }: Props) {
+function Inner({
+  graph,
+  startId,
+  onToggleArea,
+  coveredCount,
+  showCovered,
+  onToggleCovered,
+}: Props) {
   const rf = useReactFlow();
   const reduced = usePrefersReducedMotion();
   const motion = reduced ? undefined : MOTION;
@@ -37,9 +45,11 @@ function Inner({ graph, onToggleArea, coveredCount, showCovered, onToggleCovered
       graph.nodes.map((n) =>
         n.type === AREA_TYPE
           ? { ...n, style: motion, data: { ...n.data, onToggle: onToggleArea } }
-          : { ...n, style: motion },
+          : n.id === startId
+            ? { ...n, style: motion, data: { ...n.data, startHere: true } }
+            : { ...n, style: motion },
       ),
-    [graph.nodes, onToggleArea, motion],
+    [graph.nodes, onToggleArea, motion, startId],
   );
   const fit = () => void rf.fitView({ ...FIT, ...MOVE });
 
