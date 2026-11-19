@@ -3,7 +3,7 @@
 // island adds filters, view toggle, lazy search and progress. Query and filter live in the URL (`?q=&filter=`),
 // read after mount so the page itself stays static. Progress never leaves the device.
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   countsInWords,
   filterTracks,
@@ -17,6 +17,10 @@ import { emptyProgress, writeProgress } from "@/lib/learn/progress";
 import { searchDocs, type SearchDoc } from "@/lib/learn/search";
 import { percent } from "@/lib/learn/track-view";
 import { Star, useLearnProgress } from "./TrackProgress";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Chip, ChipButton } from "@/components/ui/chip";
+import { ProgressRing } from "@/components/ui/progress";
 
 const FILTER_LABEL: Record<Filter, string> = {
   all: "All",
@@ -36,7 +40,7 @@ const focusRing =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
 const countWord = (k: "concepts" | "problems" | "questions", n: number) =>
   `${n} ${n === 1 ? k.slice(0, -1) : k}`;
-const touch = "min-h-11 min-w-11";
+const touch = "max-md:h-11 min-w-11 justify-center";
 
 type View = "auto" | "bubbles" | "list";
 
@@ -55,33 +59,12 @@ function writeUrl(q: string, filter: Filter, mode: "push" | "replace") {
   else window.history.replaceState(window.history.state, "", url);
 }
 
-function Ring({ pct, label, size }: { pct: number; label: string; size: "sm" | "md" }) {
-  return (
-    <span
-      role="img"
-      aria-label={label}
-      style={{ "--p": pct } as CSSProperties}
-      className={`relative grid shrink-0 place-items-center rounded-pill bg-[conic-gradient(var(--route)_calc(var(--p)*1%),var(--border)_0)] before:absolute before:inset-[calc(var(--ring-thickness)*0.6)] before:rounded-pill before:bg-card before:content-[''] ${size === "md" ? "size-[var(--ring-md)]" : "size-[var(--ring-sm)]"}`}
-    >
-      {size === "md" ? <b className="relative text-xs font-semibold tabular-nums">{pct}%</b> : null}
-    </span>
-  );
-}
-
 function AddedByUs() {
-  return (
-    <span className="inline-flex h-6 items-center rounded-pill border border-border bg-lane px-2.5 text-xs font-medium text-foreground">
-      Added by us
-    </span>
-  );
+  return <Chip className="border-border bg-lane">Added by us</Chip>;
 }
 
 function ComingSoonBadge() {
-  return (
-    <span className="inline-flex h-6 items-center rounded-pill border border-dashed border-muted-foreground px-2.5 text-xs font-medium text-foreground">
-      Coming soon
-    </span>
-  );
+  return <Chip className="border-dashed border-muted-foreground bg-transparent">Coming soon</Chip>;
 }
 
 export function Landing({ tracks }: { tracks: LandingTrack[] }) {
@@ -165,40 +148,43 @@ export function Landing({ tracks }: { tracks: LandingTrack[] }) {
             placeholder="Search concepts, problems, questions"
             onFocus={loadIndex}
             onChange={(e) => onQuery(e.target.value)}
-            className={`rounded-control h-11 w-full border border-input bg-card px-4 text-base placeholder:text-muted-foreground ${focusRing}`}
+            className={`h-11 w-full rounded-md border border-border-firm bg-card px-3 text-base placeholder:text-muted-foreground md:h-control-md md:text-(length:--text-ui) ${focusRing}`}
           />
         </div>
         <div role="group" aria-label="View" className="flex gap-1">
           {(["bubbles", "list"] as const).map((v) => (
-            <button
+            <Button
               key={v}
-              type="button"
+              variant={view === v ? "primary" : "secondary"}
+              size="md"
               aria-pressed={view === v}
               onClick={() => setView(v)}
-              className={`rounded-control h-11 px-4 text-sm font-medium ${touch} ${view === v ? "bg-highlight text-highlight-foreground" : "border border-border bg-card hover:bg-lane"} ${focusRing}`}
+              className="max-md:h-11 max-md:min-w-11"
             >
               {v === "bubbles" ? "Bubbles" : "List"}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
 
       <div role="group" aria-label="Filter tracks" className="flex flex-wrap gap-2">
         {FILTERS.map((f) => (
-          <button
+          <ChipButton
             key={f}
-            type="button"
-            aria-pressed={filter === f}
+            pressed={filter === f}
             onClick={() => pickFilter(f)}
-            className={`h-11 rounded-pill px-4 text-sm font-medium ${touch} ${filter === f ? "bg-highlight text-highlight-foreground" : "border border-border bg-card hover:bg-lane"} ${focusRing}`}
+            className={touch}
           >
             {FILTER_LABEL[f]}
-          </button>
+          </ChipButton>
         ))}
       </div>
 
       {q.trim() ? (
-        <section aria-label="Search results" className="rounded-panel border bg-card px-5 py-4">
+        <section
+          aria-label="Search results"
+          className="rounded-lg border border-border-firm bg-card p-(--pad-panel) shadow-1"
+        >
           {indexError ? (
             <p className="text-muted-foreground">Search is unavailable right now. Try again.</p>
           ) : index === null ? (
@@ -212,7 +198,7 @@ export function Landing({ tracks }: { tracks: LandingTrack[] }) {
             </p>
           ) : (
             <>
-              <p className="mb-2 text-sm text-muted-foreground" role="status">
+              <p className="mb-2 text-(length:--text-small) text-muted-foreground" role="status">
                 {results.length} {results.length === 1 ? "result" : "results"}
               </p>
               <ul className="flex flex-col">
@@ -225,7 +211,9 @@ export function Landing({ tracks }: { tracks: LandingTrack[] }) {
                       <span className="font-medium text-primary underline-offset-2 hover:underline">
                         {r.title}
                       </span>
-                      <span className="text-sm text-muted-foreground">{TYPE_LABEL[r.type]}</span>
+                      <span className="text-(length:--text-small) text-muted-foreground">
+                        {TYPE_LABEL[r.type]}
+                      </span>
                     </Link>
                   </li>
                 ))}
@@ -236,10 +224,10 @@ export function Landing({ tracks }: { tracks: LandingTrack[] }) {
       ) : null}
 
       {shown.length === 0 ? (
-        <div className="rounded-panel border bg-card px-5 py-4">
-          <h2 className="font-display text-lg font-semibold">No tracks match</h2>
+        <Card>
+          <h2 className="font-display font-semibold">No tracks match</h2>
           <p className="text-muted-foreground">Clear the search or pick another filter.</p>
-        </div>
+        </Card>
       ) : null}
 
       <ol
@@ -261,7 +249,7 @@ export function Landing({ tracks }: { tracks: LandingTrack[] }) {
                     <span className="text-xs text-balance text-muted-foreground tabular-nums">
                       {countsInWords(t.counts)}
                     </span>
-                    <Ring pct={pct} label={`${pct}% of ${t.title} done`} size="md" />
+                    <ProgressRing value={pct} label={`${pct}% of ${t.title} done`} size="md" />
                   </Link>
                 ) : (
                   <div role="group" aria-label={`${t.title}, coming soon`} className={bubble}>
@@ -289,7 +277,7 @@ export function Landing({ tracks }: { tracks: LandingTrack[] }) {
         <table className="w-full border-collapse text-left">
           <caption className="sr-only">Tracks</caption>
           <thead>
-            <tr className="border-b border-border text-sm text-muted-foreground">
+            <tr className="border-b border-border text-(length:--text-small) text-muted-foreground">
               <th scope="col" className="px-2 py-2 font-medium">
                 Track
               </th>
@@ -336,7 +324,7 @@ export function Landing({ tracks }: { tracks: LandingTrack[] }) {
                       </span>
                     )}
                     {live ? (
-                      <span className="block text-sm text-muted-foreground tabular-nums md:hidden">
+                      <span className="block text-(length:--text-small) text-muted-foreground tabular-nums md:hidden">
                         {countsInWords(t.counts)}
                       </span>
                     ) : null}
@@ -348,9 +336,7 @@ export function Landing({ tracks }: { tracks: LandingTrack[] }) {
                   </td>
                   <td className="px-2 py-1 align-middle">
                     {live ? (
-                      <span className="inline-flex h-6 items-center rounded-pill border border-route px-2.5 text-xs font-medium">
-                        Live
-                      </span>
+                      <Chip className="border-route bg-transparent">Live</Chip>
                     ) : (
                       <ComingSoonBadge />
                     )}
@@ -358,7 +344,7 @@ export function Landing({ tracks }: { tracks: LandingTrack[] }) {
                   {(["concepts", "problems", "questions"] as const).map((k) => (
                     <td
                       key={k}
-                      className="px-2 py-1 align-middle text-sm text-muted-foreground tabular-nums max-md:hidden"
+                      className="px-2 py-1 align-middle text-(length:--text-small) text-muted-foreground tabular-nums max-md:hidden"
                     >
                       {live ? countWord(k, t.counts[k]) : "—"}
                     </td>
@@ -366,8 +352,8 @@ export function Landing({ tracks }: { tracks: LandingTrack[] }) {
                   <td className="px-2 py-1 align-middle">
                     {live ? (
                       <span className="inline-flex items-center gap-2">
-                        <Ring pct={pct} label={`${pct}% of ${t.title} done`} size="sm" />
-                        <span className="text-sm tabular-nums">{pct}% done</span>
+                        <ProgressRing value={pct} label={`${pct}% of ${t.title} done`} size="sm" />
+                        <span className="text-(length:--text-small) tabular-nums">{pct}% done</span>
                       </span>
                     ) : (
                       <span className="text-muted-foreground" aria-hidden="true">
@@ -397,35 +383,27 @@ export function Landing({ tracks }: { tracks: LandingTrack[] }) {
               so it cannot be undone.
             </p>
             <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={reset}
-                className={`rounded-control h-11 bg-primary px-5 font-medium text-primary-foreground hover:bg-primary-hover ${focusRing}`}
-              >
+              <Button onClick={reset} className="h-11">
                 Yes, reset
-              </button>
-              <button
-                type="button"
-                onClick={() => setConfirmReset(false)}
-                className={`rounded-control h-11 border border-border bg-card px-5 font-medium hover:bg-lane ${focusRing}`}
-              >
+              </Button>
+              <Button variant="secondary" onClick={() => setConfirmReset(false)} className="h-11">
                 Keep my progress
-              </button>
+              </Button>
             </div>
           </div>
         ) : (
-          <button
-            type="button"
+          <Button
+            variant="secondary"
             onClick={() => {
               setResetDone(false);
               setConfirmReset(true);
             }}
-            className={`rounded-control h-11 border border-border bg-card px-5 font-medium hover:bg-lane ${focusRing}`}
+            className="h-11"
           >
             Reset my progress
-          </button>
+          </Button>
         )}
-        <p role="status" className="text-sm text-muted-foreground">
+        <p role="status" className="text-(length:--text-small) text-muted-foreground">
           {resetDone ? "Your progress was cleared on this device." : ""}
         </p>
       </div>

@@ -4,7 +4,8 @@ import { useActionState, useState } from "react";
 import { requestTransitionAction } from "../../app/actions/forms";
 import type { FormResult } from "../../lib/forms/schemas";
 import { BLOCKED_COPY, TurnstileWidget } from "./TurnstileWidget";
-import { buttonClass, FormField, inputClass } from "./FormField";
+import { Button } from "@/components/ui/button";
+import { FormField, inputClass } from "./FormField";
 
 const COPY = {
   request: {
@@ -46,7 +47,7 @@ export function TransitionRequestForm({
   const inputId = idSuffix ? `email-${kind}-${idSuffix}` : `email-${kind}`;
   if (state?.ok) {
     return (
-      <p role="status" className="text-sm font-medium">
+      <p role="status" className="text-[length:var(--text-ui)] font-medium">
         {c.done}
       </p>
     );
@@ -71,30 +72,32 @@ export function TransitionRequestForm({
           type="email"
           autoComplete="email"
           placeholder={c.placeholder}
-          aria-invalid={fe?.email ? true : undefined}
-          aria-describedby={fe?.email ? `${inputId}-error` : undefined}
+          aria-invalid={fe?.email || fe?.toRole || fe?.fromRole ? true : undefined}
+          aria-describedby={
+            fe?.email || fe?.toRole || fe?.fromRole ? `${inputId}-error` : undefined
+          }
           className={inputClass}
         />
       </FormField>
       <TurnstileWidget action="transition" resetKey={state} />
       {state && !state.ok && state.error === "blocked" ? (
-        <p role="alert" className="text-sm text-destructive">
+        <p role="alert" className="text-[length:var(--text-small)] text-destructive">
           {BLOCKED_COPY}
         </p>
       ) : null}
       {state && !state.ok && state.error === "rate_limited" ? (
-        <p role="alert" className="text-sm text-destructive">
+        <p role="alert" className="text-[length:var(--text-small)] text-destructive">
           Too many requests. Try again in a few minutes.
         </p>
       ) : null}
       {state && !state.ok && state.error === "failed" ? (
-        <p role="alert" className="text-sm text-destructive">
+        <p role="alert" className="text-[length:var(--text-small)] text-destructive">
           Something went wrong. Try again.
         </p>
       ) : null}
-      <button type="submit" disabled={pending} className={buttonClass}>
+      <Button type="submit" size="lg" disabled={pending} className="self-start">
         {pending ? c.pending : c.button}
-      </button>
+      </Button>
     </form>
   );
 }
