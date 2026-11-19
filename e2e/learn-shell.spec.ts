@@ -190,13 +190,13 @@ test.describe("learn shell, desktop", () => {
     await expect(rail.getByRole("link", { name: "URL shortener" })).toBeVisible();
     const open = (await rail.boundingBox())!.width;
     expect(open).toBeGreaterThan(300);
-    const toggle = rail.getByRole("button", { name: /next up panel/ });
+    const toggle = rail.getByRole("button", { name: /page outline/ });
     await toggle.click();
     await expect(toggle).toHaveAttribute("aria-expanded", "false");
-    expect((await rail.boundingBox())!.width).toBeLessThan(60);
+    await expect.poll(async () => (await rail.boundingBox())!.width).toBeLessThan(60);
     await expect(rail.getByRole("link", { name: "URL shortener" })).toBeHidden();
     await page.reload();
-    await expect(rail.getByRole("button", { name: /next up panel/ })).toHaveAttribute(
+    await expect(rail.getByRole("button", { name: /page outline/ })).toHaveAttribute(
       "aria-expanded",
       "false",
     );
