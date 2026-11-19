@@ -3,6 +3,7 @@
 import { Handle, Position, type NodeProps } from "@xyflow/react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { cn } from "../../lib/utils";
+import { focusRing } from "../ui/tactile";
 
 interface LaneData {
   areaKey: string;
@@ -32,13 +33,16 @@ export function AreaLane({ data }: NodeProps) {
         data-area={d.areaKey}
         onClick={() => d.onToggle?.(d.areaKey)}
         className={cn(
-          "pointer-events-auto flex h-12 w-full cursor-pointer items-center gap-2 rounded-lane px-4 text-left transition-colors duration-[var(--dur-fast)] hover:bg-card/60",
+          "pointer-events-auto flex h-12 w-full cursor-pointer items-center gap-2 rounded-lane px-4 text-left transition-colors duration-(--dur-fast) hover:bg-card/60",
+          focusRing,
           d.covered ? "text-route" : "text-foreground",
         )}
       >
         <Icon aria-hidden="true" className="size-4 shrink-0" />
-        <span className="truncate font-display text-base font-semibold">{d.label}</span>{" "}
-        <span className="ml-auto text-sm text-muted-foreground">{d.count}</span>
+        <span className="truncate font-display text-(length:--text-body) font-semibold">
+          {d.label}
+        </span>{" "}
+        <span className="ml-auto text-(length:--text-ui) text-muted-foreground">{d.count}</span>
       </button>
       <Handle
         type="source"

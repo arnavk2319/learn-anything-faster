@@ -89,7 +89,7 @@ test("graph is the default; the toggle switches to the list and back", async ({ 
     .evaluateAll((els) => els.map((e) => e.getAttribute("data-topic-id")));
   expect(order.indexOf("algebra")).toBeLessThan(order.indexOf("stats"));
   expect(order.indexOf("stats")).toBeLessThan(order.indexOf("torch"));
-  await expect(topic(page, "torch")).toContainText("Needs first: Stats");
+  await expect(topic(page, "torch")).toContainText("Learn these first: Stats");
 
   await toggle.getByRole("button", { name: "Graph" }).click();
   await expect(topic(page, "stats")).toBeVisible();
@@ -256,7 +256,7 @@ test("axe: list view default, topic panel open, covered group shown", async ({ p
   await expectNoA11yViolations(page, { label: "list covered shown" });
 });
 
-test("a covered topic's accessible name includes its Needs first text", async ({ page }) => {
+test("a covered topic's accessible name includes its Learn these first text", async ({ page }) => {
   // The API only returns edges between route topics; add one so a covered topic has a prerequisite.
   await page.route("**/api/roadmap**", async (route) => {
     const res = await route.fetch();
@@ -267,7 +267,7 @@ test("a covered topic's accessible name includes its Needs first text", async ({
   await page.goto("/roadmap/dev/ml-dev?view=list");
   await page.getByRole("button", { name: /Show what you already know/ }).click();
   await expect(topic(page, "python")).toHaveAccessibleName(
-    /you already know this.*Needs first: Stats/,
+    /you already know this.*Learn these first: Stats/,
   );
 });
 

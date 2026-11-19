@@ -6,6 +6,7 @@ import { useEffect, useRef } from "react";
 import { cn } from "../../lib/utils";
 import type { RoadmapResource, RoadmapResponse } from "../../lib/roadmap/schema";
 import { selectTopic, useSelectedTopicId } from "../../lib/roadmap/selection-store";
+import { focusRing, lift } from "../ui/tactile";
 import { SuggestResourceForm } from "../forms/SuggestResourceForm";
 
 const TYPE_LABEL: Record<RoadmapResource["type"], string> = {
@@ -31,15 +32,21 @@ function Chips({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="text-[13px] text-muted-foreground">{label}</span>
+      <span className="text-(length:--text-small) text-muted-foreground">{label}</span>
       <div className="flex flex-wrap gap-1.5">
-        {items.length === 0 && <span className="text-sm text-muted-foreground">{empty}</span>}
+        {items.length === 0 && (
+          <span className="text-(length:--text-ui) text-muted-foreground">{empty}</span>
+        )}
         {items.map((c) => (
           <button
             key={c.id}
             type="button"
             onClick={() => selectTopic(c.id)}
-            className="h-[30px] cursor-pointer rounded-pill border border-[color:var(--bark)] bg-card px-3 text-sm hover:border-primary"
+            className={cn(
+              "hit-area h-control-sm cursor-pointer rounded-pill border border-input bg-card px-3 text-(length:--text-ui) shadow-1 hover:border-primary",
+              focusRing,
+              lift,
+            )}
           >
             {c.name}
           </button>
@@ -98,15 +105,16 @@ export function TopicPanel({ data }: { data: RoadmapResponse | undefined }) {
       data-testid="topic-panel"
       className={cn(
         // Below 768px a bottom sheet; from md up an in-flow right rail (T-086). No transitions on either.
-        "fixed z-20 flex flex-col gap-3.5 overflow-y-auto bg-card p-4 outline-none",
-        "inset-x-0 bottom-0 max-h-[70vh] rounded-t-lg border-t border-border shadow-md",
+        // The header (title, close) stays put; everything under it scrolls inside the panel.
+        "fixed z-20 flex flex-col overflow-hidden bg-card text-(length:--text-body) outline-none",
+        "inset-x-0 bottom-0 max-h-[70vh] rounded-t-lg border-t border-border-firm shadow-2",
         "md:static md:z-auto md:max-h-none md:w-(--rail-right-w) md:shrink-0 md:rounded-none md:border-t-0 md:border-l md:shadow-none",
       )}
     >
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex shrink-0 items-start justify-between gap-3 p-(--pad-panel) pb-2">
         <div className="flex flex-col gap-0.5">
-          <span className="text-[13px] text-muted-foreground">{area}</span>
-          <h2 className="font-display text-[28px] leading-[1.15] font-semibold tracking-tight">
+          <span className="text-(length:--text-small) text-muted-foreground">{area}</span>
+          <h2 className="font-display text-(length:--text-h2) leading-tight font-semibold tracking-tight">
             {name}
           </h2>
         </div>
@@ -120,77 +128,91 @@ export function TopicPanel({ data }: { data: RoadmapResponse | undefined }) {
               document.querySelector<HTMLElement>(`button[data-topic-id="${current}"]`)?.focus(),
             );
           }}
-          className="h-11 w-11 shrink-0 cursor-pointer rounded-pill border border-border text-sm hover:border-primary"
+          className={cn(
+            "h-11 w-11 shrink-0 cursor-pointer rounded-pill border border-input text-(length:--text-ui) hover:border-primary",
+            focusRing,
+            lift,
+          )}
         >
           <span aria-hidden="true">×</span>
         </button>
       </div>
-      {node ? (
-        <>
-          <p className="text-[15px] leading-relaxed">{node.why}</p>
-          <p className="text-sm text-muted-foreground">About {node.estHours} hours.</p>
-        </>
-      ) : (
-        <p className="text-sm font-medium text-known-foreground">
-          You already know this from your current role, so it's not on your route.
-        </p>
-      )}
-      <Chips label="Learn these first" items={needs} empty="Nothing, start here" />
-      <Chips label="Opens up" items={unlocks} empty="End of this branch" />
-      {node && (
-        <section aria-label="Resources" className="flex flex-col border-t border-border">
-          {node.resources.length === 0 ? (
-            <p className="py-3 text-sm text-muted-foreground">
-              No approved resources yet. Suggest one below.
+      <div
+        data-testid="topic-panel-body"
+        className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-(--pad-panel) pt-1"
+      >
+        {node ? (
+          <>
+            <p>{node.why}</p>
+            <p className="text-(length:--text-ui) text-muted-foreground">
+              About {node.estHours} hours.
             </p>
-          ) : (
-            <ul>
-              {node.resources.map((r) => (
-                <li key={r.id} className="border-b border-border">
-                  {isWebUrl(r.url) ? (
-                    <a
-                      href={r.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-start gap-3 py-3 no-underline"
-                    >
-                      <span className="flex min-w-0 grow flex-col gap-0.5">
-                        <span className="text-[15px] font-semibold">{r.title}</span>
-                        <span className="text-[13px] text-muted-foreground">
-                          {TYPE_LABEL[r.type]}
-                          {", "}
-                          <span
-                            className={cn(
-                              "rounded-pill px-2 py-px text-xs font-medium",
-                              r.isFree
-                                ? "bg-known text-known-foreground"
-                                : "bg-highlight text-highlight-foreground",
-                            )}
-                          >
-                            {r.isFree ? "Free" : "Paid"}
+          </>
+        ) : (
+          <p className="text-(length:--text-ui) font-medium text-known-foreground">
+            You already know this from your current role, so it's not on your route.
+          </p>
+        )}
+        <Chips label="Learn these first" items={needs} empty="Nothing, start here" />
+        <Chips label="Opens up" items={unlocks} empty="End of this branch" />
+        {node && (
+          <section aria-label="Resources" className="flex flex-col border-t border-border-firm">
+            {node.resources.length === 0 ? (
+              <p className="py-3 text-(length:--text-ui) text-muted-foreground">
+                No approved resources yet. Suggest one below.
+              </p>
+            ) : (
+              <ul>
+                {node.resources.map((r) => (
+                  <li key={r.id} className="border-b border-border">
+                    {isWebUrl(r.url) ? (
+                      <a
+                        href={r.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={cn("flex items-start gap-3 py-3 no-underline", focusRing)}
+                      >
+                        <span className="flex min-w-0 grow flex-col gap-0.5">
+                          <span className="text-(length:--text-ui) font-semibold">{r.title}</span>
+                          <span className="text-(length:--text-small) text-muted-foreground">
+                            {TYPE_LABEL[r.type]}
+                            {", "}
+                            <span
+                              className={cn(
+                                "rounded-pill border px-2 py-px text-(length:--text-small) font-medium",
+                                // Blaze is reserved for the one selected topic, so Paid is an outlined neutral chip.
+                                r.isFree
+                                  ? "border-route bg-known text-known-foreground"
+                                  : "border-input bg-card text-foreground",
+                              )}
+                            >
+                              {r.isFree ? "Free" : "Paid"}
+                            </span>
                           </span>
                         </span>
-                      </span>
-                      <span aria-hidden="true" className="mt-0.5 text-primary">
-                        ↗
-                      </span>
-                      <span className="sr-only">(opens in a new tab)</span>
-                    </a>
-                  ) : null}
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-      )}
-      {node && (
-        <details className="mt-auto">
-          <summary className="cursor-pointer text-sm text-primary">Suggest a resource</summary>
-          <div className="pt-3">
-            <SuggestResourceForm key={node.id} topicId={node.id} />
-          </div>
-        </details>
-      )}
+                        <span aria-hidden="true" className="mt-0.5 text-primary">
+                          ↗
+                        </span>
+                        <span className="sr-only">(opens in a new tab)</span>
+                      </a>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        )}
+        {node && (
+          <details className="mt-auto shrink-0">
+            <summary className={cn("cursor-pointer text-(length:--text-ui) text-route", focusRing)}>
+              Suggest a resource
+            </summary>
+            <div className="pt-3">
+              <SuggestResourceForm key={node.id} topicId={node.id} />
+            </div>
+          </details>
+        )}
+      </div>
     </aside>
   );
 }

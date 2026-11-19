@@ -3,6 +3,7 @@
 // route order. Presentational; selecting a topic uses the shared selection store so the TopicPanel
 // opens exactly as it does from the graph.
 import { cn } from "../../lib/utils";
+import { focusRing, lift } from "../ui/tactile";
 import type { ListArea } from "../../lib/roadmap/list-model";
 import { selectTopic, useSelectedTopicId } from "../../lib/roadmap/selection-store";
 
@@ -15,12 +16,12 @@ export function RoadmapList({ areas, startId }: { areas: ListArea[]; startId: st
           <li key={a.key} className="rounded-lane bg-lane p-4">
             <h2
               className={cn(
-                "font-display text-base font-semibold",
+                "font-display text-(length:--text-body) font-semibold",
                 a.covered ? "text-route" : "text-foreground",
               )}
             >
               {a.label}{" "}
-              <span className="text-sm font-normal text-muted-foreground">
+              <span className="text-(length:--text-ui) font-normal text-muted-foreground">
                 ({a.topics.length} {a.topics.length === 1 ? "topic" : "topics"})
               </span>
             </h2>
@@ -33,25 +34,27 @@ export function RoadmapList({ areas, startId }: { areas: ListArea[]; startId: st
                     aria-label={
                       t.covered
                         ? `${t.name}, you already know this${
-                            t.needs.length > 0 ? `. Needs first: ${t.needs.join(", ")}` : ""
+                            t.needs.length > 0 ? `. Learn these first: ${t.needs.join(", ")}` : ""
                           }`
                         : undefined
                     }
                     data-topic-id={t.id}
                     onClick={() => selectTopic(t.id)}
                     className={cn(
-                      "flex min-h-11 w-full cursor-pointer flex-col items-start justify-center rounded-md border px-3 py-1.5 text-left text-sm transition-colors duration-[var(--dur-fast)] hover:border-primary",
+                      "flex min-h-11 w-full cursor-pointer flex-col items-start justify-center rounded-md border-[1.5px] px-3 py-1.5 text-left text-(length:--text-ui) shadow-1 hover:border-primary",
+                      focusRing,
+                      lift,
                       t.covered
                         ? "border-route bg-known text-known-foreground"
-                        : "border-[color:var(--bark)] bg-card text-foreground",
+                        : "border-dashed border-input bg-card text-foreground",
                       selected === t.id &&
-                        "border-[1.5px] border-primary bg-highlight text-highlight-foreground",
+                        "border-solid border-primary bg-highlight text-highlight-foreground",
                     )}
                   >
                     <span className="font-medium">
                       {t.name}
                       {t.id === startId && (
-                        <span className="ml-2 rounded-sm border border-primary px-1 text-xs font-semibold">
+                        <span className="ml-2 rounded-sm border border-primary px-1 text-(length:--text-small) font-semibold">
                           Start here
                         </span>
                       )}
@@ -59,11 +62,11 @@ export function RoadmapList({ areas, startId }: { areas: ListArea[]; startId: st
                     {t.needs.length > 0 && (
                       <span
                         className={cn(
-                          "text-[13px]",
+                          "text-(length:--text-small)",
                           selected === t.id ? "text-highlight-foreground" : "text-muted-foreground",
                         )}
                       >
-                        Needs first: {t.needs.join(", ")}
+                        Learn these first: {t.needs.join(", ")}
                       </span>
                     )}
                   </button>
