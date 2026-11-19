@@ -1,13 +1,13 @@
 "use client";
-// Decorative contour pattern behind the graph (DESIGN.md section 6). Follows the viewport by writing
-// patternTransform straight to the DOM in requestAnimationFrame: no React re-render per frame.
+// Decorative dot grid behind the graph (ADR-0016 amendment 1, DESIGN.md section 15). Follows the viewport by
+// writing patternTransform straight to the DOM in requestAnimationFrame: no React re-render per frame.
 import { useEffect, useRef } from "react";
 import { useStoreApi } from "@xyflow/react";
-import { CONTOUR_TILE } from "./contour-tile";
 
-const OFFSETS = [-1, 0, 1].flatMap((i) => [-1, 0, 1].map((j) => [i, j] as const));
+export const DOT_GAP = 22;
+const DOT_R = 1.2;
 
-export function ContourLayer() {
+export function DotGridLayer() {
   const pattern = useRef<SVGPatternElement>(null);
   const store = useStoreApi();
 
@@ -31,33 +31,30 @@ export function ContourLayer() {
     };
   }, [store]);
 
-  const { width, height, paths } = CONTOUR_TILE;
   return (
     <svg
       aria-hidden="true"
       focusable="false"
-      data-testid="contour-layer"
+      data-testid="dot-grid"
       className="pointer-events-none absolute inset-0 -z-10 size-full"
     >
       <defs>
         <pattern
           ref={pattern}
-          id="contour-tile"
-          width={width}
-          height={height}
+          id="canvas-dot-grid"
+          width={DOT_GAP}
+          height={DOT_GAP}
           patternUnits="userSpaceOnUse"
         >
-          <g id="contour-rings" fill="none" stroke="var(--contour)" strokeWidth={1}>
-            {paths.map((d) => (
-              <path key={d} d={d} vectorEffect="non-scaling-stroke" />
-            ))}
-          </g>
-          {OFFSETS.filter(([i, j]) => i !== 0 || j !== 0).map(([i, j]) => (
-            <use key={`${i}${j}`} href="#contour-rings" x={i * width} y={j * height} />
-          ))}
+          <circle
+            cx={DOT_GAP / 2}
+            cy={DOT_GAP / 2}
+            r={DOT_R}
+            style={{ fill: "color-mix(in srgb, var(--pine) 20%, transparent)" }}
+          />
         </pattern>
       </defs>
-      <rect width="100%" height="100%" fill="url(#contour-tile)" />
+      <rect width="100%" height="100%" fill="url(#canvas-dot-grid)" />
     </svg>
   );
 }

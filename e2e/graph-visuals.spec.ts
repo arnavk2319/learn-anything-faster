@@ -1,12 +1,12 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import { seedRoadmapFixture } from "./helpers/seed-roadmap.ts";
 
-// T-024: contour map visuals. Look and feel is judged by the human at Gate 3; these pin the machine-checkable parts.
+// T-024 / T-102: canvas visuals (dot grid replaced the contour tile in T-102). Look and feel is judged by the human at Gate 3; these pin the machine-checkable parts.
 test.beforeAll(seedRoadmapFixture);
 
 const topic = (page: Page, id: string) => page.locator(`button[data-topic-id="${id}"]`);
 const patternTransform = (page: Page) =>
-  page.locator("#contour-tile").getAttribute("patternTransform");
+  page.locator("#canvas-dot-grid").getAttribute("patternTransform");
 const emptyPanePoint = (page: Page) =>
   page.evaluate(`(() => {
     const pane = document.querySelector(".react-flow__pane");
@@ -42,23 +42,20 @@ async function open(page: Page) {
   await expect(topic(page, "stats")).toBeVisible();
 }
 
-test("contour layer is decorative, below the nodes and adds no tab stops", async ({ page }) => {
+test("dot grid layer is decorative, below the nodes and adds no tab stops", async ({ page }) => {
   await open(page);
-  const svg = page.getByTestId("contour-layer");
+  const svg = page.getByTestId("dot-grid");
   await expect(svg).toHaveAttribute("aria-hidden", "true");
   await expect(svg).toHaveAttribute("focusable", "false");
   expect(await style(svg, "pointer-events")).toBe("none");
   await expect(svg.locator("[tabindex], a, button")).toHaveCount(0);
-  await expect(page.locator("#contour-tile")).toHaveAttribute("width", "480");
-  await expect(page.locator("#contour-tile")).toHaveAttribute("height", "320");
-  expect(await svg.locator("path").first().getAttribute("vector-effect")).toBe(
-    "non-scaling-stroke",
-  );
-  await expect(page.locator(".react-flow > [data-testid=contour-layer]")).toHaveCount(1);
+  await expect(page.locator("#canvas-dot-grid")).toHaveAttribute("width", "22");
+  await expect(page.locator("#canvas-dot-grid")).toHaveAttribute("height", "22");
+  await expect(page.locator(".react-flow > [data-testid=dot-grid]")).toHaveCount(1);
   expect(Number(await style(svg, "z-index"))).toBeLessThan(0); // painted under the node layer
 });
 
-test("contour follows pan and zoom", async ({ page }) => {
+test("dot grid follows pan and zoom", async ({ page }) => {
   await open(page);
   await page.waitForTimeout(600); // fit-view settles
   const t0 = await patternTransform(page);
@@ -157,7 +154,7 @@ test.describe("reduced motion", () => {
     expect(dur).toBeLessThan(20);
   });
 
-  test("contour still follows the viewport", async ({ page }) => {
+  test("dot grid still follows the viewport", async ({ page }) => {
     await open(page);
     await page.waitForTimeout(600);
     const t0 = await patternTransform(page);
