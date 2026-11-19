@@ -4,6 +4,7 @@
 // SSR-safe: the server and hydration render use a character-count estimate and empty progress; stored
 // width, collapse state and progress are read in effects. No transitions anywhere (collapse and drag are instant).
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   useCallback,
   useEffect,
@@ -104,7 +105,7 @@ function OutlineList({
     return progress.items[i.id]?.seenAt ? "seen" : "none";
   };
   return (
-    <nav aria-label="Outline" className="flex flex-col gap-3 py-2 [scrollbar-gutter:stable]">
+    <nav aria-label="Outline" className="flex [scrollbar-gutter:stable] flex-col gap-3 py-2">
       {groups.map((g) => (
         <div key={g.key} role="group" aria-labelledby={`outline-${g.key}`}>
           <p
@@ -148,13 +149,15 @@ export function LearnShell({
   next,
   children,
 }: {
-  trackId: string;
-  trackTitle: string;
+  /** Omitted on /learn (no track): the rail lists tracks and the track link is left out of the header. */
+  trackId?: string;
+  trackTitle?: string;
   groups: OutlineGroup[];
   currentId: string;
   next: OutlineItem[];
   children: ReactNode;
 }) {
+  const pathname = usePathname();
   const isMobile = useIsMobile();
   const [pane, setPane] = useState<Pane>("content");
   const [measured, setMeasured] = useState<RailMetrics | null>(null);
@@ -287,15 +290,21 @@ export function LearnShell({
                 aria-label="Learn"
                 className="hidden items-center gap-5 text-(length:--text-ui) font-medium md:flex"
               >
-                <Link href="/learn" className="text-foreground no-underline hover:underline">
-                  Learn
-                </Link>
                 <Link
-                  href={`/learn/${trackId}`}
+                  href="/learn"
+                  aria-current={pathname === "/learn" ? "page" : undefined}
                   className="text-foreground no-underline hover:underline"
                 >
-                  {trackTitle}
+                  Learn
                 </Link>
+                {trackId ? (
+                  <Link
+                    href={`/learn/${trackId}`}
+                    className="text-foreground no-underline hover:underline"
+                  >
+                    {trackTitle}
+                  </Link>
+                ) : null}
                 <Link href="/roadmaps" className="text-foreground no-underline hover:underline">
                   Roadmaps
                 </Link>
@@ -315,7 +324,7 @@ export function LearnShell({
           <div className="flex min-h-0 flex-1">
             <aside
               ref={railRef}
-              aria-label="Track outline"
+              aria-label={trackId ? "Track outline" : "Tracks"}
               data-testid="outline-rail"
               className={cn(
                 "relative min-h-0 w-full shrink-0 overflow-hidden border-r border-border bg-card md:block md:w-(--rail-w)",
@@ -425,7 +434,9 @@ export function LearnShell({
                     </ul>
                   ) : (
                     <p className="text-(length:--text-small) text-muted-foreground">
-                      You have reached the end of this track.
+                      {trackId
+                        ? "You have reached the end of this track."
+                        : "Pick a track to start learning."}
                     </p>
                   )}
                   {/* T-080: in-page heading outline and the T-043 sim inspector render here via portals. */}

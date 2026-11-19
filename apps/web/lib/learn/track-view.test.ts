@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { emptyProgress, markSeen, recordAnswer, setLast } from "./progress";
-import { continueTarget, conceptUnits, groupByLevel, percent } from "./track-view";
+import {
+  continueTarget,
+  conceptUnits,
+  groupByLevel,
+  percent,
+  suggestStartConcept,
+  trackCountsInWords,
+} from "./track-view";
 
 describe("groupByLevel", () => {
   it("orders levels basic to advanced, drops empty ones, keeps row order", () => {
@@ -60,5 +67,35 @@ describe("percent", () => {
     expect(percent(0.376)).toBe(38);
     expect(percent(2)).toBe(100);
     expect(percent(-1)).toBe(0);
+  });
+});
+
+describe("suggestStartConcept", () => {
+  const c = (id: string, order: number, prerequisites: string[] = []) => ({
+    id,
+    order,
+    prerequisites,
+  });
+  it("picks the lowest order concept with no prerequisites, ignoring input order", () => {
+    expect(suggestStartConcept([c("b", 2), c("a", 1), c("z", 0, ["a"])])).toBe("a");
+  });
+  it("skips concepts with unmet prerequisites even at a lower order", () => {
+    expect(suggestStartConcept([c("x", 1, ["y"]), c("y", 5)])).toBe("y");
+  });
+  it("treats done and out-of-track prerequisites as met", () => {
+    expect(suggestStartConcept([c("x", 1, ["y"]), c("y", 5)], new Set(["y"]))).toBe("x");
+    expect(suggestStartConcept([c("x", 1, ["gone"]), c("y", 5)])).toBe("x");
+  });
+  it("falls back to the lowest order on a cycle; null when empty", () => {
+    expect(suggestStartConcept([c("a", 2, ["b"]), c("b", 1, ["a"])])).toBe("b");
+    expect(suggestStartConcept([])).toBeNull();
+  });
+});
+
+describe("trackCountsInWords", () => {
+  it("writes counts as words with correct plurals", () => {
+    expect(trackCountsInWords(6, 2)).toBe("6 concepts, 2 problems");
+    expect(trackCountsInWords(1, 1)).toBe("1 concept, 1 problem");
+    expect(trackCountsInWords(0, 0)).toBe("0 concepts, 0 problems");
   });
 });

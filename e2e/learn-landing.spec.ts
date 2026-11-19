@@ -131,10 +131,9 @@ test.describe("learn landing", () => {
   test("reduced motion removes the bubble float", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     const name = () =>
-      page
-        .locator(".bubble-float")
-        .first()
-        .evaluate("(el) => getComputedStyle(el).animationName") as Promise<string>;
+      page.evaluate(
+        "getComputedStyle(document.querySelector('.bubble-float')).animationName",
+      ) as Promise<string>;
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.goto("/learn");
     expect(await name()).toBe("bubble-float");

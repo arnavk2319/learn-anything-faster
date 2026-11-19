@@ -10,6 +10,8 @@ export interface ConceptRow {
   summary: string;
   stage: Level;
   hasSim: boolean;
+  order: number;
+  prerequisites: string[];
   /** Ids of this concept's approved quick-check questions. */
   quickCheckIds: string[];
 }
@@ -73,4 +75,27 @@ export function continueTarget(
 
 export function percent(ratio: number): number {
   return Math.round(Math.min(1, Math.max(0, ratio)) * 100);
+}
+
+const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+
+/** Overview counts as words, never bare numbers: "6 concepts, 2 problems". */
+export function trackCountsInWords(concepts: number, problems: number): string {
+  return `${plural(concepts, "concept", "concepts")}, ${plural(problems, "problem", "problems")}`;
+}
+
+/**
+ * "Start with X": the lowest-`order` concept with no unmet prerequisite. A prerequisite is unmet when it is a
+ * concept of this track that is not in `done`; ids outside the track (unpublished) never block. If every
+ * concept is blocked (a cycle), falls back to the lowest order. Null for an empty track.
+ */
+export function suggestStartConcept(
+  concepts: { id: string; order: number; prerequisites: string[] }[],
+  done: ReadonlySet<string> = new Set(),
+): string | null {
+  if (concepts.length === 0) return null;
+  const inTrack = new Set(concepts.map((c) => c.id));
+  const sorted = [...concepts].sort((a, b) => a.order - b.order);
+  const open = sorted.find((c) => c.prerequisites.every((p) => !inTrack.has(p) || done.has(p)));
+  return (open ?? sorted[0])?.id ?? null;
 }
