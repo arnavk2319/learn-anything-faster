@@ -145,6 +145,37 @@ describe("contrast (WCAG 2.1, recomputed from tokens)", () => {
   });
 });
 
+describe("T-098 rail tokens and control-border contrast (measured)", () => {
+  it("adds the rail and shadow tokens from ADR-0016 amendment 1", () => {
+    expect(root["--rail-collapsed-w"]).toBe("44px");
+    for (const t of ["--shadow-rest", "--shadow-press", "--shadow-lift"]) {
+      expect(root[t], t).toBe("none");
+      expect(v2[t], t).toContain("color-mix(in srgb, var(--pine)");
+      expect(v2[t], t).not.toMatch(/#|rgb\(/);
+    }
+  });
+
+  // The ADR reuses --stone for control borders instead of the prototype's 30% ink mix; measured, not hand-computed.
+  const stone: [string, number][] = [
+    ["--card", 3.63],
+    ["--background", 3.27],
+    ["--muted", 3.19],
+  ];
+  it.each(stone)("--stone control border on %s is >= 3:1 (measured)", (bg, min) => {
+    const r = ratio("--stone", bg);
+    expect(r).toBeGreaterThanOrEqual(3);
+    if (min > 3) expect(Math.abs(r - min)).toBeLessThan(0.011);
+  });
+});
+
+describe("T-098 contrast on the Covered fill (measured, finding for T-101)", () => {
+  it("--stone on --covered is 2.94:1, just under 3:1, so covered nodes must use the Trail border", () => {
+    expect(ratio("--stone", "--covered")).toBeLessThan(3);
+    expect(ratio("--stone", "--covered")).toBeGreaterThan(2.9);
+    expect(ratio("--route", "--covered")).toBeGreaterThanOrEqual(3);
+  });
+});
+
 describe("no literals in components", () => {
   function walk(dir: string, out: string[] = []): string[] {
     for (const e of readdirSync(dir)) {

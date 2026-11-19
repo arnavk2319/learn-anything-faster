@@ -72,6 +72,14 @@ export interface UiPrefs {
 }
 export const DEFAULT_PREFS: UiPrefs = { rail: DEFAULT_FRACTION, rightCollapsed: false };
 
+/** Collapse flags and the roadmap hint flag live beside `UiPrefs` in the same envelope (ADR-0016 amendment 1).
+ * Kept out of `UiPrefs` so `readUiPrefs` keeps its shape; every flag is additive, version stays 1. */
+export interface ExtraPrefs {
+  leftCollapsed: boolean;
+  graphHintDismissed: boolean;
+}
+export const DEFAULT_EXTRA: ExtraPrefs = { leftCollapsed: false, graphHintDismissed: false };
+
 const Envelope = z.looseObject({ v: z.literal(UI_VERSION) });
 
 export type StorageLike = Pick<Storage, "getItem" | "setItem">;
@@ -98,8 +106,21 @@ export function readUiPrefs(storage: StorageLike | null): UiPrefs {
   };
 }
 
+/** Missing, corrupt or non-boolean values fall back to the defaults (rails expanded, hint shown). */
+export function readExtraPrefs(storage: StorageLike | null): ExtraPrefs {
+  const d = readRaw(storage);
+  if (!d) return { ...DEFAULT_EXTRA };
+  return {
+    leftCollapsed: typeof d.leftCollapsed === "boolean" ? d.leftCollapsed : false,
+    graphHintDismissed: typeof d.graphHintDismissed === "boolean" ? d.graphHintDismissed : false,
+  };
+}
+
 /** Merges into the stored object so keys owned by other features survive. */
-export function writeUiPrefs(patch: Partial<UiPrefs>, storage: StorageLike | null): void {
+export function writeUiPrefs(
+  patch: Partial<UiPrefs & ExtraPrefs>,
+  storage: StorageLike | null,
+): void {
   if (!storage) return;
   try {
     const next = { ...(readRaw(storage) ?? {}), ...patch, v: UI_VERSION };

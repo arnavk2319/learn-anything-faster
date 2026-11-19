@@ -6,6 +6,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useShellSlots } from "@/lib/shell/context";
+import { railRow } from "@/components/shell/LearnShell";
 import { cn } from "@/lib/utils";
 
 interface Entry {
@@ -14,7 +15,7 @@ interface Entry {
 }
 
 const SPY_OFFSET = 120;
-const ring = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
+const ring = "focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring";
 
 function slug(text: string, taken: Set<string>): string {
   const base = `h-${
@@ -84,7 +85,9 @@ export function OnThisPage() {
 
   return createPortal(
     <nav aria-label="On this page" data-testid="on-this-page">
-      <h2 className="mb-1 font-display text-sm font-semibold">On this page</h2>
+      <h2 className="px-2.5 pt-1 pb-1.5 text-xs font-semibold tracking-[0.06em] text-muted-foreground uppercase">
+        On this page
+      </h2>
       <ul className="flex flex-col">
         {entries.map((e) => (
           <li key={e.id}>
@@ -97,8 +100,8 @@ export function OnThisPage() {
                 go(e.id);
               }}
               className={cn(
-                "flex min-h-(--hit-min) items-center rounded-mark px-2 text-(length:--text-ui) text-foreground no-underline hover:bg-muted lg:min-h-8",
-                "aria-[current=location]:bg-muted aria-[current=location]:font-semibold",
+                railRow,
+                "aria-[current=location]:bg-muted aria-[current=location]:font-semibold aria-[current=location]:shadow-[inset_3px_0_0_var(--route)]",
                 ring,
               )}
             >

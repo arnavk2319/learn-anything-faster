@@ -8,6 +8,12 @@ const WIDTHS = [375, 768, 1024, 1280];
 // Recorded before the redesign at 1280x800: first concept row top 407px, row pitch 72px (64 + 8 gap).
 const BASELINE_FIT = Math.floor((800 - 407) / 72);
 
+// T-098 (human-approved setup): outline labels are 14px, so the long-label fixture makes the default (100%) rail
+// wider and squeezes main at 1280. Start with the rail at its 80% minimum, as a user could drag it.
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem("laf:ui:v1", '{"v":1,"rail":0.8}'));
+});
+
 const overflow = (page: Page) =>
   page.evaluate(
     "document.documentElement.scrollWidth - document.documentElement.clientWidth",

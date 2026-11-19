@@ -104,6 +104,9 @@
   --border-firm: var(--border);
   --shadow-1: none;
   --shadow-2: none;
+  --shadow-rest: none;
+  --shadow-press: none;
+  --shadow-lift: none;
   --inset-hi: inset 0 0 0 0 transparent;
   --dur-press: 90ms;
   --dur-lift: 140ms;
@@ -137,6 +140,7 @@
   --rail-w-min: 192px; /* set at runtime from the measured longest label */
   --rail-w-max: 240px;
   --rail-right-w: 320px;
+  --rail-collapsed-w: 44px; /* T-098: collapsed rail strip, holds only the toggle */
   --bottom-nav-h: 48px;
 }
 
@@ -149,6 +153,13 @@
   --canvas: var(--background);
   --shadow-1: 0 1px 0 rgb(29 59 42 / 0.05), 0 1px 3px rgb(29 59 42 / 0.08);
   --shadow-2: 0 1px 0 rgb(29 59 42 / 0.05), 0 4px 10px -2px rgb(29 59 42 / 0.12);
+  --shadow-rest:
+    0 1px 2px color-mix(in srgb, var(--pine) 10%, transparent),
+    0 6px 16px color-mix(in srgb, var(--pine) 8%, transparent);
+  --shadow-press: 0 1px 2px color-mix(in srgb, var(--pine) 12%, transparent);
+  --shadow-lift:
+    0 2px 3px color-mix(in srgb, var(--pine) 14%, transparent),
+    0 10px 22px color-mix(in srgb, var(--pine) 12%, transparent);
   --inset-hi: inset 0 1px 0 rgb(255 255 255 / 0.16);
 }
 
