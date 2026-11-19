@@ -10,6 +10,7 @@ import {
   type ConceptRow,
   type ProblemRow,
 } from "@/lib/learn/track-view";
+import { sumTrackMinutes } from "@/lib/learn/estimate";
 import { LearnShell } from "@/components/shell/LearnShell";
 import { Card } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
@@ -18,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { MdInline } from "./Md";
 import { ContinueCard, RowList, TrackHeaderStatus } from "./TrackProgress";
 import { TrackTabs } from "./TrackTabs";
+import { TrackTime } from "./TrackTime";
 
 const LEVEL_LABEL = { basic: "Basic", intermediate: "Intermediate", advanced: "Advanced" } as const;
 
@@ -88,6 +90,7 @@ export function TrackPage({ pack, active }: { pack: TrackPack; active: "concepts
   const concepts = conceptRows(pack);
   const problems = problemRows(pack);
   const base = `/learn/${track.id}`;
+  const minutes = sumTrackMinutes([...pack.concepts, ...pack.problems]);
   const startId = suggestStartConcept(concepts);
   const start = concepts.find((c) => c.id === startId);
   const groups = buildOutline(track.id, pack.concepts, pack.problems, (id) =>
@@ -112,12 +115,12 @@ export function TrackPage({ pack, active }: { pack: TrackPack; active: "concepts
           />
           <div className="min-w-0 flex-1 basis-60 max-sm:order-4 max-sm:basis-full">
             <h1 className="font-display font-bold">{track.title}</h1>
-            <p
-              data-testid="track-counts"
-              className="text-(length:--text-small) text-muted-foreground tabular-nums"
-            >
-              {trackCountsInWords(concepts.length, problems.length)}
-            </p>
+            <div className="flex flex-wrap gap-x-3 text-(length:--text-small) text-muted-foreground">
+              <p data-testid="track-counts" className="tabular-nums">
+                {trackCountsInWords(concepts.length, problems.length)}
+              </p>
+              <TrackTime minutes={minutes} />
+            </div>
           </div>
           {start ? (
             <Link

@@ -7,6 +7,7 @@ order: 5
 topicIds: []
 prerequisites: []
 status: approved
+estMin: 75
 sim:
   id: cache-aside-read
   template: cache-aside
