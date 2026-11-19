@@ -26,18 +26,21 @@ afterAll(() => {
 describe("learn content loader: proposed items are not built", () => {
   it("loads approved concepts only", () => {
     const pack = loadTrack("system-design");
-    expect(pack?.concepts.map((c) => c.id)).toEqual(["caching"]);
+    expect(pack?.concepts.map((c) => c.id)).toEqual(["caching", "long-label-fixture"]);
     expect(pack?.problems.map((p) => p.id)).toEqual(["url-shortener"]);
   });
   it("static params exclude the proposed fixture concept", () => {
-    expect(conceptParams()).toEqual([{ track: "system-design", concept: "caching" }]);
+    expect(conceptParams()).toEqual([
+      { track: "system-design", concept: "caching" },
+      { track: "system-design", concept: "long-label-fixture" },
+    ]);
     expect(problemParams()).toEqual([{ track: "system-design", problem: "url-shortener" }]);
     expect(listApprovedIds().some((e) => e.id === "draft-topic")).toBe(false);
     expect(
       quizParams()
         .map((p) => p.owner)
         .sort(),
-    ).toEqual(["caching", "url-shortener"]);
+    ).toEqual(["caching", "long-label-fixture", "url-shortener"]);
   });
   it("unknown and unsafe tracks resolve to null (404)", () => {
     expect(loadTrack("nope")).toBeNull();

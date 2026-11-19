@@ -30,7 +30,13 @@ export function BlockView({ block, ctx }: { block: Block; ctx: BlockContext }) {
       );
     case "table":
       return (
-        <div className="overflow-x-auto rounded-lg border bg-card">
+        // Focusable so keyboard users can scroll it when the (now narrower, T-079 shell) main column clips the table.
+        <div
+          tabIndex={0}
+          role="region"
+          aria-label="Table"
+          className="overflow-x-auto rounded-lg border bg-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+        >
           <table className="w-full border-collapse text-left text-sm">
             <thead>
               <tr>
