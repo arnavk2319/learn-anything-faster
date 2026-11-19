@@ -111,3 +111,24 @@ describe("helpers", () => {
     expect(edgeTouches(pairs, null)).toBe(false);
   });
 });
+
+describe("layout metrics (T-086)", () => {
+  it("toElk honours the density tier and defaults to the default tier", async () => {
+    const { buildModel, toElk, metricsFor, DEFAULT_METRICS } = await import("./layout");
+    const model = buildModel(
+      {
+        from: "a",
+        to: "b",
+        nodes: [{ id: "t", name: "T", area: "x", why: "w", estHours: 1, resources: [] }],
+        edges: [],
+        covered: [],
+      } as never, // minimal response shape; only nodes/edges/covered are read
+      { collapsed: new Set(), showCovered: false },
+    );
+    const def = toElk(model).children?.[0];
+    const compact = toElk(model, metricsFor("compact")).children?.[0];
+    expect(metricsFor("default")).toBe(DEFAULT_METRICS);
+    expect(def?.layoutOptions?.["elk.padding"]).toContain("left=16");
+    expect(compact?.layoutOptions?.["elk.padding"]).toContain("left=12");
+  });
+});

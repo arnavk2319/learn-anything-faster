@@ -13,6 +13,24 @@ export const COVERED_AREA = "__covered";
 export const TOPIC_TYPE = "topic";
 export const AREA_TYPE = "area";
 
+/** Sizes the ELK input and the flow nodes are built from. Chosen by the density tier (ADR-0016). */
+export interface LayoutMetrics {
+  nodeW: number;
+  nodeH: number;
+  laneHeader: number;
+  lanePad: number;
+}
+export const DEFAULT_METRICS: LayoutMetrics = {
+  nodeW: NODE_W,
+  nodeH: NODE_H,
+  laneHeader: LANE_HEADER,
+  lanePad: LANE_PAD,
+};
+// Compact tier: same node box and lane header (the lane/node restyle is T-087), tighter lane padding.
+export const COMPACT_METRICS: LayoutMetrics = { ...DEFAULT_METRICS, lanePad: 12 };
+export const metricsFor = (density: "default" | "compact"): LayoutMetrics =>
+  density === "compact" ? COMPACT_METRICS : DEFAULT_METRICS;
+
 export const areaNodeId = (area: string) => `area:${area}`;
 
 /** "classical-ml" -> "Classical ml". Display only; the id never changes. */
@@ -116,19 +134,19 @@ const ROOT_OPTIONS = {
 };
 
 /** ELK input: areas are compound nodes holding their topics; a collapsed area is a leaf. */
-export function toElk(model: GraphModel): ElkNode {
+export function toElk(model: GraphModel, m: LayoutMetrics = DEFAULT_METRICS): ElkNode {
   return {
     id: "root",
     layoutOptions: ROOT_OPTIONS,
     children: model.areas.map((a): ElkNode => {
       const id = areaNodeId(a.key);
-      if (a.collapsed) return { id, width: NODE_W + 2 * LANE_PAD, height: LANE_HEADER };
+      if (a.collapsed) return { id, width: m.nodeW + 2 * m.lanePad, height: m.laneHeader };
       return {
         id,
         layoutOptions: {
-          "elk.padding": `[top=${LANE_HEADER},left=${LANE_PAD},bottom=${LANE_PAD},right=${LANE_PAD}]`,
+          "elk.padding": `[top=${m.laneHeader},left=${m.lanePad},bottom=${m.lanePad},right=${m.lanePad}]`,
         },
-        children: a.topics.map((t) => ({ id: t.id, width: NODE_W, height: NODE_H })),
+        children: a.topics.map((t) => ({ id: t.id, width: m.nodeW, height: m.nodeH })),
       };
     }),
     edges: model.edges.map((e) => ({ id: e.id, sources: [e.source], targets: [e.target] })),
@@ -195,14 +213,18 @@ export function absoluteRoutes(laid: ElkNode): Map<string, RoutePoint[]> {
 }
 
 /** React Flow wants parents before children and positions relative to the parent: ELK gives both. */
-export function toFlow(model: GraphModel, laid: ElkNode): FlowGraph {
+export function toFlow(
+  model: GraphModel,
+  laid: ElkNode,
+  m: LayoutMetrics = DEFAULT_METRICS,
+): FlowGraph {
   const pos = new Map((laid.children ?? []).map((n) => [n.id, n]));
   const nodes: Node[] = [];
   for (const a of model.areas) {
     const id = areaNodeId(a.key);
     const l = pos.get(id);
-    const width = l?.width ?? NODE_W + 2 * LANE_PAD;
-    const height = l?.height ?? LANE_HEADER;
+    const width = l?.width ?? m.nodeW + 2 * m.lanePad;
+    const height = l?.height ?? m.laneHeader;
     nodes.push({
       id,
       type: AREA_TYPE,
@@ -229,9 +251,9 @@ export function toFlow(model: GraphModel, laid: ElkNode): FlowGraph {
         id: t.id,
         type: TOPIC_TYPE,
         parentId: id,
-        position: { x: k?.x ?? LANE_PAD, y: k?.y ?? LANE_HEADER },
-        width: NODE_W,
-        height: NODE_H,
+        position: { x: k?.x ?? m.lanePad, y: k?.y ?? m.laneHeader },
+        width: m.nodeW,
+        height: m.nodeH,
         data: { name: t.name, covered: t.covered, area: t.area },
         draggable: false,
         selectable: false,

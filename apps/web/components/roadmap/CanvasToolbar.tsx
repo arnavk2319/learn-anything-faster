@@ -21,7 +21,11 @@ export function CanvasToolbar({
   onToggleCovered: () => void;
 }) {
   return (
-    <div role="toolbar" aria-label="Roadmap canvas" className="flex flex-wrap items-center gap-2">
+    <div
+      role="toolbar"
+      aria-label="Roadmap canvas"
+      className="flex shrink-0 flex-wrap items-center gap-2 px-4 py-2 md:px-6"
+    >
       <div role="group" aria-label="Zoom" className="flex gap-1">
         <button type="button" className={btn} aria-label="Zoom out" onClick={onZoomOut}>
           <Minus aria-hidden="true" className="size-4" />

@@ -1,5 +1,5 @@
 "use client";
-// Topic panel (DESIGN.md sections 8 and 9): right-hand panel on desktop, bottom sheet below lg.
+// Topic panel (DESIGN.md sections 8 and 9): right rail from md up, bottom sheet below 768px.
 // Presentational over the cached roadmap response; selection comes from selection-store.
 // Escape closes and returns focus to the originating node button.
 import { useEffect, useRef } from "react";
@@ -97,9 +97,10 @@ export function TopicPanel({ data }: { data: RoadmapResponse | undefined }) {
       aria-label={`Topic: ${name}`}
       data-testid="topic-panel"
       className={cn(
-        "fixed z-20 flex flex-col gap-3.5 overflow-y-auto bg-card p-6 outline-none",
+        // Below 768px a bottom sheet; from md up an in-flow right rail (T-086). No transitions on either.
+        "fixed z-20 flex flex-col gap-3.5 overflow-y-auto bg-card p-4 outline-none",
         "inset-x-0 bottom-0 max-h-[70vh] rounded-t-lg border-t border-border shadow-md",
-        "lg:inset-x-auto lg:top-24 lg:right-6 lg:bottom-6 lg:max-h-none lg:w-[400px] lg:rounded-lg lg:border lg:shadow-none",
+        "md:static md:z-auto md:max-h-none md:w-(--rail-right-w) md:shrink-0 md:rounded-none md:border-t-0 md:border-l md:shadow-none",
       )}
     >
       <div className="flex items-start justify-between gap-3">
