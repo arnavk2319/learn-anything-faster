@@ -13,6 +13,8 @@ Read this before building or changing any UI. It is the source of truth for colo
 
 ## 1. Concept
 
+> v2 surfaces (Learn, roadmap, Browse) follow section 15 where it differs (flat-surface, no-lift, looping-animation and one-bold-thing rules are superseded there).
+
 Every roadmap is a marked trail from the role you have to the role you want.
 
 | Metaphor               | In the UI                                                                            |
@@ -31,6 +33,8 @@ Principles
 ---
 
 ## 2. Colour
+
+> On v2 surfaces the surface tokens differ: see 15.1.
 
 ### Palette
 
@@ -96,6 +100,8 @@ Code blocks (v2 tutor): Pine background, Sage text, IBM Plex Mono 13–14px, rad
 
 ## 3. Typography
 
+> On compact-density surfaces the scale differs: see 15.2.
+
 ### Families
 
 | Role                                                                          | Family           | Weights       | Loading                                        |
@@ -150,6 +156,8 @@ Mobile (< 768px): `display` 34/1.2, `h1` 32/1.2, `h2` 20/1.25, `h3` 22/1.2. Use 
 ---
 
 ## 4. Spacing, layout and shape
+
+> On v2 and compact surfaces see 15.3 (compact sizes, soft-tactile borders and shadows, 48px header).
 
 - **Base unit 4px.** Allowed steps: 4, 8, 12, 16, 20, 24, 32, 40, 48, 56, 64.
 - **Page width:** content max 1280px, centred. Page padding: 64px ≥ 1280, 32px 768–1279, 20px < 768.
@@ -273,6 +281,8 @@ Click and keyboard behaviour (roadmap)
 ---
 
 ## 9. Motion
+
+> v2 adds press, lift and spring tokens: see 15.4.
 
 | Token          | Value                          | Use                                                                |
 | -------------- | ------------------------------ | ------------------------------------------------------------------ |
@@ -423,7 +433,7 @@ Colour is never the only signal: tokens differ by shape (filled, outlined, dashe
   when done). Title 16/600 link in Pine, subline `small` Moss. Right: `sim` badge (Trail text and border), 96px progress bar, "2/5" (hidden under
   768), favorite star. Levels are `h4` headings with the count in `small` ("Basic 7 concepts"), anchors `#basic|#intermediate|#advanced`.
 - **Progress ring**: conic ring, Trail value on a Border track, thickness `--ring-thickness`, centre label `micro` 600 tabular ("38%"); `sm` has no
-  label. Always has `role="img"` and an `aria-label` ("38% done"). Derivation is in ADR-0015 section 6.
+  label. Always has `role="progressbar"` with `aria-valuenow`, `aria-valuemin`, `aria-valuemax` and an `aria-label` ("38% done") (changed from `role="img"` in T-078). Derivation is in ADR-0015 section 6.
 - **Favorite star**: 44px target, outline star Stone when off, solid Pine star on a Blaze disc when on, `aria-pressed`, label "Favorite <name>".
   Blaze here means "chosen by you". Never changes layout.
 - **Continue** card: Paper panel, dot, "Continue where you left off", item name and level, primary button.
@@ -487,3 +497,89 @@ A sim passes only if every line is true when replaying all its scenarios at 1x, 
 - [ ] Keyboard-only run-through (Space, arrows, R, Enter, Esc) works and the caption region announces each step.
 - [ ] Works at 375, 768, 1024, 1280px without page-level horizontal scroll (only the canvas may pan); transcript present.
 - [ ] No hex values, font names, radii or durations in the component; tokens only.
+
+## 15. v2 surfaces and compact tier (ADR-0016, T-077)
+
+Everything in this section applies only to surfaces that opt in with `data-ui="v2"` (colour, border, shadow, motion) and `data-density="compact"` (type, control, spacing) on a layout wrapper, never on `<html>`. Learn, the roadmap, and Browse (`/roadmaps`) opt in; the marketing landing page does not and keeps sections 1 to 14 exactly as written. Where this section conflicts with sections 1 to 14 on an opted-in surface, this section wins. Light mode only: the v2 block is `:root:not(.dark) [data-ui="v2"]`. Tokens live in `app/globals.css` and `design/theme.css` (identical files); contrast is enforced by `tests/tools/design-tokens.test.ts`.
+
+Everything below is scoped to surfaces that opt in with `data-ui="v2"` (colour, border, shadow, motion) and `data-density="compact"` (type, control, spacing). Both go on a layout wrapper, never `<html>`. `:root` values are unchanged, so the marketing landing, Browse and the current roadmap look as today until their layout opts in. Light mode only: the v2 block is `:root:not(.dark) [data-ui="v2"]`.
+
+### 15.1 Colour: v2 surface (Parchment) (extends section 2)
+
+| Token                 | Name      | Value     | Was (default tier)     |
+| --------------------- | --------- | --------- | ---------------------- |
+| `--background`        | Parchment | `#F6F3EA` | Sage `#E9EFE7`         |
+| `--muted`             | Lane      | `#EEF2E6` | `#F3F6F1`              |
+| `--border`            | Hairline  | `#DDD8C6` | Lichen `#CBD6CC`       |
+| `--border-firm` (new) | Firm      | `#C4BEA6` | defaults to `--border` |
+
+All other colour tokens are unchanged. No new hues. Blaze is never text and is always paired with a Pine border or Pine text.
+
+Measured contrast under `data-ui="v2"` (computed by `tests/tools/design-tokens.test.ts` from the token file; this table equals the test output):
+
+| Text on background                          | Ratio                     | Allowed                                           |
+| ------------------------------------------- | ------------------------- | ------------------------------------------------- |
+| Pine on Parchment                           | 11.06                     | all text                                          |
+| Pine on Paper                               | 12.27                     | all text                                          |
+| Pine on Lane                                | 10.80                     | all text                                          |
+| Pine on Covered                             | 9.93                      | all text                                          |
+| Pine on Blaze                               | 7.32                      | all text                                          |
+| Paper on Pine                               | 12.27                     | all text                                          |
+| Moss on Parchment / Paper / Lane            | 5.69 / 6.31 / 5.55        | all text                                          |
+| Trail on Parchment / Paper / Lane / Covered | 5.49 / 6.09 / 5.36 / 4.93 | all text, links (keep body 14 minimum on Covered) |
+| Paper on Trail                              | 6.09                      | all text                                          |
+| Danger on Parchment / Paper                 | 6.03 / 6.69               | error text                                        |
+
+| Border or indicator               | Ratio              | Use                                                      |
+| --------------------------------- | ------------------ | -------------------------------------------------------- |
+| Stone on Paper / Parchment / Lane | 3.63 / 3.27 / 3.19 | control borders (3:1 needed, pass)                       |
+| Trail on Parchment / Paper        | 5.49 / 6.09        | focus ring (unchanged token), covered border             |
+| Firm on Paper / Parchment         | 1.86 / 1.68        | decorative panel outline only; never the only identifier |
+| Hairline on Paper / Parchment     | 1.43 / 1.29        | decorative dividers only                                 |
+| Blaze on Parchment / Paper        | 1.51 / 1.68        | never the only signal; paired with a Pine border         |
+
+### 15.2 Typography: compact tier (extends section 3)
+
+Under `data-density="compact"`:
+
+| Token          | Default  | Compact                                 |
+| -------------- | -------- | --------------------------------------- |
+| `--text-body`  | 16 / 1.6 | 14 / 1.5                                |
+| `--text-ui`    | 15 / 1.5 | 13 / 1.4                                |
+| `--text-small` | 13       | 12 / 1.4 (12 stays the product minimum) |
+| `--text-h1`    | 44       | clamp(24px, 2.2vw, 28px)                |
+| `--text-h2`    | 24       | clamp(17px, 1.6vw, 20px)                |
+
+### 15.3 Spacing, layout and shape: compact tier and soft-tactile (extends section 4)
+
+| Token                      | Default      | Compact      |
+| -------------------------- | ------------ | ------------ |
+| `--control-h-sm / md / lg` | 32 / 40 / 48 | 28 / 32 / 36 |
+| `--hit-min`                | 44           | 44           |
+| `--row-h`                  | 68           | 40           |
+| `--pad-panel`              | 20           | 12           |
+| `--gap`                    | 16           | 8            |
+| `--header-h`               | 64           | 48           |
+
+44px targets: controls under 44px use the shared `.hit-area` utility (transparent centred `::after`, `max(100%, var(--hit-min))`). Components never hand-roll it. Where neighbours are closer than 44px, clamp the pseudo-element to half the gap. Controls are never below 28px.
+
+Soft-tactile (v2): 1px `--border-firm` on panels, rows, cards; 1px Stone (`--input`) on controls; nodes and lanes keep 1.5px. `--shadow-1` for resting panels and cards, `--shadow-2` for hover and raised, `shadow-md` stays for popovers, menus, sheets. `--inset-hi` is added to solid buttons (decorative). Pressed state drops the shadow. Raw `rgb()` appears only inside the token definitions.
+
+### 15.4 Motion (extends section 9)
+
+New tokens: `--dur-press` 90ms, `--dur-lift` 140ms, `--dur-spring` 280ms, `--ease-spring` cubic-bezier(.34,1.56,.64,1), `--ease-out` = `--ease-trail`, `--press-y` 1px, `--press-scale` .98, `--lift-y` -1px, `--burst-dur` 600ms.
+
+- Press: `translateY(var(--press-y)) scale(var(--press-scale))` over `--dur-press`.
+- Hover lift: `translateY(var(--lift-y))` over `--dur-lift`, only on interactive cards, rows with a link, solid buttons. Never on text, lanes, or `.react-flow__node` (apply to an inner element).
+- Reduced motion: `--press-y`, `--lift-y` resolve to 0px, `--press-scale` to 1, the duration tokens to 0ms; bursts are not rendered. Opacity and colour changes stay at or under 120ms.
+
+### 15.5 Superseded principles (v2 / Learn surfaces only)
+
+1. "Flat surfaces, no drop shadows except popovers and sheets" (sections 1, 4): replaced by the two-step shadow scale.
+2. "No hover lift on cards" (section 9): replaced by the 1px lift rule.
+3. "No looping animation" as a blanket ban: no loop on content or controls; only bubble float and sims loop (14.2), always stoppable, off under reduced motion. Bursts are one-shot.
+4. "One bold thing per screen" (section 1): replaced by one primary action per view and one focal region. The PR checklist line "One primary button per view" stays.
+5. Header 64/72, section spacing, control heights and type sizes (sections 3, 4): replaced by the compact tier on Learn.
+6. "Elevation: none on panels" (section 4).
+
+Unchanged: WCAG measured pairs, Trail focus ring, 44px targets, reduced motion, tokens only (no hardcoded hex, fonts, radii, durations), Blaze never text, no new hues, writing rules, 12px minimum, 14.1 sim tokens.
