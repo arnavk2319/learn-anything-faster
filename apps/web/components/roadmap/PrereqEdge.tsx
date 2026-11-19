@@ -2,7 +2,7 @@
 // Prerequisite edge: dashed Stone (.edge-unmet); the selected topic's edges get a solid Trail overlay (.edge-hot) that draws in.
 // The path follows ELK's orthogonal route (rounded corners); with no route it falls back to a bezier.
 import { BaseEdge, getBezierPath, type EdgeProps } from "@xyflow/react";
-import { edgeTouches, type RoutePoint } from "../../lib/roadmap/layout";
+import { ARROW, EDGE_COLOR, edgeTouches, type RoutePoint } from "../../lib/roadmap/layout";
 import { useSelectedTopicId } from "../../lib/roadmap/selection-store";
 import { usePrefersReducedMotion } from "../../lib/roadmap/use-prefers-reduced-motion";
 
@@ -49,13 +49,15 @@ export function PrereqEdge({
   targetY,
   sourcePosition,
   targetPosition,
+  markerEnd,
   data,
 }: EdgeProps) {
   const selected = useSelectedTopicId();
   const reduced = usePrefersReducedMotion();
-  const { pairs, points } = data as {
+  const { pairs, points, covered } = data as {
     pairs: { topicId: string; prerequisiteId: string }[];
     points?: RoutePoint[];
+    covered?: boolean;
   };
   const hot = edgeTouches(pairs, selected);
   const path =
@@ -64,14 +66,37 @@ export function PrereqEdge({
       : getBezierPath({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition })[0];
   return (
     <>
-      <BaseEdge id={id} path={path} className="edge-unmet" interactionWidth={0} />
+      <BaseEdge
+        id={id}
+        path={path}
+        className="edge-unmet"
+        interactionWidth={0}
+        markerEnd={markerEnd}
+        style={covered ? { stroke: EDGE_COLOR.covered } : undefined}
+      />
       {hot && (
-        <path
-          d={path}
-          pathLength={1}
-          className="edge-hot"
-          style={reduced ? { animation: "none", strokeDashoffset: 0 } : undefined}
-        />
+        <>
+          {/* Active state: its own arrowhead, in the active colour (React Flow only defines default/covered). */}
+          <marker
+            id={`${id}-hot`}
+            viewBox="0 0 10 10"
+            refX="9"
+            refY="5"
+            markerUnits="userSpaceOnUse"
+            markerWidth={ARROW}
+            markerHeight={ARROW}
+            orient="auto"
+          >
+            <path d="M0 1L9.5 5L0 9z" style={{ fill: EDGE_COLOR.active }} />
+          </marker>
+          <path
+            d={path}
+            markerEnd={`url(#${id}-hot)`}
+            pathLength={1}
+            className="edge-hot"
+            style={reduced ? { animation: "none", strokeDashoffset: 0 } : undefined}
+          />
+        </>
       )}
     </>
   );

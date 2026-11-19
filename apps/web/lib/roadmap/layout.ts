@@ -2,11 +2,22 @@
 // this builds the model (areas, visible topics, edges re-routed around collapsed areas), the ELK
 // input graph, and turns ELK's result into React Flow nodes and edges.
 import type { ElkEdge, ElkNode } from "elkjs/lib/elk-api";
-import type { Edge, Node } from "@xyflow/react";
+import { MarkerType, type Edge, type Node } from "@xyflow/react";
 import type { RoadmapResponse } from "./schema";
 
-export const NODE_W = 208;
-export const NODE_H = 40;
+// ADR-0016 amendment 1: 224 x 52 box (14px label, trailing chevron, target above 44px).
+export const NODE_W = 224;
+export const NODE_H = 52;
+/** Arrowhead size in flow units (React Flow marker, markerUnits userSpaceOnUse). */
+export const ARROW = 12;
+/** Colour tokens of the three edge states; the arrowhead takes the same colour. */
+export const EDGE_COLOR = {
+  default: "var(--edge-unmet)",
+  covered: "var(--route)",
+  active: "var(--foreground)",
+} as const;
+export const NODE_GAP = 16; // within a layer
+export const LAYER_GAP = 72; // between layers: arrowhead 12 + corner radius 8 + edge-node clearance 16, with slack
 export const LANE_HEADER = 48; // DESIGN.md section 12: 48px top padding
 export const LANE_PAD = 16;
 export const COVERED_AREA = "__covered";
@@ -65,6 +76,9 @@ export interface EdgeModel {
 export interface GraphModel {
   areas: AreaModel[];
   edges: EdgeModel[];
+  /** First and last topic in route order (API `nodes` order); the same id for a one-topic route. */
+  startId?: string;
+  goalId?: string;
 }
 
 export interface ModelOptions {
@@ -115,14 +129,19 @@ export function buildModel(roadmap: RoadmapResponse, opts: ModelOptions): GraphM
     if (existing) existing.pairs.push(pair);
     else merged.set(id, { id, source, target, pairs: [pair] });
   }
-  return { areas, edges: [...merged.values()] };
+  return {
+    areas,
+    edges: [...merged.values()],
+    startId: roadmap.nodes[0]?.id,
+    goalId: roadmap.nodes[roadmap.nodes.length - 1]?.id,
+  };
 }
 
 const ROOT_OPTIONS = {
   "elk.algorithm": "layered",
   "elk.direction": "RIGHT",
-  "elk.spacing.nodeNode": "12",
-  "elk.layered.spacing.nodeNodeBetweenLayers": "52",
+  "elk.spacing.nodeNode": String(NODE_GAP),
+  "elk.layered.spacing.nodeNodeBetweenLayers": String(LAYER_GAP),
   "elk.hierarchyHandling": "INCLUDE_CHILDREN",
   // Orthogonal routes avoid node boxes; the spacings keep the channels between layers wide enough.
   "elk.edgeRouting": "ORTHOGONAL",
@@ -254,7 +273,13 @@ export function toFlow(
         position: { x: k?.x ?? m.lanePad, y: k?.y ?? m.laneHeader },
         width: m.nodeW,
         height: m.nodeH,
-        data: { name: t.name, covered: t.covered, area: t.area },
+        data: {
+          name: t.name,
+          covered: t.covered,
+          area: t.area,
+          isStart: t.id === model.startId,
+          isGoal: t.id === model.goalId,
+        },
         draggable: false,
         selectable: false,
         focusable: false,
@@ -263,17 +288,31 @@ export function toFlow(
     }
   }
   const routes = absoluteRoutes(laid);
-  const edges: Edge[] = model.edges.map((e) => ({
-    id: e.id,
-    source: e.source,
-    target: e.target,
-    type: "prereq",
-    // No route (ELK gave no sections): PrereqEdge falls back to a bezier.
-    data: { pairs: e.pairs, points: routes.get(e.id) ?? [] },
-    focusable: false,
-    selectable: false,
-    zIndex: 2,
-  }));
+  // An edge is "covered" when both ends are topics the learner's role already covers.
+  const coveredIds = new Set(
+    model.areas.flatMap((a) => a.topics.filter((t) => t.covered).map((t) => t.id)),
+  );
+  const edges: Edge[] = model.edges.map((e) => {
+    const covered = coveredIds.has(e.source) && coveredIds.has(e.target);
+    return {
+      id: e.id,
+      source: e.source,
+      target: e.target,
+      type: "prereq",
+      // Arrowhead at the target, coloured by state (default/covered; PrereqEdge adds the active one).
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+        width: ARROW,
+        height: ARROW,
+        color: covered ? EDGE_COLOR.covered : EDGE_COLOR.default,
+      },
+      // No route (ELK gave no sections): PrereqEdge falls back to a bezier.
+      data: { pairs: e.pairs, points: routes.get(e.id) ?? [], covered },
+      focusable: false,
+      selectable: false,
+      zIndex: 2,
+    };
+  });
   return { nodes, edges };
 }
 
