@@ -177,6 +177,9 @@ export const TrackSchema = z.strictObject({
   order: z.number().int(),
 });
 
+/** Authoring unit is minutes; users only ever see hours (formatEstimate). ADR-0015 amendment 2. */
+export const EstMinSchema = z.number().int().min(1).max(600);
+
 export const ConceptSchema = z.strictObject({
   id: slug,
   trackId: slug,
@@ -188,6 +191,7 @@ export const ConceptSchema = z.strictObject({
   prerequisites: z.array(slug).default([]),
   status: StatusSchema,
   supersedes: slug.optional(),
+  estMin: EstMinSchema.optional(),
   sim: SimRefSchema,
   levels: z
     .partialRecord(LevelSchema, z.array(BlockSchema))
@@ -205,6 +209,7 @@ export const ProblemSchema = z.strictObject({
   topicIds: z.array(slug).default([]),
   status: StatusSchema,
   supersedes: slug.optional(),
+  estMin: EstMinSchema.optional(),
   sim: SimRefSchema,
   blocks: z.array(BlockSchema).min(1),
 });
