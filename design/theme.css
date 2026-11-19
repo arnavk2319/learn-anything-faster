@@ -378,8 +378,9 @@
 /* Resting prerequisite edge: dashed, curved, Stone. path.edge-unmet outranks React Flow's .react-flow__edge-path. */
 path.edge-unmet {
   stroke: var(--edge-unmet);
-  stroke-width: 1.5px;
-  stroke-dasharray: 6 5;
+  stroke-width: 2px;
+  stroke-dasharray: 7 6;
+  stroke-linecap: round;
   fill: none;
 }
 

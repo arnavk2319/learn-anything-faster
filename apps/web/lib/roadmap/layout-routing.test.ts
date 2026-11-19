@@ -273,3 +273,75 @@ describe("layout stays off the main thread", () => {
     );
   });
 });
+
+describe("node metrics and spacing (T-101)", () => {
+  const overlap = (a: Box, b: Box) =>
+    a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+
+  it("topic nodes are 224 x 52 and every node carries that box", async () => {
+    expect([NODE_W, NODE_H]).toEqual([224, 52]);
+    const { flow } = await layout({ collapsed: [], showCovered: true });
+    const topics = flow.nodes.filter((n) => n.type === "topic");
+    expect(topics.length).toBeGreaterThan(0);
+    for (const n of topics) expect([n.width, n.height], n.id).toEqual([224, 52]);
+  });
+
+  it("no topic overlaps another topic, and every topic sits inside its lane", async () => {
+    for (const showCovered of [false, true]) {
+      const { flow } = await layout({ collapsed: [], showCovered });
+      const byId = new Map(flow.nodes.map((n) => [n.id, n]));
+      const topics = obstacles(flow).filter((b) => byId.get(b.id)?.type === "topic");
+      for (let i = 0; i < topics.length; i++)
+        for (let j = i + 1; j < topics.length; j++)
+          expect(
+            overlap(topics[i] as Box, topics[j] as Box),
+            `${topics[i]?.id}/${topics[j]?.id}`,
+          ).toBe(false);
+      for (const n of flow.nodes.filter((x) => x.type === "topic")) {
+        const lane = byId.get(n.parentId ?? "");
+        expect(lane, n.id).toBeDefined();
+        expect(n.position.x).toBeGreaterThanOrEqual(0);
+        expect(n.position.y).toBeGreaterThanOrEqual(0);
+        expect(n.position.x + NODE_W).toBeLessThanOrEqual(lane?.width ?? 0);
+        expect(n.position.y + NODE_H).toBeLessThanOrEqual(lane?.height ?? 0);
+      }
+      // Lanes do not overlap each other either.
+      const lanes = flow.nodes.filter((n) => n.type === AREA_TYPE);
+      const boxes = lanes.map((n) => ({
+        id: n.id,
+        x: n.position.x,
+        y: n.position.y,
+        w: n.width ?? 0,
+        h: n.height ?? 0,
+      }));
+      for (let i = 0; i < boxes.length; i++)
+        for (let j = i + 1; j < boxes.length; j++)
+          expect(overlap(boxes[i] as Box, boxes[j] as Box), `${boxes[i]?.id}/${boxes[j]?.id}`).toBe(
+            false,
+          );
+    }
+  });
+
+  it("every edge has a closed arrowhead marker and its last run points at the target", async () => {
+    const { flow } = await layout({ collapsed: [], showCovered: true });
+    for (const e of flow.edges) {
+      expect(e.markerEnd, e.id).toMatchObject({ type: "arrowclosed", width: 12, height: 12 });
+      const pts = pointsOf(e);
+      const a = pts[pts.length - 2] as Pt;
+      const b = pts[pts.length - 1] as Pt;
+      // The arrow points at the target's left face: the last run is horizontal and at least the 10-unit
+      // edge-edge channel (ELK ends some routes with a short stub; the arrow then overlaps the rounded corner, cosmetic).
+      expect(b.y, e.id).toBe(a.y);
+      expect(b.x - a.x, e.id).toBeGreaterThanOrEqual(10);
+    }
+  });
+
+  it("flags the first topic as start and the last as goal, in nodes order", async () => {
+    const { flow } = await layout({ collapsed: [], showCovered: false });
+    const flagged = (k: string) => flow.nodes.filter((n) => (n.data as Record<string, unknown>)[k]);
+    expect(flagged("isStart").map((n) => n.id)).toEqual([roadmap.nodes[0]?.id]);
+    expect(flagged("isGoal").map((n) => n.id)).toEqual([
+      roadmap.nodes[roadmap.nodes.length - 1]?.id,
+    ]);
+  });
+});
