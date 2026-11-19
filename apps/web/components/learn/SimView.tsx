@@ -1,11 +1,15 @@
 // Presentational sim frame (DESIGN.md 14.5): canvas, legend, caption, controls, inspector.
 // Plain SVG, no @xyflow. Used for the server-rendered poster (interactive=false) and by SimPlayer.
-import type { KeyboardEvent, RefObject } from "react";
-import { useId } from "react";
+import type { CSSProperties, KeyboardEvent, RefObject } from "react";
+import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
+import { useShellSlots } from "@/lib/shell/context";
 import type { Sim } from "@/lib/learn/schemas";
 import { transcript, type Frame, type FrameToken } from "@/lib/learn/sim/engine";
 import {
   CARD_H,
+  NARROW_LABEL,
+  pickMode,
   PILL_H,
   pointAlong,
   roundedPath,
@@ -22,12 +26,16 @@ import {
   type Speed,
 } from "@/lib/learn/sim-render/view";
 
+import { FeedbackButton } from "./Feedback";
+
 type SimNode = Sim["nodes"][number];
 
 export type SimViewProps = {
   title: string;
   sim: Sim;
   layout: SimLayout;
+  /** Vertical layout for panes <= 480px (T-090). Without it the wide layout is used at every width. */
+  narrowLayout?: SimLayout;
   scenarioId: string;
   frame: Frame;
   pulsed: string[];
@@ -86,10 +94,10 @@ const EDGE_HOT: Record<TokenKind, string> = {
 };
 
 const btn =
-  "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-md border border-input bg-card px-3 text-sm font-medium text-foreground hover:bg-lane disabled:opacity-50 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring";
+  "hit-area inline-flex h-control-md items-center justify-center gap-2 rounded-md border border-input bg-card px-3 text-[length:var(--text-ui)] font-medium text-foreground hover:bg-lane disabled:opacity-50 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring";
 // Compact icon control: small visible box, hit area padded out to 44px with a pseudo-element.
 const ibtn =
-  "relative inline-flex size-7 items-center justify-center rounded-md border border-input bg-card text-xs font-semibold tabular-nums text-foreground hover:bg-lane disabled:opacity-50 before:absolute before:-inset-2 before:content-[''] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring";
+  "hit-area inline-flex size-control-sm items-center justify-center rounded-md border border-input bg-card text-[length:var(--text-small)] font-semibold tabular-nums text-foreground hover:bg-lane disabled:opacity-50 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring";
 
 function Icon({ d }: { d: string }) {
   return (
@@ -305,8 +313,41 @@ function trapSheetTab(e: KeyboardEvent<HTMLElement>) {
   }
 }
 
+const wideSubscribe = (cb: () => void) => {
+  const mq = window.matchMedia("(min-width: 1024px)");
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+};
+const useIsWide = () =>
+  useSyncExternalStore(
+    wideSubscribe,
+    () => window.matchMedia("(min-width: 1024px)").matches,
+    () => false,
+  );
+
 export function SimView(p: SimViewProps) {
-  const { sim, layout, frame, scenarioId } = p;
+  const { sim, frame, scenarioId } = p;
+  // The first render (server, poster, hydration) is always wide; the measured pane width picks the mode in an
+  // effect, so there is no hydration mismatch. The svg is width:100% so the pane width never depends on the mode.
+  const [mode, setMode] = useState<"wide" | "narrow">("wide");
+  const canvasRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const el = canvasRef.current;
+    if (!el || !p.narrowLayout) return;
+    const measure = () => setMode(pickMode(el.clientWidth));
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [p.narrowLayout]);
+  const narrow = mode === "narrow" && !!p.narrowLayout;
+  const layout = narrow && p.narrowLayout ? p.narrowLayout : p.layout;
+  // Inside the Learn shell at >= 1024px the inspector lives in the right rail (T-080); everywhere else it stays
+  // inline (side panel on tablet, bottom sheet on phone) exactly as in T-043.
+  const shell = useShellSlots();
+  const wide = useIsWide();
+  const railSlot = wide ? (shell?.inspector ?? null) : null;
   const uid = useId();
   const marker = `${uid}-chev`;
   const hotEdges = new Map<string, TokenKind>();
@@ -318,6 +359,11 @@ export function SimView(p: SimViewProps) {
   const scenarios = sim.scenarios;
   const w = layout.width;
   const h = layout.height;
+
+  const select = (id: string | null) => {
+    if (id) shell?.expandRight();
+    p.onSelect?.(id);
+  };
 
   const onCanvasKey = (e: KeyboardEvent<HTMLDivElement>) => {
     if (!p.interactive) return;
@@ -333,6 +379,40 @@ export function SimView(p: SimViewProps) {
     } else if (e.key === "r" || e.key === "R") p.onRestart?.();
   };
 
+  const Panel = railSlot ? "section" : "aside"; // an aside nested in the rail's aside would nest landmarks
+  const inspector = sel ? (
+    <>
+      <div
+        aria-hidden="true"
+        onClick={() => p.onSelect?.(null)}
+        className="fixed inset-0 z-40 bg-foreground/40 md:hidden"
+      />
+      <Panel
+        aria-label={`${sel.label} details`}
+        onKeyDown={trapSheetTab}
+        className="mt-4 rounded-md border border-border bg-lane p-4 max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:z-50 max-md:mt-0 max-md:max-h-[90vh] max-md:min-h-[40vh] max-md:overflow-auto max-md:rounded-t-lg max-md:rounded-b-none max-md:bg-card motion-safe:max-md:animate-[sim-sheet-in_var(--dur-slow)_var(--ease-trail)] lg:mt-0"
+      >
+        <div
+          aria-hidden="true"
+          className="mx-auto mb-3 h-1 w-10 rounded-pill bg-border md:hidden"
+        />
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <p className="text-sm text-muted-foreground">{sel.kind}</p>
+            <h3 className="font-display text-lg font-semibold break-words text-foreground">
+              {sel.label}
+            </h3>
+          </div>
+          <button type="button" ref={p.closeRef} onClick={() => p.onSelect?.(null)} className={btn}>
+            Close
+          </button>
+        </div>
+        <p className="mt-2 text-base text-foreground">{sel.inspect}</p>
+        <StateList node={sel} frame={frame} />
+      </Panel>
+    </>
+  ) : null;
+
   return (
     <div
       ref={p.rootRef}
@@ -340,22 +420,40 @@ export function SimView(p: SimViewProps) {
       onKeyDown={(e) => {
         if (e.key === "Escape" && p.selected) p.onSelect?.(null);
       }}
-      className="rounded-lg border border-border bg-card p-4"
+      className="rounded-lg border border-border bg-card p-2.5"
     >
-      <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-4">
+      <div className={shell ? undefined : "lg:grid lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-4"}>
         <div>
+          <div className="mb-2 flex min-h-control-sm items-center justify-between gap-2">
+            <p
+              data-testid="sim-title"
+              className="min-w-0 truncate text-[length:var(--text-ui)] font-semibold text-foreground"
+            >
+              {p.title}
+            </p>
+            {/* Reserved corner for the feedback icon (T-085). */}
+            <span data-slot="sim-feedback" className="size-control-sm shrink-0">
+              <FeedbackButton kind="sim" targetId={sim.id} label="simulation" />
+            </span>
+          </div>
           {/* The scroll container is the focusable canvas: Space, arrows and R act here. */}
           <div
+            ref={canvasRef}
             tabIndex={0}
             role="group"
             aria-label={`${p.title} diagram. Space plays or pauses, left and right arrows step, R restarts.`}
             onKeyDown={onCanvasKey}
-            className="overflow-x-auto rounded-md bg-canvas focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring"
+            className="overflow-x-auto rounded-md bg-canvas leading-none focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring"
           >
             <svg
               viewBox={`0 0 ${w} ${h}`}
-              className="block w-full min-w-[680px]"
-              style={{ aspectRatio: `${w} / ${h}` }}
+              data-layout={narrow ? "narrow" : "wide"}
+              // Narrow: labels are set in viewBox units, so raise them to stay >= 11px once scaled to the pane.
+              className={`block w-full ${narrow ? "[&_text]:[font-size:var(--sim-narrow-label)]" : ""}`}
+              style={{
+                aspectRatio: `${w} / ${h}`,
+                ...(narrow ? ({ "--sim-narrow-label": `${NARROW_LABEL}px` } as CSSProperties) : {}),
+              }}
             >
               <title>{p.title}</title>
               <defs>
@@ -426,13 +524,13 @@ export function SimView(p: SimViewProps) {
                       role: "button" as const,
                       tabIndex: 0,
                       "aria-pressed": isSel,
-                      "aria-label": n.label,
-                      onClick: () => p.onSelect?.(isSel ? null : n.id),
+                      "aria-label": verdict ? `${n.label} ${verdict}` : n.label, // name must contain the visible verdict text
+                      onClick: () => select(isSel ? null : n.id),
                       onKeyDown: (e: KeyboardEvent<SVGGElement>) => {
                         if (e.key === "Enter") {
                           e.preventDefault();
                           e.stopPropagation();
-                          p.onSelect?.(isSel ? null : n.id);
+                          select(isSel ? null : n.id);
                         }
                       },
                       ref: (el: SVGGElement | null) => {
@@ -524,13 +622,10 @@ export function SimView(p: SimViewProps) {
               ))}
             </svg>
           </div>
-          <p className="mt-1 text-xs text-muted-foreground md:hidden">
-            Swipe sideways to pan the diagram
-          </p>
 
           <ul
             aria-label="Token legend"
-            className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground"
+            className="mt-2 flex flex-wrap gap-x-3 gap-y-0.5 text-[length:var(--text-small)] text-muted-foreground"
           >
             {(Object.keys(TOKENS) as TokenKind[]).map((k) => (
               <li key={k} className="flex items-center gap-1.5">
@@ -549,16 +644,16 @@ export function SimView(p: SimViewProps) {
             ))}
           </ul>
 
-          <div className="mt-3 rounded-md bg-lane px-4 py-3">
+          <div className="mt-2 rounded-md bg-lane px-3 py-2">
             <p
               aria-live="polite"
               aria-atomic="true"
               data-testid="sim-caption"
-              className="text-xs text-muted-foreground tabular-nums"
+              className="text-[length:var(--text-small)] text-muted-foreground tabular-nums"
             >
               Step {idx} of {p.steps.length}
             </p>
-            <ol aria-label="Steps" data-testid="sim-steps" className="mt-1 space-y-1">
+            <ol aria-label="Steps" data-testid="sim-steps" className="mt-1 space-y-0.5">
               {stepList.map((st) => {
                 const active = st.n === idx;
                 return (
@@ -568,7 +663,7 @@ export function SimView(p: SimViewProps) {
                       disabled={!p.interactive}
                       aria-current={active ? "step" : undefined}
                       onClick={() => p.onSeek?.(st.atMs)}
-                      className={`flex w-full items-start gap-2 rounded-md px-2 py-1 text-left text-base focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-default ${active ? "bg-highlight text-highlight-foreground" : "text-foreground enabled:hover:bg-card"}`}
+                      className={`flex w-full items-start gap-2 rounded-md px-2 py-0.5 text-left text-[length:var(--text-ui)] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-default ${active ? "bg-highlight text-highlight-foreground" : "text-foreground enabled:hover:bg-card"}`}
                     >
                       <span className="tabular-nums">{st.n}.</span>
                       <span>{st.text}</span>
@@ -578,14 +673,14 @@ export function SimView(p: SimViewProps) {
               })}
             </ol>
             {p.reduced && (
-              <p className="mt-1 text-xs text-muted-foreground">
+              <p className="mt-1 text-[length:var(--text-small)] text-muted-foreground">
                 Reduced motion is on: step through, or press Play.
               </p>
             )}
           </div>
 
           <div
-            className="mt-3 flex flex-wrap items-center gap-3"
+            className="mt-2 flex flex-wrap items-center gap-2"
             role="toolbar"
             aria-label="Simulation controls"
           >
@@ -629,7 +724,7 @@ export function SimView(p: SimViewProps) {
             >
               <Icon d={ICON.step} />
             </button>
-            <div role="group" aria-label="Speed" className="flex gap-2">
+            <div role="group" aria-label="Speed" className="flex gap-1.5">
               {SPEEDS.map((s) => (
                 <button
                   key={s}
@@ -645,7 +740,7 @@ export function SimView(p: SimViewProps) {
                 </button>
               ))}
             </div>
-            <div className="max-md:w-full md:ml-auto">
+            <div className="max-w-full min-w-0 max-md:w-full md:ml-auto">
               <label htmlFor={`${uid}-sc`} className="sr-only">
                 Scenario
               </label>
@@ -654,7 +749,7 @@ export function SimView(p: SimViewProps) {
                 disabled={!p.interactive || scenarios.length < 2}
                 value={scenarioId}
                 onChange={(e) => p.onScenario?.(e.target.value)}
-                className="h-7 rounded-md border border-input bg-card px-2 text-xs text-foreground focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring max-md:w-full"
+                className="h-control-sm max-w-full rounded-md border border-input bg-card px-2 text-[length:var(--text-ui)] text-foreground focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring max-md:w-full"
               >
                 {scenarios.map((s) => (
                   <option key={s.id} value={s.id}>
@@ -666,53 +761,21 @@ export function SimView(p: SimViewProps) {
           </div>
         </div>
 
-        {sel && (
-          <>
-            <div
-              aria-hidden="true"
-              onClick={() => p.onSelect?.(null)}
-              className="fixed inset-0 z-40 bg-foreground/40 md:hidden"
-            />
-            <aside
-              aria-label={`${sel.label} details`}
-              onKeyDown={trapSheetTab}
-              className="mt-4 rounded-md border border-border bg-lane p-4 max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:z-50 max-md:mt-0 max-md:max-h-[90vh] max-md:min-h-[40vh] max-md:overflow-auto max-md:rounded-t-lg max-md:rounded-b-none max-md:bg-card motion-safe:max-md:animate-[sim-sheet-in_var(--dur-slow)_var(--ease-trail)] lg:mt-0"
-            >
-              <div
-                aria-hidden="true"
-                className="mx-auto mb-3 h-1 w-10 rounded-pill bg-border md:hidden"
-              />
-              <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0">
-                  <p className="text-sm text-muted-foreground">{sel.kind}</p>
-                  <h3 className="font-display text-lg font-semibold break-words text-foreground">
-                    {sel.label}
-                  </h3>
-                </div>
-                <button
-                  type="button"
-                  ref={p.closeRef}
-                  onClick={() => p.onSelect?.(null)}
-                  className={btn}
-                >
-                  Close
-                </button>
-              </div>
-              <p className="mt-2 text-base text-foreground">{sel.inspect}</p>
-              <StateList node={sel} frame={frame} />
-            </aside>
-          </>
-        )}
+        {inspector && !railSlot ? inspector : null}
       </div>
 
-      <details className="mt-3 border-t border-border pt-3">
-        <summary className="cursor-pointer text-sm font-medium text-foreground focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring">
+      {inspector && railSlot ? createPortal(inspector, railSlot) : null}
+
+      <details className="mt-2 border-t border-border pt-2">
+        <summary className="cursor-pointer text-[length:var(--text-ui)] font-medium text-foreground focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring">
           Read this as text
         </summary>
         {sim.scenarios.map((sc) => (
-          <div key={sc.id} className="mt-3">
-            <h4 className="text-base font-semibold text-foreground">{sc.title}</h4>
-            <ol className="mt-1 list-decimal pl-6 text-base text-foreground">
+          <div key={sc.id} className="mt-2">
+            <h4 className="text-[length:var(--text-ui)] font-semibold text-foreground">
+              {sc.title}
+            </h4>
+            <ol className="mt-1 list-decimal pl-6 text-[length:var(--text-ui)] text-foreground">
               {transcript(sim, sc).map((st) => (
                 <li key={st.n}>{st.text}</li>
               ))}

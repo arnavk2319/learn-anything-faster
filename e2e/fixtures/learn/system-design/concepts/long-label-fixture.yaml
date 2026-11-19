@@ -1,0 +1,18 @@
+id: long-label-fixture
+trackId: system-design
+title: Consistent hashing with virtual nodes, replication factors and hinted handoff under partial failure
+summary: "Fixture for the shell rail tests (T-079), with a deliberately very long outline label."
+stage: basic
+order: 99
+topicIds: []
+prerequisites: []
+status: approved
+sim:
+  exception:
+    reason: Fixture concept for layout tests, no simulation needed.
+levels:
+  basic:
+    - id: long-label-text
+      type: text
+      body: "This concept exists only so the outline rail has a very long label to measure."
+      src: { kind: gap, note: "fixture content for layout tests only" }

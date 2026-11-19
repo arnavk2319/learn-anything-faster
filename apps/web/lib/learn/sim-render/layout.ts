@@ -2,6 +2,7 @@
 // (generate-layouts.ts writes generated/layouts.json); the client never imports elkjs.
 import type { Sim } from "../schemas";
 import generated from "./generated/layouts.json";
+import narrowGenerated from "./generated/layouts-narrow.json";
 
 export type Pt = { x: number; y: number };
 export type NodeBox = { x: number; y: number; w: number; h: number };
@@ -32,22 +33,65 @@ export function nodeSize(n: SimNode): { w: number; h: number } {
   return { w, h: CARD_H };
 }
 
+export type LayoutMode = "wide" | "narrow";
+
+/** Pane width (px) at or below which the sim uses the vertical layout (ADR-0015 amendment, T-090). */
+export const NARROW_MAX = 480;
+/** Label size floor in viewBox units for the narrow layout; the widest narrow layout is 273 wide, so a 226px pane scales by 0.83 and renders >= 11px. */
+export const NARROW_LABEL = 14;
+
+/** Layout mode for a measured pane width. No measurement (first render, server) is always wide. */
+export function pickMode(width: number | null | undefined): LayoutMode {
+  return width != null && width > 0 && width <= NARROW_MAX ? "narrow" : "wide";
+}
+
+/** Distinct 0..n-1 rank per node in breadth-first order from the sources (declaration order breaks ties). */
+function bfsRank(sim: Sim): Map<string, number> {
+  const ids = sim.nodes.map((n) => n.id);
+  const incoming = new Set(sim.edges.map((e) => e.to));
+  const order: string[] = [];
+  const seen = new Set<string>();
+  const roots = ids.filter((id) => !incoming.has(id));
+  const queue = [...(roots.length ? roots : ids.slice(0, 1))];
+  for (const id of queue) seen.add(id);
+  while (queue.length) {
+    const id = queue.shift() as string;
+    order.push(id);
+    for (const e of sim.edges)
+      if (e.from === id && !seen.has(e.to)) {
+        seen.add(e.to);
+        queue.push(e.to);
+      }
+  }
+  for (const id of ids) if (!seen.has(id)) order.push(id);
+  return new Map(order.map((id, i) => [id, i]));
+}
+
 /** ELK input for a sim (layered, left to right, orthogonal), as the roadmap graph. */
-export function elkInput(sim: Sim) {
+export function elkInput(sim: Sim, mode: LayoutMode = "wide") {
+  const narrow = mode === "narrow";
+  const rank = narrow ? bfsRank(sim) : null;
   return {
     id: "root",
     layoutOptions: {
       "elk.algorithm": "layered",
-      "elk.direction": "RIGHT",
+      "elk.direction": narrow ? "DOWN" : "RIGHT",
+      // Narrow: one node per layer (partitioning), so decision branches stack into a single column.
+      ...(narrow
+        ? { "elk.partitioning.activate": "true", "elk.layered.nodePlacement.strategy": "SIMPLE" }
+        : {}),
       "elk.edgeRouting": "ORTHOGONAL",
       "elk.spacing.nodeNode": String(GAP_Y),
-      "elk.layered.spacing.nodeNodeBetweenLayers": String(GAP_X),
+      "elk.layered.spacing.nodeNodeBetweenLayers": String(narrow ? GAP_Y + 12 : GAP_X),
       "elk.spacing.edgeNode": "16",
       "elk.padding": `[top=${MARGIN},left=${MARGIN},bottom=${MARGIN},right=${MARGIN}]`,
     },
     children: sim.nodes.map((n) => {
       const { w, h } = nodeSize(n);
-      return { id: n.id, width: w, height: h };
+      const base = { id: n.id, width: w, height: h };
+      return rank
+        ? { ...base, layoutOptions: { "elk.partitioning.partition": String(rank.get(n.id) ?? 0) } }
+        : base;
     }),
     edges: sim.edges.map((e) => ({ id: e.id, sources: [e.from], targets: [e.to] })),
   };
@@ -143,9 +187,46 @@ export function fallbackLayout(sim: Sim): SimLayout {
   return { width: x - GAP_X + MARGIN, height, nodes, edges };
 }
 
-const LAYOUTS = generated as unknown as Record<string, SimLayout>; // JSON import is untyped at the shape level
+/** Deterministic single-column layout used when no generated narrow layout matches. Pure, no ELK. */
+export function fallbackNarrowLayout(sim: Sim): SimLayout {
+  const rank = bfsRank(sim);
+  const sorted = [...sim.nodes].sort((a, b) => (rank.get(a.id) ?? 0) - (rank.get(b.id) ?? 0));
+  const maxW = Math.max(NODE_W, ...sorted.map((n) => nodeSize(n).w));
+  const width = maxW + 2 * MARGIN;
+  const nodes: SimLayout["nodes"] = {};
+  let y = MARGIN;
+  for (const n of sorted) {
+    const s = nodeSize(n);
+    nodes[n.id] = { x: Math.round((width - s.w) / 2), y, ...s };
+    y += s.h + GAP_Y + 12;
+  }
+  const edges: SimLayout["edges"] = {};
+  const lane = width - MARGIN / 2;
+  for (const e of sim.edges) {
+    const a = nodes[e.from];
+    const b = nodes[e.to];
+    if (!a || !b) continue;
+    const next = (rank.get(e.to) ?? 0) - (rank.get(e.from) ?? 0) === 1;
+    edges[e.id] = next
+      ? [
+          { x: a.x + a.w / 2, y: a.y + a.h },
+          { x: b.x + b.w / 2, y: b.y },
+        ]
+      : [
+          { x: a.x + a.w, y: a.y + a.h / 2 },
+          { x: lane, y: a.y + a.h / 2 },
+          { x: lane, y: b.y + b.h / 2 },
+          { x: b.x + b.w, y: b.y + b.h / 2 },
+        ];
+  }
+  return { width, height: y - GAP_Y - 12 + MARGIN, nodes, edges };
+}
 
-function covers(sim: Sim, l: SimLayout): boolean {
+// JSON imports are untyped at the shape level.
+const LAYOUTS = generated as unknown as Record<string, SimLayout>;
+const NARROW_LAYOUTS = narrowGenerated as unknown as Record<string, SimLayout>;
+
+export function covers(sim: Sim, l: SimLayout): boolean {
   return (
     sim.nodes.every((n) => {
       const b = l.nodes[n.id];
@@ -219,4 +300,10 @@ export function roundedPath(pts: readonly Pt[], radius = 12): string {
     d += ` L ${a.x} ${a.y} Q ${cur.x} ${cur.y} ${b.x} ${b.y}`;
   }
   return d;
+}
+
+/** Generated vertical layout when it still matches the sim, else the narrow fallback. */
+export function getNarrowLayout(sim: Sim): SimLayout {
+  const g = Object.hasOwn(NARROW_LAYOUTS, sim.id) ? NARROW_LAYOUTS[sim.id] : undefined;
+  return g && covers(sim, g) ? g : fallbackNarrowLayout(sim);
 }

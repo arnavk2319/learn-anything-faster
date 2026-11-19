@@ -11,6 +11,8 @@ import {
 } from "@/lib/learn/quickcheck";
 import { readProgress, recordAnswer, writeProgress } from "@/lib/learn/progress";
 import { Md, MdInline } from "./Md";
+import { FeedbackButton } from "./Feedback";
+import { useRewards } from "@/components/rewards/RewardsProvider";
 
 const gradingCache = new Map<string, Promise<Record<string, GradingEntry>>>();
 
@@ -39,6 +41,27 @@ const outlineBtn = `${btn} bg-card hover:bg-lane active:scale-[0.98]`;
 
 type Outcome = { correct: boolean; selfGraded: boolean };
 
+/** Icon feedback on the option the learner got right (stamp; decorative, the status text carries the meaning). */
+function OptionStamp() {
+  return (
+    <span
+      data-testid="option-stamp"
+      aria-hidden="true"
+      className="reward-stamp flex size-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground"
+    >
+      <svg
+        viewBox="0 0 16 16"
+        className="size-3.5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
+        <path d="M3.5 8.5l3 3 6-6.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </span>
+  );
+}
+
 export function QuestionCard({
   question,
   index,
@@ -60,6 +83,8 @@ export function QuestionCard({
   const [revealed, setRevealed] = useState(false);
   const [earlier, setEarlier] = useState(false);
   const [error, setError] = useState(false);
+  const [hint, setHint] = useState(false);
+  const rewards = useRewards();
 
   useEffect(() => {
     setEarlier(readProgress().answers[q.id] !== undefined);
@@ -92,8 +117,11 @@ export function QuestionCard({
   const selfGraded = entry ? typeof entry.answer === "string" : q.type === "short-explain";
 
   function save(correct: boolean, self: boolean) {
-    writeProgress(recordAnswer(readProgress(), q.id, correct, Date.now(), self ? true : undefined));
+    const before = readProgress();
+    const after = recordAnswer(before, q.id, correct, Date.now(), self ? true : undefined);
+    writeProgress(after);
     setEarlier(true);
+    rewards.answered({ before, after, questionId: q.id, correct });
   }
 
   async function check() {
@@ -121,6 +149,7 @@ export function QuestionCard({
   function retry() {
     setOutcome(null);
     setRevealed(false);
+    setHint(false);
     setPicked([]);
     const next = attempt + 1;
     setAttempt(next);
@@ -159,6 +188,7 @@ export function QuestionCard({
         <span className="rounded-pill border px-2 py-0.5">{q.type}</span>
         <span className="rounded-pill border px-2 py-0.5">{q.level}</span>
         {earlier && !done ? <span>Answered before</span> : null}
+        <FeedbackButton kind="question" targetId={q.id} label="question" className="ml-auto" />
       </div>
       <fieldset className="min-w-0">
         <legend className="mb-3 font-semibold">
@@ -200,8 +230,13 @@ export function QuestionCard({
             {shown.map((o) => {
               const id = `${uid}-${o.id}`;
               const on = picked.includes(o.id);
+              // A wrong answer never reveals the correct option (ADR-0016 section 7).
               const isRight =
-                done && entry && typeof entry.answer !== "string" && entry.answer.includes(o.id);
+                done &&
+                outcome.correct &&
+                entry &&
+                typeof entry.answer !== "string" &&
+                entry.answer.includes(o.id);
               return (
                 <label
                   key={o.id}
@@ -231,9 +266,10 @@ export function QuestionCard({
                       )
                     }
                   />
-                  <span>
+                  <span className="flex-1">
                     <MdInline text={o.text} />
                   </span>
+                  {isRight && on ? <OptionStamp /> : null}
                 </label>
               );
             })}
@@ -301,11 +337,27 @@ export function QuestionCard({
                   ? "Correct."
                   : "Not quite."}
             </p>
-            <Md text={entry.explanation} />
+            {outcome.correct || outcome.selfGraded ? <Md text={entry.explanation} /> : null}
             {!outcome.correct && !outcome.selfGraded ? (
-              <button type="button" className={`${outlineBtn} mt-3`} onClick={retry}>
-                Try again
-              </button>
+              <>
+                {hint ? (
+                  <p className="mt-2" data-testid="hint">
+                    {q.type === "multi"
+                      ? "More than one option can apply. Reread the section above and check each option on its own."
+                      : "Reread the section above, then look at each option again."}
+                  </p>
+                ) : null}
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {!hint ? (
+                    <button type="button" className={outlineBtn} onClick={() => setHint(true)}>
+                      Hint
+                    </button>
+                  ) : null}
+                  <button type="button" className={outlineBtn} onClick={retry}>
+                    Try again
+                  </button>
+                </div>
+              </>
             ) : null}
           </div>
         ) : null}

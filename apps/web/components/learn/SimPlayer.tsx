@@ -18,10 +18,12 @@ export default function SimPlayer({
   title,
   sim,
   layout,
+  narrowLayout,
 }: {
   title: string;
   sim: Sim;
   layout: SimLayout;
+  narrowLayout?: SimLayout;
 }) {
   const reduced = usePrefersReducedMotion();
   const [scenarioId, setScenarioId] = useState(sim.scenarios[0]?.id ?? "");
@@ -92,6 +94,7 @@ export default function SimPlayer({
       title={title}
       sim={sim}
       layout={layout}
+      narrowLayout={narrowLayout}
       scenarioId={scenarioId}
       frame={frame}
       pulsed={pulsedNodes(sim, scenarioId, frame.t)}
