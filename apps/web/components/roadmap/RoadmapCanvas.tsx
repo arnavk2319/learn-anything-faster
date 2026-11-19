@@ -62,7 +62,7 @@ function Inner({
   };
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-3">
+    <div className="flex min-h-0 flex-1 flex-col">
       <CanvasToolbar
         onZoomIn={() => void rf.zoomIn(MOVE)}
         onZoomOut={() => void rf.zoomOut(MOVE)}
@@ -74,7 +74,7 @@ function Inner({
       <div
         data-testid="roadmap-canvas"
         onKeyDown={onKeyDown}
-        className="canvas-contour min-h-96 flex-1 overflow-hidden rounded-lg border border-border"
+        className="canvas-contour min-h-48 flex-1 overflow-hidden border-t border-border"
       >
         <ReactFlowRenderer nodes={nodes} edges={graph.edges} />
       </div>

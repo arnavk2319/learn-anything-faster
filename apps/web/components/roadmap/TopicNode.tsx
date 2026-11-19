@@ -44,7 +44,7 @@ export function TopicNode({ id, data }: NodeProps) {
           d.covered
             ? `${d.name}, you already know this`
             : d.startHere
-              ? `${d.name}, start here`
+              ? undefined // the visible "Start here" chip names it; an aria-label here trips label-content-name-mismatch
               : d.name
         }
         title={d.name}

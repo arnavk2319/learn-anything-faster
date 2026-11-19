@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { fetchRoadmap, isUnmapped, roadmapKey } from "../../lib/roadmap/client";
-import { buildModel, toElk, toFlow, type FlowGraph } from "../../lib/roadmap/layout";
+import { buildModel, metricsFor, toElk, toFlow, type FlowGraph } from "../../lib/roadmap/layout";
 import { layoutInWorker } from "../../lib/roadmap/layout-client";
 import { buildListModel } from "../../lib/roadmap/list-model";
 import type { RoleOption } from "../../lib/roadmap/roles";
@@ -20,8 +20,11 @@ import { ShareLink } from "./ShareLink";
 import { TopicPanel } from "./TopicPanel";
 import { ViewToggle, type View } from "./ViewToggle";
 
+// This screen opts into the compact tier in app/roadmap/layout.tsx (data-density="compact").
+const METRICS = metricsFor("compact");
+
 const selectCls =
-  "font-display cursor-pointer appearance-none bg-transparent text-xl font-semibold md:text-2xl tracking-tight";
+  "font-display cursor-pointer appearance-none bg-transparent text-xl font-semibold tracking-tight md:text-2xl";
 
 // Below Tailwind's sm breakpoint the list is the default view (F10). SSR snapshot is false.
 const SMALL = "(max-width: 639px)";
@@ -134,11 +137,11 @@ export function RoadmapScreen({
   useEffect(() => {
     if (!model) return;
     let live = true;
-    layoutInWorker(toElk(model)).then(
+    layoutInWorker(toElk(model, METRICS)).then(
       (res) => {
         if (live) {
           setLayoutFailed(false);
-          setLaid({ key, graph: toFlow(model, res) });
+          setLaid({ key, graph: toFlow(model, res, METRICS) });
         }
       },
       () => live && setLayoutFailed(true),
@@ -200,7 +203,7 @@ export function RoadmapScreen({
     body = <EmptyState />;
   } else if (view === "list" && data) {
     body = (
-      <div className="flex flex-col gap-3">
+      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 py-3 md:px-6">
         {wanted === "graph" && (
           <div role="status" className="flex flex-wrap items-center gap-3 text-sm">
             <span>The graph couldn&apos;t be drawn, so here is the list.</span>
@@ -254,39 +257,46 @@ export function RoadmapScreen({
       : " ";
 
   return (
-    <main className="flex min-h-0 flex-1 flex-col gap-3.5 px-8 pt-1 pb-6">
-      <div className="flex flex-col gap-1.5">
-        <h1 className="flex flex-wrap items-baseline gap-3 text-xl font-semibold tracking-tight md:text-2xl">
-          <RoleSelect
-            label="Current role"
-            value={from}
-            roles={roles}
-            onChange={(id) => go(id, to)}
-          />
-          <span className="font-normal text-muted-foreground">to</span>
-          <RoleSelect
-            label="Target role"
-            value={to}
-            roles={roles}
-            onChange={(id) => go(from, id)}
-            highlight
-          />
-        </h1>
-        <p className="text-sm text-muted-foreground">{meta}</p>
-        {startName && (
-          <button
-            type="button"
-            onClick={startHere}
-            className="min-h-11 w-fit cursor-pointer rounded-md border border-border bg-card px-4 text-sm font-medium hover:border-primary hover:bg-lane"
-          >
-            Start with {startName}
-          </button>
-        )}
-        <ShareLink from={from} to={to} />
-      </div>
-      {data && data.nodes.length > 0 && <ViewToggle view={view} onChange={setView} />}
-      {body}
+    <div className="flex min-h-0 flex-1">
+      <main id="main-content" tabIndex={-1} className="flex min-w-0 flex-1 flex-col outline-none">
+        <div className="flex shrink-0 flex-col gap-2 border-b border-border px-4 py-2 md:px-6">
+          <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+            {/* Fixed 20/24px (existing e2e): the important modifiers beat the compact tier h1 rule. */}
+            <h1 className="flex flex-wrap items-baseline gap-3 text-xl! font-semibold tracking-tight md:text-2xl!">
+              <RoleSelect
+                label="Current role"
+                value={from}
+                roles={roles}
+                onChange={(id) => go(id, to)}
+              />
+              <span className="font-normal text-muted-foreground">to</span>
+              <RoleSelect
+                label="Target role"
+                value={to}
+                roles={roles}
+                onChange={(id) => go(from, id)}
+                highlight
+              />
+            </h1>
+            <p className="text-(length:--text-ui) text-muted-foreground">{meta}</p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {startName && (
+              <button
+                type="button"
+                onClick={startHere}
+                className="min-h-11 w-fit cursor-pointer rounded-md border border-border bg-card px-4 text-sm font-medium hover:border-primary hover:bg-lane"
+              >
+                Start with {startName}
+              </button>
+            )}
+            <ShareLink from={from} to={to} />
+            {data && data.nodes.length > 0 && <ViewToggle view={view} onChange={setView} />}
+          </div>
+        </div>
+        {body}
+      </main>
       <TopicPanel data={data} />
-    </main>
+    </div>
   );
 }

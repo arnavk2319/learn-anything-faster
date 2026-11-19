@@ -11,13 +11,19 @@ export const NAV_ITEMS: NavItem[] = [
 ];
 
 // The one header. Shell layouts render it; feature pages never re-implement it (DESIGN.md section 12).
-// 72px on marketing pages, 64px (compact) on the roadmap.
-export function SiteHeader({ compact = false }: { compact?: boolean }) {
+// 72px on marketing pages, 64px (compact); dense is the 48px v2 shell header (roadmap, T-086).
+export function SiteHeader({
+  compact = false,
+  dense = false,
+}: {
+  compact?: boolean;
+  dense?: boolean;
+}) {
   return (
     <header
       className={cn(
         "flex shrink-0 items-center justify-between px-4 md:px-16",
-        compact ? "h-16" : "h-18",
+        dense ? "h-(--header-h) border-b border-border bg-card md:px-4" : compact ? "h-16" : "h-18",
       )}
     >
       <Link
