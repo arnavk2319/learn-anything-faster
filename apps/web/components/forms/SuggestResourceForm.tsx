@@ -4,7 +4,8 @@ import { useActionState, useState } from "react";
 import { suggestResourceAction } from "../../app/actions/forms";
 import type { FormResult } from "../../lib/forms/schemas";
 import { BLOCKED_COPY, TurnstileWidget } from "./TurnstileWidget";
-import { buttonClass, FormField, inputClass } from "./FormField";
+import { Button } from "@/components/ui/button";
+import { FormField, inputClass } from "./FormField";
 
 export function SuggestResourceForm({ topicId }: { topicId: string }) {
   const [state, action, pending] = useActionState<FormResult | null, FormData>(
@@ -16,7 +17,7 @@ export function SuggestResourceForm({ topicId }: { topicId: string }) {
   const [note, setNote] = useState("");
   if (state?.ok) {
     return (
-      <p role="status" className="text-sm font-medium">
+      <p role="status" className="text-[length:var(--text-ui)] font-medium">
         Suggested. Thanks, we'll review it.
       </p>
     );
@@ -38,8 +39,8 @@ export function SuggestResourceForm({ topicId }: { topicId: string }) {
           onChange={(e) => setUrl(e.target.value)}
           type="url"
           placeholder="https://"
-          aria-invalid={fe?.url ? true : undefined}
-          aria-describedby={fe?.url ? `url-${topicId}-error` : undefined}
+          aria-invalid={fe?.url || fe?.topicId ? true : undefined}
+          aria-describedby={fe?.url || fe?.topicId ? `url-${topicId}-error` : undefined}
           className={inputClass}
         />
       </FormField>
@@ -51,28 +52,28 @@ export function SuggestResourceForm({ topicId }: { topicId: string }) {
           onChange={(e) => setNote(e.target.value)}
           rows={3}
           maxLength={500}
-          className={`${inputClass} h-auto py-2`}
+          className={`${inputClass} min-h-24 py-2`}
         />
       </FormField>
       <TurnstileWidget action="suggestion" resetKey={state} />
       {state && !state.ok && state.error === "blocked" ? (
-        <p role="alert" className="text-sm text-destructive">
+        <p role="alert" className="text-[length:var(--text-small)] text-destructive">
           {BLOCKED_COPY}
         </p>
       ) : null}
       {state && !state.ok && state.error === "rate_limited" ? (
-        <p role="alert" className="text-sm text-destructive">
+        <p role="alert" className="text-[length:var(--text-small)] text-destructive">
           Too many suggestions. Try again in a few minutes.
         </p>
       ) : null}
       {state && !state.ok && state.error === "failed" ? (
-        <p role="alert" className="text-sm text-destructive">
+        <p role="alert" className="text-[length:var(--text-small)] text-destructive">
           Something went wrong. Try again.
         </p>
       ) : null}
-      <button type="submit" disabled={pending} className={buttonClass}>
+      <Button type="submit" size="lg" disabled={pending} className="self-start">
         {pending ? "Sending" : "Suggest a resource"}
-      </button>
+      </Button>
     </form>
   );
 }
