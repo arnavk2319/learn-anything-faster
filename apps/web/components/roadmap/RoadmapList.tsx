@@ -26,52 +26,72 @@ export function RoadmapList({ areas, startId }: { areas: ListArea[]; startId: st
               </span>
             </h2>
             <ol className="mt-3 flex flex-col gap-2">
-              {a.topics.map((t) => (
-                <li key={t.id}>
-                  <button
-                    type="button"
-                    aria-pressed={selected === t.id}
-                    aria-label={
-                      t.covered
-                        ? `${t.name}, you already know this${
-                            t.needs.length > 0 ? `. Learn these first: ${t.needs.join(", ")}` : ""
-                          }`
-                        : undefined
-                    }
-                    data-topic-id={t.id}
-                    onClick={() => selectTopic(t.id)}
-                    className={cn(
-                      "flex min-h-11 w-full cursor-pointer flex-col items-start justify-center rounded-md border-[1.5px] px-3 py-1.5 text-left text-(length:--text-ui) shadow-1 hover:border-primary",
-                      focusRing,
-                      lift,
-                      t.covered
-                        ? "border-route bg-known text-known-foreground"
-                        : "border-dashed border-input bg-card text-foreground",
-                      selected === t.id &&
-                        "border-solid border-primary bg-highlight text-highlight-foreground",
-                    )}
-                  >
-                    <span className="font-medium">
-                      {t.name}
-                      {t.id === startId && (
-                        <span className="ml-2 rounded-sm border border-primary px-1 text-(length:--text-small) font-semibold">
-                          Start here
-                        </span>
+              {a.topics.map((t) => {
+                const isStart = t.id === startId;
+                return (
+                  <li key={t.id}>
+                    <button
+                      type="button"
+                      aria-pressed={selected === t.id}
+                      aria-label={
+                        t.covered
+                          ? `${t.name}, you already know this${
+                              t.needs.length > 0 ? `. Learn these first: ${t.needs.join(", ")}` : ""
+                            }`
+                          : undefined
+                      }
+                      data-topic-id={t.id}
+                      data-step={t.covered ? undefined : t.step}
+                      onClick={() => selectTopic(t.id)}
+                      className={cn(
+                        "flex min-h-14 w-full cursor-pointer items-center gap-3 rounded-md border-[1.5px] px-3 py-1.5 text-left text-(length:--text-ui) shadow-1 hover:border-primary",
+                        focusRing,
+                        lift,
+                        t.covered
+                          ? "border-route bg-known text-known-foreground"
+                          : "border-dashed border-input bg-card text-foreground",
+                        selected === t.id &&
+                          "border-solid border-primary bg-highlight text-highlight-foreground",
                       )}
-                    </span>
-                    {t.needs.length > 0 && (
+                    >
                       <span
+                        aria-hidden="true"
                         className={cn(
-                          "text-(length:--text-small)",
-                          selected === t.id ? "text-highlight-foreground" : "text-muted-foreground",
+                          "flex size-8 shrink-0 items-center justify-center rounded-full border border-current text-(length:--text-small) font-semibold",
+                          t.covered && "bg-route text-primary-foreground",
                         )}
                       >
-                        Learn these first: {t.needs.join(", ")}
+                        {t.covered ? "\u2713" : t.step}
                       </span>
-                    )}
-                  </button>
-                </li>
-              ))}
+                      <span className="flex min-w-0 flex-1 flex-col">
+                        <span className="font-medium">
+                          {t.name}
+                          {isStart && (
+                            <span className="ml-2 rounded-sm border border-primary px-1 text-(length:--text-small) font-semibold">
+                              Start here
+                            </span>
+                          )}
+                        </span>
+                        {t.needs.length > 0 && (
+                          <span
+                            className={cn(
+                              "text-(length:--text-small)",
+                              selected === t.id
+                                ? "text-highlight-foreground"
+                                : "text-muted-foreground",
+                            )}
+                          >
+                            Learn these first: {t.needs.join(", ")}
+                          </span>
+                        )}
+                      </span>
+                      <span aria-hidden="true" className="shrink-0">
+                        {"\u203A"}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
             </ol>
           </li>
         ))}
