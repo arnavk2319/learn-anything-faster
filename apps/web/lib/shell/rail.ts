@@ -108,3 +108,18 @@ export function writeUiPrefs(patch: Partial<UiPrefs>, storage: StorageLike | nul
     // Storage full or blocked: the preference just is not remembered.
   }
 }
+
+/** "Celebrations" switch (ADR-0016 section 7): stamps and bursts on reward toasts. On unless explicitly false. */
+export function readCelebrations(storage: StorageLike | null): boolean {
+  return readRaw(storage)?.celebrations !== false;
+}
+
+export function writeCelebrations(on: boolean, storage: StorageLike | null): void {
+  if (!storage) return;
+  try {
+    const next = { ...(readRaw(storage) ?? {}), celebrations: on, v: UI_VERSION };
+    storage.setItem(UI_STORAGE_KEY, JSON.stringify(next));
+  } catch {
+    // Not remembered.
+  }
+}

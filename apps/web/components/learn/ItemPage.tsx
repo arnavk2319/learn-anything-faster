@@ -88,6 +88,15 @@ export function ItemPage({
     [...pack.questions.values()].filter((q) => q.conceptId === id).map((q) => q.id),
   );
 
+  const nextItem = nextUp(groups, item.id).find((i) => i.kind === "concept");
+  const conceptCtx = {
+    id: item.id,
+    title: item.title,
+    quickCheckIds:
+      groups.flatMap((g) => g.items).find((i) => i.id === item.id)?.quickCheckIds ?? [],
+    ...(nextItem ? { next: { href: nextItem.href, title: nextItem.title } } : {}),
+  };
+
   return (
     <LearnShell
       trackId={trackId}
@@ -97,7 +106,13 @@ export function ItemPage({
       next={nextUp(groups, item.id)}
     >
       <div className="mx-auto flex max-w-6xl flex-col gap-4 p-4 sm:p-6">
-        <LearnTracker trackId={trackId} kind={kind} id={item.id} />
+        <LearnTracker
+          trackId={trackId}
+          trackTitle={pack.track.title}
+          kind={kind}
+          id={item.id}
+          {...(kind === "concept" ? { concept: conceptCtx } : {})}
+        />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(ld) }} />
         <OnThisPage />
         <header className="flex flex-col gap-2">

@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import {
+  CURRENT_VERSION,
   STORAGE_KEY,
   emptyProgress,
   isConceptDone,
@@ -76,7 +77,7 @@ describe("migration", () => {
       answers: { q1: { correct: true, at: 300 } },
     };
     const m = migrate(v0);
-    expect(m.v).toBe(1);
+    expect(m.v).toBe(CURRENT_VERSION);
     expect(m.favorites).toEqual({ tracks: ["t1"], concepts: ["c1"], problems: [], questions: [] });
     expect(m.items).toEqual({ c1: { seenAt: 100 }, p1: { seenAt: 200 } });
     expect(m.answers.q1).toEqual({ correct: true, at: 300 });
