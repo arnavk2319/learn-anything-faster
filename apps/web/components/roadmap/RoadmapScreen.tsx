@@ -192,6 +192,8 @@ export function RoadmapScreen({
   const go = (f: string, t: string) => router.replace(`/roadmap/${f}/${t}`);
   const name = (id: string) => roles.find((r) => r.id === id)?.name ?? id;
 
+  // Loading: reserve the control strip's Start and view-toggle slots so the canvas does not move (T-062).
+  const pending = !data && !q.isError;
   let body;
   if (q.isError && isUnmapped(q.error)) {
     body = <UnmappedState fromId={from} toId={to} fromName={name(from)} toName={name(to)} />;
@@ -287,9 +289,23 @@ export function RoadmapScreen({
                 highlight
               />
             </h1>
-            <p className="text-(length:--text-ui) text-muted-foreground">{meta}</p>
+            {pending ? (
+              <div
+                aria-hidden="true"
+                className="h-5 w-full max-w-96 rounded-md bg-lane motion-safe:animate-pulse"
+              />
+            ) : (
+              <p className="text-(length:--text-ui) text-muted-foreground">{meta}</p>
+            )}
           </div>
           <div className="flex flex-wrap items-center gap-2">
+            {pending && (
+              <div
+                aria-hidden="true"
+                data-testid="strip-skeleton"
+                className="h-11 w-36 rounded-md bg-lane motion-safe:animate-pulse"
+              />
+            )}
             {startName && (
               <button
                 type="button"
@@ -303,6 +319,12 @@ export function RoadmapScreen({
               </button>
             )}
             <ShareLink from={from} to={to} />
+            {pending && (
+              <div
+                aria-hidden="true"
+                className="h-8.5 w-32 rounded-md bg-lane motion-safe:animate-pulse"
+              />
+            )}
             {data && data.nodes.length > 0 && <ViewToggle view={view} onChange={setView} />}
           </div>
         </div>
