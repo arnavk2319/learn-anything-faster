@@ -92,17 +92,13 @@ test.describe("desktop", () => {
     await expectNoA11yViolations(page, { label: "roadmap restyle panel open" });
   });
 
-  test("toolbar buttons keep a 44px effective hit area", async ({ page }) => {
+  test("toolbar buttons are 44px tall and wide", async ({ page }) => {
     await page.goto(URL);
     const zoom = page.getByRole("button", { name: "Zoom in" });
     await expect(zoom).toBeVisible();
-    expect(parseFloat(await style(zoom, "height"))).toBeLessThan(44); // compact control; ::after supplies the target
-    // 7px above the top edge is outside the 28px box but inside the 44px target.
     const b = (await zoom.boundingBox())!;
-    const hit = await page.evaluate(
-      `document.elementFromPoint(${b.x + b.width / 2}, ${b.y - 7})?.getAttribute("aria-label") ?? null`,
-    );
-    expect(hit).toBe("Zoom in");
+    expect(b.height).toBeGreaterThanOrEqual(44);
+    expect(b.width).toBeGreaterThanOrEqual(44);
   });
 });
 
