@@ -8,6 +8,7 @@ interface TopicData {
   name: string;
   covered: boolean;
   area: string;
+  startHere?: boolean;
   [key: string]: unknown;
 }
 
@@ -39,7 +40,13 @@ export function TopicNode({ id, data }: NodeProps) {
       <button
         type="button"
         aria-pressed={selected}
-        aria-label={d.covered ? `${d.name}, you already know this` : d.name}
+        aria-label={
+          d.covered
+            ? `${d.name}, you already know this`
+            : d.startHere
+              ? `${d.name}, start here`
+              : d.name
+        }
         title={d.name}
         data-topic-id={id}
         data-selected={selected}
@@ -63,6 +70,11 @@ export function TopicNode({ id, data }: NodeProps) {
           )}
         />
         <span className="truncate">{d.name}</span>
+        {d.startHere && (
+          <span className="ml-auto shrink-0 rounded-sm border border-primary px-1 text-xs font-semibold">
+            Start here
+          </span>
+        )}
       </button>
       <Handle
         type="source"
