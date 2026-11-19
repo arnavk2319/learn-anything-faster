@@ -70,7 +70,7 @@ export function TopicNode({ id, data }: NodeProps) {
         )}
       >
         {d.isStart && (
-          <span className="pointer-events-none absolute -top-3 left-3 flex h-[22px] items-center rounded-pill border border-foreground bg-highlight px-2 text-(length:--text-small) font-bold text-highlight-foreground uppercase">
+          <span className="pointer-events-none absolute -top-3 left-3 flex h-[22px] items-center rounded-pill border border-foreground bg-card px-2 text-(length:--text-small) font-bold text-foreground uppercase">
             Start
           </span>
         )}
