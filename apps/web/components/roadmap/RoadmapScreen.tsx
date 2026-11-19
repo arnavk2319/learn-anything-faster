@@ -2,6 +2,7 @@
 // Feature container for /roadmap/[from]/[to]: owns the query, the layout pipeline and the view state.
 // Presentational children: RoadmapCanvas, CanvasStates. Role changes navigate (soft, no reload);
 // the query key ["roadmap", from, to] does the rest.
+import { suggestStart } from "@laf/graph";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
@@ -159,6 +160,27 @@ export function RoadmapScreen({
     [data, showCovered],
   );
 
+  const startId = useMemo(
+    () =>
+      data
+        ? suggestStart(
+            data.nodes,
+            data.edges,
+            data.covered.map((c) => c.id),
+          )
+        : null,
+    [data],
+  );
+  const startName = data?.nodes.find((n) => n.id === startId)?.name;
+  const startHere = () => {
+    if (!startId) return;
+    selectTopic(startId);
+    // Already selected: the panel will not re-open, so move focus into it explicitly.
+    requestAnimationFrame(() =>
+      document.querySelector<HTMLElement>('[data-testid="topic-panel"]')?.focus(),
+    );
+  };
+
   const go = (f: string, t: string) => router.replace(`/roadmap/${f}/${t}`);
   const name = (id: string) => roles.find((r) => r.id === id)?.name ?? id;
 
@@ -206,7 +228,7 @@ export function RoadmapScreen({
               : `Show what you already know (${data.covered.length})`}
           </button>
         )}
-        <RoadmapList areas={listAreas} />
+        <RoadmapList areas={listAreas} startId={startId} />
       </div>
     );
   } else if (laid && laid.key === key && data) {
@@ -214,6 +236,7 @@ export function RoadmapScreen({
       <RoadmapCanvas
         key={key}
         graph={laid.graph}
+        startId={startId}
         onToggleArea={toggleArea}
         coveredCount={data.covered.length}
         showCovered={showCovered}
@@ -233,7 +256,7 @@ export function RoadmapScreen({
   return (
     <main className="flex min-h-0 flex-1 flex-col gap-3.5 px-8 pt-1 pb-6">
       <div className="flex flex-col gap-1.5">
-        <h1 className="flex flex-wrap items-baseline gap-3 text-xl font-semibold md:text-2xl tracking-tight">
+        <h1 className="flex flex-wrap items-baseline gap-3 text-xl font-semibold tracking-tight md:text-2xl">
           <RoleSelect
             label="Current role"
             value={from}
@@ -250,6 +273,15 @@ export function RoadmapScreen({
           />
         </h1>
         <p className="text-sm text-muted-foreground">{meta}</p>
+        {startName && (
+          <button
+            type="button"
+            onClick={startHere}
+            className="min-h-11 w-fit cursor-pointer rounded-md border border-border bg-card px-4 text-sm font-medium hover:border-primary hover:bg-lane"
+          >
+            Start with {startName}
+          </button>
+        )}
         <ShareLink from={from} to={to} />
       </div>
       {data && data.nodes.length > 0 && <ViewToggle view={view} onChange={setView} />}
