@@ -2,8 +2,9 @@
 // Progress-dependent bits of the track page (ADR-0015 section 6): ring, Continue, per-row progress and
 // favorite toggles. SSR-safe: the first render (server and hydration) uses empty progress, then the
 // stored progress is read in an effect, so there is no hydration mismatch.
+// Built on the T-078 primitives (Button, Card, Chip, ProgressRing, ProgressBar); rows are 44px high.
 import Link from "next/link";
-import { useCallback, useEffect, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   emptyProgress,
   readProgress,
@@ -14,7 +15,11 @@ import {
   type FavoriteKind,
   type Progress,
 } from "@/lib/learn/progress";
-import { ProgressRing } from "@/components/ui/progress";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Chip } from "@/components/ui/chip";
+import { ProgressBar, ProgressRing } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
 import {
   conceptUnits,
   continueTarget,
@@ -54,15 +59,18 @@ export function Star({
   onClick: () => void;
 }) {
   return (
-    <button
-      type="button"
+    <Button
+      variant="ghost"
       aria-pressed={pressed}
       aria-label={label}
       onClick={onClick}
-      className={`inline-grid size-11 shrink-0 place-items-center rounded-pill text-xl hover:bg-lane ${pressed ? "text-primary" : "text-muted-foreground"} ${focusRing}`}
+      className={cn(
+        "size-11! rounded-pill p-0 text-xl",
+        pressed ? "text-primary" : "text-muted-foreground",
+      )}
     >
       <span aria-hidden="true">{pressed ? "★" : "☆"}</span>
-    </button>
+    </Button>
   );
 }
 
@@ -83,11 +91,11 @@ export function TrackHeaderStatus({
     <>
       <ProgressRing
         value={pct}
-        size="lg"
+        size="md"
         label={`${pct}% of ${title} done`}
         data-testid="track-ring"
       />
-      <span className="ml-auto">
+      <span className="order-3">
         <Star
           pressed={progress.favorites.tracks.includes(trackId)}
           label={`Favorite ${title}`}
@@ -111,39 +119,20 @@ export function ContinueCard({
   const target = continueTarget(progress.last, trackId, concepts, problems);
   if (!target) return null;
   return (
-    <div
-      data-testid="continue"
-      className="rounded-panel flex flex-wrap items-center gap-4 border bg-card px-5 py-4"
-    >
+    <Card data-testid="continue" className="flex flex-wrap items-center gap-3 py-2">
       <div className="min-w-60 flex-1">
-        <p className="text-sm text-muted-foreground">Continue where you left off</p>
+        <p className="text-(length:--text-small) text-muted-foreground">
+          Continue where you left off
+        </p>
         <p>
-          <b>{target.title}</b> <span className="text-sm text-muted-foreground">{target.kind}</span>
+          <b>{target.title}</b>{" "}
+          <span className="text-(length:--text-small) text-muted-foreground">{target.kind}</span>
         </p>
       </div>
-      <Link
-        href={target.href}
-        className={`rounded-control inline-flex h-11 items-center bg-primary px-5 font-medium text-primary-foreground hover:bg-primary-hover ${focusRing}`}
-      >
+      <Link href={target.href} className={cn(buttonVariants({ size: "md" }), "max-md:h-11")}>
         Continue
       </Link>
-    </div>
-  );
-}
-
-const simBadge =
-  "inline-flex h-6 items-center rounded-pill border border-route px-2.5 text-xs font-semibold text-route";
-
-function Bar({ ratio, label }: { ratio: number; label: string }) {
-  return (
-    <span
-      role="img"
-      aria-label={label}
-      style={{ "--p": percent(ratio) } as CSSProperties}
-      className="block h-1.5 w-14 shrink-0 overflow-hidden rounded-pill bg-border sm:w-24"
-    >
-      <i className="block h-full w-[calc(var(--p)*1%)] bg-route" />
-    </span>
+    </Card>
   );
 }
 
@@ -159,63 +148,66 @@ export function RowList({
   const { progress, toggle } = useLearnProgress();
   const fav: FavoriteKind = kind === "concept" ? "concepts" : "problems";
   return (
-    <ul className="flex min-w-0 flex-col gap-2">
-      {rows.map((r) => {
-        let ratio: number;
-        let label: string;
-        let count: string;
-        let complete: boolean;
-        if (kind === "concept") {
-          const u = conceptUnits(progress, r as ConceptRow);
-          ratio = u.ratio;
-          count = `${u.done}/${u.total}`;
-          complete = u.complete;
-          label = complete ? "Done" : `${u.done} of ${u.total} done`;
-        } else {
-          complete = progress.items[r.id]?.seenAt !== undefined;
-          ratio = complete ? 1 : 0;
-          count = complete ? "Seen" : "New";
-          label = complete ? "Seen" : "Not started";
-        }
-        const href = `/learn/${trackId}/${kind === "concept" ? "concepts" : "problems"}/${r.id}`;
-        return (
-          <li
-            key={r.id}
-            className="rounded-panel flex items-center gap-3 border bg-card py-2 pr-1 pl-4"
-          >
-            <span
-              aria-hidden="true"
-              className={`size-2.5 shrink-0 rounded-pill ${complete ? "bg-route" : "bg-border"}`}
-            />
-            <div className="min-w-0 flex-1">
+    <Card className="overflow-hidden p-0">
+      <ul className="flex min-w-0 flex-col divide-y divide-border">
+        {rows.map((r) => {
+          let ratio: number;
+          let label: string;
+          let count: string;
+          let complete: boolean;
+          if (kind === "concept") {
+            const u = conceptUnits(progress, r as ConceptRow);
+            ratio = u.ratio;
+            count = `${u.done}/${u.total}`;
+            complete = u.complete;
+            label = complete ? "Done" : `${u.done} of ${u.total} done`;
+          } else {
+            complete = progress.items[r.id]?.seenAt !== undefined;
+            ratio = complete ? 1 : 0;
+            count = complete ? "Seen" : "New";
+            label = complete ? "Seen" : "Not started";
+          }
+          const href = `/learn/${trackId}/${kind === "concept" ? "concepts" : "problems"}/${r.id}`;
+          return (
+            <li key={r.id} className="flex h-11 items-center gap-2 pr-1 pl-3">
+              <span
+                aria-hidden="true"
+                className={`size-2 shrink-0 rounded-pill ${complete ? "bg-route" : "bg-border"}`}
+              />
               <Link
                 href={href}
-                className={`font-medium text-primary underline-offset-2 hover:underline ${focusRing}`}
+                className={`inline-flex min-h-11 max-w-[60%] shrink-0 items-center font-medium text-primary underline-offset-2 hover:underline ${focusRing}`}
               >
-                {r.title}
+                <span className="truncate">{r.title}</span>
               </Link>
-              <p className="truncate text-sm text-muted-foreground">{r.summary}</p>
-            </div>
-            <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-              {kind === "problem" ? (
-                <span className="hidden text-sm text-muted-foreground sm:inline">
-                  {(r as ProblemRow).difficulty}
+              <p className="hidden min-w-0 flex-1 truncate text-(length:--text-small) text-muted-foreground md:block">
+                {r.summary}
+              </p>
+              <div className="ml-auto flex shrink-0 items-center gap-2 md:ml-0">
+                {kind === "problem" ? (
+                  <Chip className="hidden md:inline-flex">{(r as ProblemRow).difficulty}</Chip>
+                ) : null}
+                {r.hasSim ? (
+                  <Chip className="border-route bg-transparent text-route">sim</Chip>
+                ) : null}
+                <ProgressBar
+                  value={percent(ratio)}
+                  label={`${r.title}: ${label}`}
+                  className="w-12 md:w-20"
+                />
+                <span className="hidden w-9 text-(length:--text-small) text-muted-foreground tabular-nums md:inline">
+                  {count}
                 </span>
-              ) : null}
-              {r.hasSim ? <span className={simBadge}>sim</span> : null}
-              <Bar ratio={ratio} label={`${r.title}: ${label}`} />
-              <span className="hidden w-10 text-sm text-muted-foreground tabular-nums sm:inline">
-                {count}
-              </span>
-              <Star
-                pressed={progress.favorites[fav].includes(r.id)}
-                label={`Favorite ${r.title}`}
-                onClick={() => toggle(fav, r.id)}
-              />
-            </div>
-          </li>
-        );
-      })}
-    </ul>
+                <Star
+                  pressed={progress.favorites[fav].includes(r.id)}
+                  label={`Favorite ${r.title}`}
+                  onClick={() => toggle(fav, r.id)}
+                />
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </Card>
   );
 }
