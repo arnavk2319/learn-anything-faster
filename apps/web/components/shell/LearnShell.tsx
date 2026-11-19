@@ -18,6 +18,7 @@ import {
   type ReactNode,
 } from "react";
 import { Logo } from "@/components/brand/Logo";
+import { BottomNav } from "@/components/shell/BottomNav";
 import {
   emptyProgress,
   isConceptDone,
@@ -105,7 +106,7 @@ function OutlineList({
     return progress.items[i.id]?.seenAt ? "seen" : "none";
   };
   return (
-    <nav aria-label="Outline" className="flex [scrollbar-gutter:stable] flex-col gap-3 py-2">
+    <nav aria-label="Outline" className="flex flex-col gap-3 py-2 [scrollbar-gutter:stable]">
       {groups.map((g) => (
         <div key={g.key} role="group" aria-labelledby={`outline-${g.key}`}>
           <p
@@ -451,26 +452,15 @@ export function LearnShell({
             </div>
           </div>
 
-          <nav
-            aria-label="Sections"
-            className="flex shrink-0 border-t border-border bg-card pb-[env(safe-area-inset-bottom)] md:hidden"
-          >
-            {navItems.map((n) => (
-              <button
-                key={n.pane}
-                type="button"
-                aria-pressed={pane === n.pane}
-                onClick={() => setPane(n.pane)}
-                className={cn(
-                  "min-h-(--bottom-nav-h) flex-1 text-(length:--text-ui) font-medium text-foreground",
-                  "aria-pressed:bg-muted aria-pressed:font-semibold aria-pressed:underline",
-                  ring,
-                )}
-              >
-                {n.label}
-              </button>
-            ))}
-          </nav>
+          <BottomNav
+            label="Sections"
+            items={navItems.map((n) => ({
+              id: n.pane,
+              label: n.label,
+              pressed: pane === n.pane,
+              onSelect: () => setPane(n.pane),
+            }))}
+          />
         </div>
       </ShellSlotsContext.Provider>
     </RewardsProvider>
