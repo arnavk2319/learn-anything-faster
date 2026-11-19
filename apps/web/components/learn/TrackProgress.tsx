@@ -14,6 +14,7 @@ import {
   type FavoriteKind,
   type Progress,
 } from "@/lib/learn/progress";
+import { ProgressRing } from "@/components/ui/progress";
 import {
   conceptUnits,
   continueTarget,
@@ -80,15 +81,12 @@ export function TrackHeaderStatus({
   const pct = percent(trackProgress(progress, { concepts, problemIds }));
   return (
     <>
-      <span
-        role="img"
-        aria-label={`${pct}% of ${title} done`}
+      <ProgressRing
+        value={pct}
+        size="lg"
+        label={`${pct}% of ${title} done`}
         data-testid="track-ring"
-        style={{ "--p": pct } as CSSProperties}
-        className="relative grid size-[var(--ring-lg)] shrink-0 place-items-center rounded-pill bg-[conic-gradient(var(--route)_calc(var(--p)*1%),var(--border)_0)] before:absolute before:inset-[var(--ring-thickness)] before:rounded-pill before:bg-card before:content-['']"
-      >
-        <b className="relative text-base font-semibold tabular-nums">{pct}%</b>
-      </span>
+      />
       <span className="ml-auto">
         <Star
           pressed={progress.favorites.tracks.includes(trackId)}
