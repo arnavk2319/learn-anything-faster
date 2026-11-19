@@ -14,7 +14,7 @@ test.describe("learn track page", () => {
     await expect(page.getByRole("heading", { level: 1, name: "System design" })).toBeVisible();
     await expect(page.getByTestId("track-ring")).toHaveAttribute("aria-label", /0% of/);
     await expect(page.locator("section#basic")).toContainText("Caching");
-    await expect(page.locator("section#basic").getByText("sim", { exact: true })).toBeVisible();
+    await expect(page.locator("section#basic").getByText("Sim", { exact: true })).toBeVisible();
     await expect(page.getByTestId("continue")).toHaveCount(0);
     await expectNoA11yViolations(page, { label: "learn track concepts" });
   });
