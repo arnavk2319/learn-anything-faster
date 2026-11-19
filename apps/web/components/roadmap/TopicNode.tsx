@@ -2,6 +2,7 @@
 // Topic pill (DESIGN.md section 8). The button is the tab stop: Tab focuses it, Enter or click selects.
 import { Handle, Position, useReactFlow, useStore, type NodeProps } from "@xyflow/react";
 import { cn } from "../../lib/utils";
+import { focusRing, lift } from "../ui/tactile";
 import { selectTopic, useSelectedTopicId } from "../../lib/roadmap/selection-store";
 
 interface TopicData {
@@ -53,25 +54,29 @@ export function TopicNode({ id, data }: NodeProps) {
         onClick={() => selectTopic(id)}
         onFocus={reveal}
         className={cn(
-          "pointer-events-auto flex h-10 w-full cursor-pointer items-center gap-2 rounded-pill border px-3 text-left text-sm font-medium transition-[border-color,background-color,transform] duration-[var(--dur-fast)] ease-trail active:scale-[0.98]",
+          // States (DESIGN.md "v2 knowledge-map states"): new = dashed firm border, known = Trail, selected = Blaze + Pine.
+          // Hover lift and press live on this inner button (via `lift`), never on .react-flow__node.
+          "pointer-events-auto flex h-10 w-full cursor-pointer items-center gap-2 rounded-pill border-[1.5px] px-3 text-left text-(length:--text-ui) font-medium shadow-1",
+          focusRing,
+          lift,
           "hover:border-primary",
           d.covered
             ? "border-route bg-known text-known-foreground"
-            : "border-[color:var(--bark)] bg-card text-foreground",
-          selected && "border-[1.5px] border-primary bg-highlight text-highlight-foreground",
+            : "border-dashed border-input bg-card text-foreground",
+          selected && "border-solid border-primary bg-highlight text-highlight-foreground",
         )}
       >
         <span
           aria-hidden="true"
           className={cn(
             "size-2.5 shrink-0 rounded-pill border",
-            d.covered ? "border-route bg-route" : "border-primary bg-card",
-            selected && !d.covered && "bg-highlight ring-1 ring-primary",
+            d.covered ? "border-route bg-route" : "border-muted-foreground bg-card",
+            selected && !d.covered && "border-primary bg-transparent ring-1 ring-primary",
           )}
         />
         <span className="truncate">{d.name}</span>
         {d.startHere && (
-          <span className="ml-auto shrink-0 rounded-sm border border-primary px-1 text-xs font-semibold">
+          <span className="ml-auto shrink-0 rounded-sm border border-primary px-1 text-(length:--text-small) font-semibold">
             Start here
           </span>
         )}

@@ -11,7 +11,10 @@ import { buildModel, metricsFor, toElk, toFlow, type FlowGraph } from "../../lib
 import { layoutInWorker } from "../../lib/roadmap/layout-client";
 import { buildListModel } from "../../lib/roadmap/list-model";
 import type { RoleOption } from "../../lib/roadmap/roles";
-import { selectTopic } from "../../lib/roadmap/selection-store";
+import { selectTopic, useSelectedTopicId } from "../../lib/roadmap/selection-store";
+import { cn } from "../../lib/utils";
+import { buttonVariants } from "../ui/button";
+import { focusRing } from "../ui/tactile";
 import { summarizeRoadmap } from "../../lib/roadmap/summary";
 import { EmptyState, ErrorState, LoadingState, UnmappedState } from "./CanvasStates";
 import { RoadmapCanvas } from "./RoadmapCanvas";
@@ -23,8 +26,7 @@ import { ViewToggle, type View } from "./ViewToggle";
 // This screen opts into the compact tier in app/roadmap/layout.tsx (data-density="compact").
 const METRICS = metricsFor("compact");
 
-const selectCls =
-  "font-display cursor-pointer appearance-none bg-transparent text-xl font-semibold tracking-tight md:text-2xl";
+const selectCls = `font-display min-h-11 cursor-pointer appearance-none bg-transparent text-xl font-semibold tracking-tight md:text-2xl ${focusRing}`;
 
 // Below Tailwind's sm breakpoint the list is the default view (F10). SSR snapshot is false.
 const SMALL = "(max-width: 639px)";
@@ -54,10 +56,13 @@ function RoleSelect({
   highlight?: boolean;
 }) {
   const known = roles.some((r) => r.id === value);
+  // One Blaze element per screen (T-087): while a topic is selected the selection owns it.
+  const nothingSelected = useSelectedTopicId() === null;
+  const blaze = highlight && nothingSelected;
   return (
     <span
       className={
-        highlight
+        blaze
           ? "inline-flex items-baseline gap-1 rounded-sm bg-highlight px-2 text-highlight-foreground"
           : "inline-flex items-baseline gap-1 border-b-[3px] border-primary"
       }
@@ -213,7 +218,7 @@ export function RoadmapScreen({
                 setLayoutFailed(false);
                 setAttempt((n) => n + 1);
               }}
-              className="h-10 cursor-pointer rounded-md border border-border bg-card px-3 font-medium hover:border-input hover:bg-lane"
+              className={cn(buttonVariants({ variant: "secondary", size: "sm" }))}
             >
               Try the graph again
             </button>
@@ -224,7 +229,11 @@ export function RoadmapScreen({
             type="button"
             aria-pressed={showCovered}
             onClick={() => setShowCovered((v) => !v)}
-            className="h-10 w-fit cursor-pointer rounded-md border border-border bg-card px-3 text-sm font-medium hover:border-input hover:bg-lane"
+            className={cn(
+              buttonVariants({ variant: "secondary", size: "sm" }),
+              "w-fit",
+              showCovered && "border-route bg-known text-route",
+            )}
           >
             {showCovered
               ? "Hide what you know"
@@ -285,7 +294,10 @@ export function RoadmapScreen({
               <button
                 type="button"
                 onClick={startHere}
-                className="min-h-11 w-fit cursor-pointer rounded-md border border-border bg-card px-4 text-sm font-medium hover:border-primary hover:bg-lane"
+                className={cn(
+                  buttonVariants({ variant: "secondary", size: "md" }),
+                  "min-h-11 w-fit",
+                )}
               >
                 Start with {startName}
               </button>

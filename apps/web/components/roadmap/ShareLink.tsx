@@ -3,10 +3,8 @@
 // is missing or rejects, the URL is shown in a read-only field, selected, so it can be copied by hand.
 import { Check, Link2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { Button } from "../ui/button";
 import { EVENTS, track } from "../../lib/analytics";
-
-const btn =
-  "border-border hover:border-input hover:bg-lane bg-card text-foreground inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-md border px-3 text-sm font-medium transition-colors duration-[var(--dur-fast)] active:scale-[0.98]";
 
 export function ShareLink({ from, to }: { from: string; to: string }) {
   const [state, setState] = useState<"idle" | "copied" | "fallback">("idle");
@@ -37,14 +35,14 @@ export function ShareLink({ from, to }: { from: string; to: string }) {
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <button type="button" className={btn} onClick={() => void copy()}>
+      <Button variant="secondary" size="sm" onClick={() => void copy()}>
         {state === "copied" ? (
           <Check aria-hidden="true" className="size-4 text-route" />
         ) : (
           <Link2 aria-hidden="true" className="size-4" />
         )}
         Copy link
-      </button>
+      </Button>
       {state === "fallback" && (
         <input
           ref={input}
@@ -52,7 +50,7 @@ export function ShareLink({ from, to }: { from: string; to: string }) {
           aria-label="Roadmap link"
           value={url}
           onFocus={(e) => e.currentTarget.select()}
-          className="h-10 w-72 max-w-full rounded-md border border-border bg-card px-3 text-sm text-foreground"
+          className="h-control-md w-72 max-w-full rounded-md border border-input bg-card px-3 text-(length:--text-ui) text-foreground"
         />
       )}
       <span role="status" aria-live="polite" className="text-sm text-muted-foreground">
