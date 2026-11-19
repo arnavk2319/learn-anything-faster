@@ -3,7 +3,7 @@ import type { Concept, Problem } from "../learn/schemas";
 import { LEVELS, type Level } from "../learn/track-view";
 
 export interface OutlineItem {
-  kind: "concept" | "problem";
+  kind: "concept" | "problem" | "track";
   id: string;
   title: string;
   href: string;
