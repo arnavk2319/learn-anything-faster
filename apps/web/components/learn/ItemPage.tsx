@@ -7,6 +7,7 @@ import { Blocks, type BlockContext } from "./Blocks";
 import { LearnTracker } from "./LearnTracker";
 import { OnThisPage } from "./OnThisPage";
 import { SimFrame } from "./SimFrame";
+import { FeedbackButton, FeedbackScope } from "./Feedback";
 import { Chip } from "@/components/ui/chip";
 import { MdInline } from "./Md";
 import { LearnShell } from "@/components/shell/LearnShell";
@@ -105,132 +106,140 @@ export function ItemPage({
       currentId={item.id}
       next={nextUp(groups, item.id)}
     >
-      <div className="mx-auto flex max-w-6xl flex-col gap-4 p-4 sm:p-6">
-        <LearnTracker
-          trackId={trackId}
-          trackTitle={pack.track.title}
-          kind={kind}
-          id={item.id}
-          {...(kind === "concept" ? { concept: conceptCtx } : {})}
-        />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(ld) }} />
-        <OnThisPage />
-        <header className="flex flex-col gap-2">
-          <nav aria-label="Breadcrumb" className="text-(length:--text-small) text-muted-foreground">
-            <ol className="flex flex-wrap gap-1">
-              <li>
-                <Link className={link} href="/learn">
-                  Learn
-                </Link>{" "}
-                /
-              </li>
-              <li>
-                <Link className={link} href={`/learn/${trackId}`}>
-                  {pack.track.title}
-                </Link>{" "}
-                /
-              </li>
-              <li aria-current="page">{item.title}</li>
-            </ol>
-          </nav>
-          {/* Eyebrow chips. Header keeps its right side free for the T-085 feedback icon. */}
-          <div className="flex flex-wrap items-center gap-1.5" data-testid="item-eyebrow">
-            <Chip>{kind === "concept" ? "Concept" : "Problem"}</Chip>
-            <Chip>{"stage" in item ? item.stage : item.difficulty}</Chip>
-          </div>
-          <h1 className="font-display font-bold">{item.title}</h1>
-          <p className="max-w-[75ch] text-muted-foreground">
-            <MdInline text={item.summary} />
-          </p>
-          {levels.length > 1 ? (
-            <nav aria-label="Levels" className="flex gap-1.5">
-              {levels.map((l) => (
-                <a
-                  key={l}
-                  href={`#${l}`}
-                  className="rounded-pill border border-border-firm bg-card px-2.5 py-0.5 text-(length:--text-small) hover:bg-lane focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-                >
-                  {LEVEL_LABEL[l]}
-                </a>
-              ))}
+      <FeedbackScope trackId={trackId} itemId={item.id}>
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 p-4 sm:p-6">
+          <LearnTracker
+            trackId={trackId}
+            trackTitle={pack.track.title}
+            kind={kind}
+            id={item.id}
+            {...(kind === "concept" ? { concept: conceptCtx } : {})}
+          />
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(ld) }} />
+          <OnThisPage />
+          <header className="flex flex-col gap-2">
+            <nav
+              aria-label="Breadcrumb"
+              className="text-(length:--text-small) text-muted-foreground"
+            >
+              <ol className="flex flex-wrap gap-1">
+                <li>
+                  <Link className={link} href="/learn">
+                    Learn
+                  </Link>{" "}
+                  /
+                </li>
+                <li>
+                  <Link className={link} href={`/learn/${trackId}`}>
+                    {pack.track.title}
+                  </Link>{" "}
+                  /
+                </li>
+                <li aria-current="page">{item.title}</li>
+              </ol>
             </nav>
-          ) : null}
-        </header>
-
-        <div
-          data-testid="item-body"
-          className={
-            sideSim
-              ? "flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:items-start lg:gap-6"
-              : "flex flex-col gap-4"
-          }
-        >
-          <div
-            data-testid="item-text"
-            className={`flex min-w-0 flex-col gap-4 ${sideSim ? "" : "max-w-[75ch]"}`}
-          >
-            {"levels" in item ? (
-              levels.map((l) => (
-                <section
-                  key={l}
-                  id={l}
-                  aria-labelledby={`${l}-h`}
-                  className="flex scroll-mt-4 flex-col gap-3"
-                >
-                  <h2 id={`${l}-h`} className="font-display font-semibold">
+            {/* Eyebrow chips. Header keeps its right side free for the T-085 feedback icon. */}
+            <div className="flex flex-wrap items-center gap-1.5" data-testid="item-eyebrow">
+              <Chip>{kind === "concept" ? "Concept" : "Problem"}</Chip>
+              <Chip>{"stage" in item ? item.stage : item.difficulty}</Chip>
+            </div>
+            <div className="flex items-start justify-between gap-2">
+              <h1 className="font-display font-bold">{item.title}</h1>
+              <FeedbackButton kind={kind} targetId={item.id} label={kind} />
+            </div>
+            <p className="max-w-[75ch] text-muted-foreground">
+              <MdInline text={item.summary} />
+            </p>
+            {levels.length > 1 ? (
+              <nav aria-label="Levels" className="flex gap-1.5">
+                {levels.map((l) => (
+                  <a
+                    key={l}
+                    href={`#${l}`}
+                    className="rounded-pill border border-border-firm bg-card px-2.5 py-0.5 text-(length:--text-small) hover:bg-lane focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                  >
                     {LEVEL_LABEL[l]}
-                  </h2>
-                  <Blocks blocks={item.levels[l] ?? []} ctx={ctx} />
-                </section>
-              ))
-            ) : (
-              <Blocks blocks={item.blocks} ctx={ctx} />
-            )}
-            {conceptLinks.length > 0 || problemLinks.length > 0 ? (
-              <nav aria-label="Related" className="flex flex-col gap-3 border-t pt-6">
-                {conceptLinks.length > 0 ? (
-                  <div>
-                    <h2 className="font-display font-semibold">
-                      {kind === "concept" ? "Prerequisites" : "Concepts to know"}
-                    </h2>
-                    <ul className="mt-1 flex flex-col gap-1">
-                      {conceptLinks.map((c) => (
-                        <li key={c.id}>
-                          <Link className={link} href={`/learn/${trackId}/concepts/${c.id}`}>
-                            {c.title}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ) : null}
-                {problemLinks.length > 0 ? (
-                  <div>
-                    <h2 className="font-display font-semibold">Practice problems</h2>
-                    <ul className="mt-1 flex flex-col gap-1">
-                      {problemLinks.map((p) => (
-                        <li key={p.id}>
-                          <Link className={link} href={`/learn/${trackId}/problems/${p.id}`}>
-                            {p.title}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ) : null}
+                  </a>
+                ))}
               </nav>
             ) : null}
-          </div>
-          {sideSim ? (
+          </header>
+
+          <div
+            data-testid="item-body"
+            className={
+              sideSim
+                ? "flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:items-start lg:gap-6"
+                : "flex flex-col gap-4"
+            }
+          >
             <div
-              data-testid="item-sim"
-              className="min-w-0 lg:sticky lg:top-3 lg:max-h-[calc(100dvh-var(--header-h)-1.5rem)] lg:overflow-y-auto"
+              data-testid="item-text"
+              className={`flex min-w-0 flex-col gap-4 ${sideSim ? "" : "max-w-[75ch]"}`}
             >
-              <SimFrame sim={sideSim} title={sideSim.id} />
+              {"levels" in item ? (
+                levels.map((l) => (
+                  <section
+                    key={l}
+                    id={l}
+                    aria-labelledby={`${l}-h`}
+                    className="flex scroll-mt-4 flex-col gap-3"
+                  >
+                    <h2 id={`${l}-h`} className="font-display font-semibold">
+                      {LEVEL_LABEL[l]}
+                    </h2>
+                    <Blocks blocks={item.levels[l] ?? []} ctx={ctx} />
+                  </section>
+                ))
+              ) : (
+                <Blocks blocks={item.blocks} ctx={ctx} />
+              )}
+              {conceptLinks.length > 0 || problemLinks.length > 0 ? (
+                <nav aria-label="Related" className="flex flex-col gap-3 border-t pt-6">
+                  {conceptLinks.length > 0 ? (
+                    <div>
+                      <h2 className="font-display font-semibold">
+                        {kind === "concept" ? "Prerequisites" : "Concepts to know"}
+                      </h2>
+                      <ul className="mt-1 flex flex-col gap-1">
+                        {conceptLinks.map((c) => (
+                          <li key={c.id}>
+                            <Link className={link} href={`/learn/${trackId}/concepts/${c.id}`}>
+                              {c.title}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+                  {problemLinks.length > 0 ? (
+                    <div>
+                      <h2 className="font-display font-semibold">Practice problems</h2>
+                      <ul className="mt-1 flex flex-col gap-1">
+                        {problemLinks.map((p) => (
+                          <li key={p.id}>
+                            <Link className={link} href={`/learn/${trackId}/problems/${p.id}`}>
+                              {p.title}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+                </nav>
+              ) : null}
             </div>
-          ) : null}
+            {sideSim ? (
+              <div
+                data-testid="item-sim"
+                className="min-w-0 lg:sticky lg:top-3 lg:max-h-[calc(100dvh-var(--header-h)-1.5rem)] lg:overflow-y-auto"
+              >
+                <SimFrame sim={sideSim} title={sideSim.id} />
+              </div>
+            ) : null}
+          </div>
         </div>
-      </div>
+      </FeedbackScope>
     </LearnShell>
   );
 }
