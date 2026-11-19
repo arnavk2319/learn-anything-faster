@@ -116,6 +116,9 @@ test.describe("learn rewards", () => {
 
   test("first opened fires once per topic, not for a second module", async ({ page }) => {
     await page.goto(CONCEPT);
+    // Wait for hydration: LearnTracker's effect writes the flag. Clearing before that lets the late write
+    // land after the removal, so the reload would see the flag already set and fire nothing.
+    await expect(toast(page)).toHaveAttribute("data-reward", "first-opened");
     await page.evaluate((k) => localStorage.removeItem(k), KEY);
     await page.reload();
     await expect(toast(page)).toHaveAttribute("data-reward", "first-opened");
