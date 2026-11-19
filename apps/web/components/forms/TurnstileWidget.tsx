@@ -119,10 +119,14 @@ export function TurnstileWidget({ action, resetKey }: { action: string; resetKey
       <div ref={slot} className="min-h-[65px]" />
       {failed ? (
         <div className="flex items-center gap-3">
-          <p role="alert" className="text-sm text-destructive">
+          <p role="alert" className="text-[length:var(--text-small)] text-destructive">
             {BLOCKED_COPY}
           </p>
-          <button type="button" onClick={retry} className="text-sm font-medium underline">
+          <button
+            type="button"
+            onClick={retry}
+            className="hit-area text-[length:var(--text-small)] font-medium underline"
+          >
             Retry
           </button>
         </div>
