@@ -131,6 +131,7 @@
     - { id: c, text: "Hot, frequently read data" }
     - { id: d, text: "Data with no source of truth behind it" }
   answer: [a, b, d]
+  hint: "Ask which data would make a cache wrong or wasteful, and judge each statement alone."
   explanation: "Hot read-heavy data is what caches are for. The others risk staleness, wasted memory, or data loss."
   difficulty: 2
   tags: [fundamentals]

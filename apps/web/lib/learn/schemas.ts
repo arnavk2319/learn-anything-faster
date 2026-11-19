@@ -230,6 +230,8 @@ export const QuestionSchema = z
     answer: z.union([z.array(slug), z.string()]),
     rubric: z.array(Md).optional(),
     explanation: Md,
+    // Plain-text nudge (ADR-0015 amendment 2): rendered as a text node, never Markdown or HTML.
+    hint: z.string().trim().min(1).max(200).optional(),
     difficulty: z.number().int().min(1).max(5),
     tags: z.array(slug),
     src: SrcSchema,

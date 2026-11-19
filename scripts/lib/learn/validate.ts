@@ -221,6 +221,42 @@ function stringsOf(
 
 // ---------- the rules ----------
 
+const squash = (t: string): string => t.toLowerCase().split(/\s+/).filter(Boolean).join(" ");
+
+/** Hint rules (ADR-0015 amendment 2): plain text, and no verbatim copy of the answer. String search only. */
+function checkHint(q: Question, err: (rule: string, message: string, id: string) => void): void {
+  const h = q.hint ?? "";
+  const bad = (what: string) =>
+    err("hint-format", `question ${q.id}: hint must be plain text; ${what}`, q.id);
+  if (h.includes("<") || h.includes(">")) bad("remove < and >");
+  if (h.includes("`")) bad("remove backticks");
+  if (h.includes("\n") || h.includes("\r")) bad("remove line breaks");
+  const low = h.toLowerCase();
+  if (h.includes("](") || ["http://", "https://", "www."].some((u) => low.includes(u)))
+    bad("remove links and URLs");
+  const hs = squash(h);
+  const leaks: string[] = [];
+  const opts = q.options ?? [];
+  const textOf = (id: string) => opts.find((o) => o.id === id)?.text;
+  if (typeof q.answer === "string") leaks.push(q.answer, ...(q.rubric ?? []));
+  else {
+    const ids = q.type === "ordering" ? [q.answer[0], q.answer[q.answer.length - 1]] : q.answer;
+    for (const id of ids) {
+      const t = id === undefined ? undefined : textOf(id);
+      if (t !== undefined) leaks.push(t);
+    }
+  }
+  for (const l of leaks) {
+    const n = squash(l);
+    if (n !== "" && hs.includes(n))
+      err(
+        "hint-leak",
+        `question ${q.id}: hint repeats the answer text verbatim; rephrase it`,
+        q.id,
+      );
+  }
+}
+
 const OPTION_LETTER =
   /\b[Oo]ptions?\s+\(?[A-E]\b|\b[Cc]hoices?\s+\(?[A-E]\b|\b(first|second|third|fourth|fifth|last|top|bottom)\s+(option|choice|answer)\b|\b(all|none|both)\s+of\s+the\s+above\b/i;
 const HTML_TAG = /<\/?[a-zA-Z][^>]*>/;
@@ -511,6 +547,7 @@ export function validateLearn(raw: unknown): ValidateResult {
               q.id,
             );
     }
+    if (q.hint !== undefined) checkHint(q, err);
     if (q.explanation.trim() === "")
       err("explanation-missing", `question ${q.id}: explanation is required`, q.id);
     for (const [field, text] of [
