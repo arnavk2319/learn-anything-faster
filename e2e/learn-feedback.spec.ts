@@ -14,6 +14,12 @@ declare const document: any;
 
 type Body = Record<string, unknown>;
 
+// T-098 (human-approved setup): outline labels are 14px, so the long-label fixture makes the default (100%) rail
+// wider and squeezes main at 1280. Start with the rail at its 80% minimum, as a user could drag it.
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem("laf:ui:v1", '{"v":1,"rail":0.8}'));
+});
+
 async function mock(page: Page, status = 200) {
   const bodies: Body[] = [];
   let code = status;
