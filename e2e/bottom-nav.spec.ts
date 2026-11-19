@@ -10,7 +10,7 @@ declare const getComputedStyle: (el: unknown) => {
 test.beforeAll(seedRoadmapFixture);
 
 const PAGES = [
-  { name: "roadmap", url: "/roadmap/dev/ml-dev?view=list", label: "Roadmap views", items: 3 },
+  { name: "roadmap", url: "/roadmap/dev/ml-dev?view=list", label: "Roadmap views", items: 2 },
   { name: "browse", url: "/roadmaps", label: "Browse", items: 2 },
 ] as const;
 
@@ -98,9 +98,9 @@ test("roadmap: nav switches view and Topic is disabled with a reason until a top
   const topicBtn = n.getByRole("button", { name: /Topic/ });
   await expect(topicBtn).toHaveAttribute("aria-disabled", "true");
   await expect(topicBtn).toContainText("Select a topic first");
-  await n.getByRole("link", { name: "Graph" }).click();
-  await expect(page).toHaveURL(/view=graph/);
-  await expect(n.getByRole("link", { name: "Graph" })).toHaveAttribute("aria-current", "true");
+  // T-100: no Graph item below 768px; List is the current view.
+  await expect(n.getByRole("link", { name: "Graph" })).toHaveCount(0);
+  await expect(n.getByRole("link", { name: "List" })).toHaveAttribute("aria-current", "true");
 });
 
 test("roadmap: sheet and its close button are fully visible and clickable with the nav present; axe clean", async ({
@@ -134,7 +134,7 @@ test("roadmap: sheet and its close button are fully visible and clickable with t
   await expect(nav(page, "Roadmap views")).toBeVisible();
 });
 
-test("roadmap: nav does not cover the toolbar or Start button (graph view)", async ({ page }) => {
+test("roadmap: nav does not cover the toolbar or Start button (list view)", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 800 });
   await page.goto("/roadmap/dev/ml-dev?view=graph");
   const n = nav(page, "Roadmap views");
