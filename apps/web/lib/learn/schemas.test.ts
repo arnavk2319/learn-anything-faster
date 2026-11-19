@@ -82,6 +82,15 @@ describe("learn schemas: malformed fixtures fail readably", () => {
     msg(QuestionSchema.safeParse({ ...q, difficulty: 6 }));
     msg(QuestionSchema.safeParse({ ...q, src: undefined }));
   });
+  it("question hint: optional, trimmed, 1 to 200 chars, string only", () => {
+    const q = p().questions[0];
+    expect(QuestionSchema.safeParse(q).success).toBe(true);
+    const ok = QuestionSchema.safeParse({ ...q, hint: "  Think about eviction.  " });
+    expect(ok.success && ok.data.hint).toBe("Think about eviction.");
+    expect(QuestionSchema.safeParse({ ...q, hint: "x".repeat(200) }).success).toBe(true);
+    for (const hint of ["", "   ", "x".repeat(201), 5, ["a"], null])
+      expect(QuestionSchema.safeParse({ ...q, hint }).success, JSON.stringify(hint)).toBe(false);
+  });
   it("question: needs exactly one owner (both or neither fail)", () => {
     const q = p().questions[0];
     msg(QuestionSchema.safeParse({ ...q, problemId: "url-shortener" }));

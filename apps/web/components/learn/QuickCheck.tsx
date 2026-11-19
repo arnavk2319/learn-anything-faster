@@ -12,6 +12,7 @@ import {
 import { readProgress, recordAnswer, writeProgress } from "@/lib/learn/progress";
 import { Md, MdInline } from "./Md";
 import { FeedbackButton } from "./Feedback";
+import { HintText } from "./HintText";
 import { useRewards } from "@/components/rewards/RewardsProvider";
 
 const gradingCache = new Map<string, Promise<Record<string, GradingEntry>>>();
@@ -340,13 +341,7 @@ export function QuestionCard({
             {outcome.correct || outcome.selfGraded ? <Md text={entry.explanation} /> : null}
             {!outcome.correct && !outcome.selfGraded ? (
               <>
-                {hint ? (
-                  <p className="mt-2" data-testid="hint">
-                    {q.type === "multi"
-                      ? "More than one option can apply. Reread the section above and check each option on its own."
-                      : "Reread the section above, then look at each option again."}
-                  </p>
-                ) : null}
+                {hint ? <HintText type={q.type} hint={entry.hint} /> : null}
                 <div className="mt-3 flex flex-wrap gap-2">
                   {!hint ? (
                     <button type="button" className={outlineBtn} onClick={() => setHint(true)}>

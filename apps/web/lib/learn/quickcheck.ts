@@ -19,6 +19,8 @@ export interface GradingEntry {
   answer: string[] | string;
   explanation: string;
   rubric?: string[];
+  /** Plain-text nudge; shipped here (never in server HTML) because it is a partial answer. */
+  hint?: string;
 }
 
 export function toPublic(q: Question): PublicQuestion {
@@ -37,7 +39,16 @@ export function toGrading(q: Question): GradingEntry {
     answer: q.answer,
     explanation: q.explanation,
     ...(q.rubric ? { rubric: q.rubric } : {}),
+    ...(q.hint ? { hint: q.hint } : {}),
   };
+}
+
+/** Text shown by the Hint button: the authored hint, else a generic nudge. */
+export function hintText(type: QuestionType, hint?: string): string {
+  if (hint) return hint;
+  return type === "multi"
+    ? "More than one option can apply. Reread the section above and check each option on its own."
+    : "Reread the section above, then look at each option again.";
 }
 
 function hash(s: string): number {

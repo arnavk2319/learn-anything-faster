@@ -352,3 +352,49 @@ describe("validateLearn: sim rules", () => {
     expect(goodSim("x").id).toBe("x");
   });
 });
+
+describe("validateLearn: hint rules (ADR-0015 amendment 2)", () => {
+  const hinted = (id: string, hint: string, extra?: (x: any) => void) =>
+    run((p) => {
+      const x = q(p, id);
+      x.hint = hint;
+      extra?.(x);
+    });
+  it("a clean hint passes; packs without hints still validate", () => {
+    expect(hinted("q-caching-1", "Think about what the cache holds after a miss.").errors).toEqual([]);
+    expect(run().errors).toEqual([]);
+  });
+  it("a hint naming a wrong option passes", () => {
+    expect(hinted("q-caching-1", "It is not choice a, look again.").errors).toEqual([]);
+  });
+  it.each([
+    ["html tag", "Use <b>bold</b> here"],
+    ["angle bracket", "a > b"],
+    ["markdown link", "See [the docs](page) for more"],
+    ["url", "Read https://example.com first"],
+    ["www url", "Read www.example.com first"],
+    ["backtick", "Try the `lru` idea"],
+    ["newline", "line one\nline two"],
+  ])("rejects %s", (_n, hint) => {
+    expectRule(hinted("q-caching-1", hint), "hint-format");
+  });
+  it("rejects a hint containing a correct option text (case-insensitive)", () => {
+    expectRule(hinted("q-caching-1", "Pick CHOICE   b, honestly."), "hint-leak");
+  });
+  it("multi: any correct option text leaks", () => {
+    expectRule(hinted("q-caching-2", "Maybe choice c?"), "hint-leak");
+  });
+  it("short-explain: answer string or a rubric line leaks", () => {
+    expectRule(
+      hinted("q-caching-4", "The app loads from the database on a miss and fills the cache."),
+      "hint-leak",
+    );
+    expectRule(hinted("q-caching-4", "Remember: names cache-aside."), "hint-leak");
+  });
+  it("ordering: only the first and last answer items are checked", () => {
+    // answer is c, a, b: c is first, b is last, a is in the middle.
+    expectRule(hinted("q-caching-3", "It starts with choice c"), "hint-leak");
+    expectRule(hinted("q-caching-3", "It ends with choice b"), "hint-leak");
+    expect(hinted("q-caching-3", "The middle one is choice a").errors).toEqual([]);
+  });
+});
