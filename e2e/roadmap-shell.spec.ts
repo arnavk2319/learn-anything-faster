@@ -99,7 +99,7 @@ test.describe("mobile 390x844", () => {
         .first(),
     ).toBeVisible();
     await expectNoA11yViolations(page, { label: "roadmap mobile" });
-    await page.getByRole("button", { name: "Graph" }).click();
+    // T-100: no Graph switch below 768px; the list row opens the same sheet.
     await topic(page, "torch").click();
     const panel = page.getByTestId("topic-panel");
     await expect(panel).toBeVisible();

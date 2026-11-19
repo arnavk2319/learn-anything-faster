@@ -5,13 +5,14 @@
 import { suggestStart } from "@laf/graph";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { fetchRoadmap, isUnmapped, roadmapKey } from "../../lib/roadmap/client";
 import { buildModel, metricsFor, toElk, toFlow, type FlowGraph } from "../../lib/roadmap/layout";
 import { layoutInWorker } from "../../lib/roadmap/layout-client";
 import { buildListModel } from "../../lib/roadmap/list-model";
 import type { RoleOption } from "../../lib/roadmap/roles";
 import { selectTopic, useSelectedTopicId } from "../../lib/roadmap/selection-store";
+import { useNarrowScreen } from "../../lib/roadmap/use-narrow";
 import { cn } from "../../lib/utils";
 import { BottomNav } from "../shell/BottomNav";
 import { buttonVariants } from "../ui/button";
@@ -28,20 +29,6 @@ import { ViewToggle, type View } from "./ViewToggle";
 const METRICS = metricsFor("compact");
 
 const selectCls = `font-display min-h-11 cursor-pointer appearance-none bg-transparent text-xl font-semibold tracking-tight md:text-2xl ${focusRing}`;
-
-// Below Tailwind's sm breakpoint the list is the default view (F10). SSR snapshot is false.
-const SMALL = "(max-width: 639px)";
-const subscribeSmall = (cb: () => void) => {
-  const m = window.matchMedia(SMALL);
-  m.addEventListener("change", cb);
-  return () => m.removeEventListener("change", cb);
-};
-const useSmallScreen = () =>
-  useSyncExternalStore(
-    subscribeSmall,
-    () => window.matchMedia(SMALL).matches,
-    () => false,
-  );
 
 function RoleSelect({
   label,
@@ -109,7 +96,7 @@ export function RoadmapScreen({
   // View choice lives in the URL (?view=list|graph) so it survives reload and share links.
   const params = useSearchParams();
   const param = params.get("view");
-  const small = useSmallScreen();
+  const narrow = useNarrowScreen();
   const setView = (v: View) => {
     const next = new URLSearchParams(window.location.search);
     next.set("view", v);
@@ -141,7 +128,8 @@ export function RoadmapScreen({
   const [attempt, setAttempt] = useState(0);
   const key = `${from}>${to}`;
   useEffect(() => {
-    if (!model) return;
+    // Narrow screens never lay out or mount the graph.
+    if (!model || narrow) return;
     let live = true;
     layoutInWorker(toElk(model, METRICS)).then(
       (res) => {
@@ -155,14 +143,14 @@ export function RoadmapScreen({
     return () => {
       live = false;
     };
-  }, [model, key, attempt]);
+  }, [model, key, attempt, narrow]);
 
   // A selection that is not on this roadmap makes no sense after a role change.
   useEffect(() => {
     selectTopic(null);
   }, [key]);
 
-  const wanted: View = param === "list" || param === "graph" ? param : small ? "list" : "graph";
+  const wanted: View = narrow ? "list" : param === "list" || param === "graph" ? param : "graph";
   const view: View = wanted === "graph" && layoutFailed ? "list" : wanted;
   const listAreas = useMemo(
     () => (data ? buildListModel(data, { showCovered }) : []),
@@ -198,7 +186,7 @@ export function RoadmapScreen({
   let body;
   if (q.isError && isUnmapped(q.error)) {
     body = <UnmappedState fromId={from} toId={to} fromName={name(from)} toName={name(to)} />;
-  } else if (q.isError || (layoutFailed && !data)) {
+  } else if (q.isError || (layoutFailed && !data && !narrow)) {
     body = (
       <ErrorState
         onRetry={() => {
@@ -212,7 +200,7 @@ export function RoadmapScreen({
   } else if (view === "list" && data) {
     body = (
       <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 py-3 md:px-6">
-        {wanted === "graph" && (
+        {wanted === "graph" && !narrow && (
           <div role="status" className="flex flex-wrap items-center gap-3 text-sm">
             <span>The graph couldn&apos;t be drawn, so here is the list.</span>
             <button
@@ -271,20 +259,25 @@ export function RoadmapScreen({
   const selectedId = useSelectedTopicId();
   const focusPanel = () =>
     document.querySelector<HTMLElement>('[data-testid="topic-panel"]')?.focus();
+  // Below 768px the graph does not exist, so the nav is List and Topic only.
   const navItems = [
-    {
-      id: "graph",
-      label: "Graph",
-      current: view === "graph",
-      href: "?view=graph",
-      onSelect: () => setView("graph"),
-    },
+    ...(narrow
+      ? []
+      : [
+          {
+            id: "graph",
+            label: "Graph",
+            current: view === "graph",
+            href: "?view=graph",
+            onSelect: () => setView("graph"),
+          },
+        ]),
     {
       id: "list",
       label: "List",
       current: view === "list",
       href: "?view=list",
-      onSelect: () => setView("list"),
+      onSelect: () => (narrow ? selectTopic(null) : setView("list")),
     },
     {
       id: "topic",
@@ -355,7 +348,9 @@ export function RoadmapScreen({
                   className="h-8.5 w-32 rounded-md bg-lane motion-safe:animate-pulse"
                 />
               )}
-              {data && data.nodes.length > 0 && <ViewToggle view={view} onChange={setView} />}
+              {data && data.nodes.length > 0 && !narrow && (
+                <ViewToggle view={view} onChange={setView} />
+              )}
             </div>
           </div>
           {body}

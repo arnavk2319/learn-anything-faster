@@ -114,14 +114,17 @@ test("view choice survives reload and a shared link; list selection opens the sa
   await expect(topic(page, "stats")).toHaveAttribute("aria-pressed", "true");
 });
 
-test("small screens default to the list; an explicit choice wins", async ({ page }) => {
+test("narrow screens (<768px) are list-only: no graph, no toggle, ?view=graph ignored (T-100)", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 375, height: 700 });
   await page.goto("/roadmap/dev/ml-dev");
   await expect(list(page)).toBeVisible();
   await expect(page.locator(".react-flow")).toHaveCount(0);
-  await page.getByRole("group", { name: "View" }).getByRole("button", { name: "Graph" }).click();
-  await expect(topic(page, "stats")).toBeVisible();
-  await expect(list(page)).toHaveCount(0);
+  await expect(page.getByRole("group", { name: "View" })).toHaveCount(0);
+  await page.goto("/roadmap/dev/ml-dev?view=graph");
+  await expect(list(page)).toBeVisible();
+  await expect(page.locator(".react-flow")).toHaveCount(0);
 });
 
 test("a failed layout falls back to the list, and the graph can be retried", async ({ page }) => {
@@ -274,7 +277,7 @@ test("a covered topic's accessible name includes its Learn these first text", as
 // T-033: the Graph/List toggle must stay visible in the list view so the user can switch back.
 for (const [label, size] of [
   ["desktop", { width: 1280, height: 800 }],
-  ["mobile", { width: 375, height: 700 }],
+  // T-100: no toggle below 768px (list-only), so the mobile variants moved to roadmap-mobile.spec.ts.
 ] as const) {
   for (const covered of [false, true]) {
     test(`toggle stays visible after switching to the list (${label}, covered=${covered})`, async ({
