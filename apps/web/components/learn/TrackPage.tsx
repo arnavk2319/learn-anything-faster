@@ -17,7 +17,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { buildOutline, nextUp } from "@/lib/shell/outline";
 import { cn } from "@/lib/utils";
 import { MdInline } from "./Md";
-import { ContinueCard, RowList, TrackHeaderStatus } from "./TrackProgress";
+import { ConceptCards, ContinueCard, RowList, TrackHeaderStatus } from "./TrackProgress";
 import { TrackTabs } from "./TrackTabs";
 import { TrackTime } from "./TrackTime";
 
@@ -32,6 +32,7 @@ function conceptRows(pack: TrackPack): ConceptRow[] {
     title: c.title,
     summary: c.summary,
     stage: c.stage,
+    estMin: c.estMin,
     hasSim: !("exception" in c.sim),
     order: c.order,
     prerequisites: c.prerequisites,
@@ -170,7 +171,7 @@ export function TrackPage({ pack, active }: { pack: TrackPack; active: "concepts
                       {g.rows.length} {g.rows.length === 1 ? "concept" : "concepts"}
                     </span>
                   </h2>
-                  <RowList trackId={track.id} kind="concept" rows={g.rows} />
+                  <ConceptCards trackId={track.id} rows={g.rows} />
                 </section>
               ))
             )

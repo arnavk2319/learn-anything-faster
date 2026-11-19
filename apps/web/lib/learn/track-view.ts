@@ -9,6 +9,8 @@ export interface ConceptRow {
   title: string;
   summary: string;
   stage: Level;
+  /** Authored minutes, when present (formatted by formatEstimate). */
+  estMin?: number | undefined;
   hasSim: boolean;
   order: number;
   prerequisites: string[];

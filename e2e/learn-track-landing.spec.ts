@@ -43,10 +43,13 @@ test.describe("track page and landing in the shell", () => {
         return { top: b.top, h: b.height };
       }),
     );
-    expect(boxes[0]!.h).toBeLessThanOrEqual(44);
+    // T-099: concept rows are now cards (about 88px, 64px minimum), so the 44px and 2x-baseline density bound
+    // no longer applies to them. Intent kept: cards stay compact and enough still fit the fold.
+    expect(boxes[0]!.h).toBeGreaterThanOrEqual(64);
+    expect(boxes[0]!.h).toBeLessThanOrEqual(110);
     const pitch = boxes[1]!.top - boxes[0]!.top;
     const fit = Math.floor((800 - boxes[0]!.top) / pitch);
-    expect(fit).toBeGreaterThanOrEqual(2 * BASELINE_FIT);
+    expect(fit).toBeGreaterThanOrEqual(Math.ceil(BASELINE_FIT / 2));
     const fs = (await page.evaluate(
       `[document.querySelector("[data-density=compact]"), document.querySelector("section#basic li a")].map((e) => getComputedStyle(e).fontSize)`,
     )) as string[];
@@ -92,8 +95,8 @@ test.describe("track page and landing in the shell", () => {
       page.getByRole("tab", { name: /Concepts/ }),
       page.getByRole("tab", { name: /Problems/ }),
       page.getByTestId("start-with"),
+      // T-099: the card is the link target (stretched title link), so the li stands in for the link box.
       page.locator("section#basic ul > li").first(),
-      page.locator("section#basic ul > li a").first(),
       page.getByRole("button", { name: "Favorite Caching" }),
     ];
     for (const t of targets) {

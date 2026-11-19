@@ -20,6 +20,7 @@ import { Card } from "@/components/ui/card";
 import { Chip } from "@/components/ui/chip";
 import { ProgressBar, ProgressRing } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
+import { formatEstimate } from "@/lib/learn/estimate";
 import {
   conceptUnits,
   continueTarget,
@@ -133,6 +134,67 @@ export function ContinueCard({
         Continue
       </Link>
     </Card>
+  );
+}
+
+const STAGE_LABEL = { basic: "Basic", intermediate: "Intermediate", advanced: "Advanced" } as const;
+
+/**
+ * Concept cards (T-099, ADR-0016 amendment 1, prototype variant A). The card is one link (a stretched
+ * pseudo-element on the title link); the star is a separate 44px button above it, so clicking it never navigates.
+ * Hover lift and press act on the inner element; the global reduced-motion rule zeroes the transitions.
+ */
+export function ConceptCards({ trackId, rows }: { trackId: string; rows: ConceptRow[] }) {
+  const { progress, toggle } = useLearnProgress();
+  return (
+    <ul className="flex min-w-0 flex-col gap-3">
+      {rows.map((r) => {
+        const u = conceptUnits(progress, r);
+        const label = u.complete ? "Done" : `${u.done} of ${u.total} done`;
+        return (
+          <li key={r.id} data-testid="concept-card" className="group/card relative min-w-0">
+            <div className="relative grid min-h-22 min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 overflow-hidden rounded-lg border border-border-firm bg-card py-3 pr-2 pb-4 pl-4 text-card-foreground shadow-[var(--shadow-rest)] transition-[translate,box-shadow,scale] duration-(--dur-lift) ease-(--ease-out) group-hover/card:translate-y-(--lift-y) group-hover/card:shadow-[var(--shadow-lift)] group-active/card:scale-(--press-scale) group-active/card:shadow-[var(--shadow-press)] has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-2 has-[a:focus-visible]:outline-ring">
+              <div className="min-w-0">
+                <h3 className="font-display font-semibold">
+                  <Link
+                    href={`/learn/${trackId}/concepts/${r.id}`}
+                    className="text-foreground outline-none after:absolute after:inset-0 after:z-1 after:content-['']"
+                  >
+                    {r.title}
+                  </Link>
+                </h3>
+                <p
+                  data-testid="concept-summary"
+                  className="truncate text-(length:--text-small) text-muted-foreground"
+                >
+                  {r.summary}
+                </p>
+                <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                  {r.estMin !== undefined ? <Chip>{formatEstimate(r.estMin)}</Chip> : null}
+                  <Chip>{STAGE_LABEL[r.stage]}</Chip>
+                  {r.hasSim ? (
+                    <Chip className="border-route bg-transparent text-route">Sim</Chip>
+                  ) : null}
+                  {u.complete ? <Chip className="border-route text-route">Done</Chip> : null}
+                </div>
+              </div>
+              <div className="relative z-2">
+                <Star
+                  pressed={progress.favorites.concepts.includes(r.id)}
+                  label={`Favorite ${r.title}`}
+                  onClick={() => toggle("concepts", r.id)}
+                />
+              </div>
+              <ProgressBar
+                value={percent(u.ratio)}
+                label={`${r.title}: ${label}`}
+                className="absolute inset-x-0 bottom-0 h-1 w-full rounded-none"
+              />
+            </div>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
 
