@@ -11,6 +11,7 @@
     - "Describes leasing an ID range to avoid per-request coordination"
     - "Mentions base62 and the 7-character capacity"
     - "Mentions a scramble to prevent guessing"
+  hint: "Think about how a server could hand out unique IDs from its own memory most of the time, and talking to a coordinator only rarely."
   explanation: "Leasing ranges moves coordination off the hot path."
   difficulty: 3
   tags: [code-generation]
@@ -34,6 +35,7 @@
     - { id: b, text: "302, because it lets you count every click" }
     - { id: c, text: "200 with the long URL in the body" }
   answer: [b]
+  hint: "Which status lets a browser cache the redirect, and what does that do to repeat visits reaching your service?"
   explanation: "A 301 is cached by clients and hides repeat clicks from you; a 302 costs more load but each click reaches the service."
   difficulty: 1
   tags: [redirect]
@@ -57,6 +59,7 @@
     - { id: b, text: "It can collide, so you retry or append a salt" }
     - { id: c, text: "It needs a coordinated counter" }
   answer: [a, b]
+  hint: "A hash needs no shared state to compute, but think about what happens when two different URLs map to the same short prefix."
   explanation: "Hash-based codes need no shared state but collide; the coordinated counter belongs to the counter approach."
   difficulty: 2
   tags: [code-generation]
@@ -81,6 +84,7 @@
     - { id: c, text: "Redis (cache-aside)" }
     - { id: d, text: "Database" }
   answer: [a, b, c, d]
+  hint: "Follow a request inward: the cheapest, closest layer is tried first and the source of truth only when everything before it misses."
   explanation: "Hot links are served from the earliest layer that has them; the database is the last resort."
   difficulty: 1
   tags: [read-path]
