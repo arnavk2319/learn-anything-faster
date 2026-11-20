@@ -4,6 +4,7 @@ title: URL shortener
 summary: "Design a TinyURL-style service: short code generation, a read-heavy redirect path, caching and click analytics."
 difficulty: easy
 priority: true
+estMin: 30
 conceptIds: [caching]
 topicIds: []
 status: approved

@@ -10,6 +10,7 @@
     - "Names cache-aside as resilient to cache outage"
     - "Notes staleness risk unless the key is deleted on write"
     - "Notes write-through doubles write latency and may cache unread data"
+  hint: "Ask what happens to reads if the cache dies, and what each pattern costs on every write."
   explanation: "Cache-aside trades freshness for resilience; write-through trades write latency for consistency."
   difficulty: 2
   tags: [patterns]
@@ -33,6 +34,7 @@
     - "Explains out-of-order concurrent updates leave a stale value"
     - "States delete forces a reload of the committed value"
     - "Mentions short TTL or delayed double-delete as a backstop"
+  hint: "Picture two writers racing: what can the cache end up holding if their updates land in the wrong order?"
   explanation: "An update can persist a losing write; a delete cannot."
   difficulty: 3
   tags: [invalidation]
@@ -56,6 +58,7 @@
     - "Describes simultaneous misses on an expired hot key"
     - "Names single-flight or per-key lock"
     - "Names jittered TTLs or refresh-ahead"
+  hint: "Think about a very hot key expiring at one instant: how many callers rebuild it, and how could you make only one do so?"
   explanation: "Collapse the herd into one rebuild and spread expiries out."
   difficulty: 3
   tags: [failure-modes]
@@ -80,6 +83,7 @@
     - { id: c, text: "90 times" }
     - { id: d, text: "100 times" }
   answer: [b]
+  hint: "Only the misses reach the database, so work out what fraction of requests that is."
   explanation: "Only 10% of requests reach the database, so load drops 10 times; at 99% it drops 100 times."
   difficulty: 1
   tags: [metrics]
@@ -104,6 +108,7 @@
     - { id: c, text: "Replicate the key across shards" }
     - { id: d, text: "Switch to write-back" }
   answer: [a]
+  hint: "A key that was never stored can never be a hit. How could you remember or rule out such keys cheaply?"
   explanation: "This is cache penetration; negatives and a Bloom filter stop repeated misses. Randomised TTLs address avalanche and key replication addresses hot keys."
   difficulty: 3
   tags: [failure-modes]
@@ -131,6 +136,7 @@
     - { id: c, text: "Hot, frequently read data" }
     - { id: d, text: "Data with no source of truth behind it" }
   answer: [a, b, d]
+  hint: "For each option ask what you gain from a copy: faster repeat reads, or a risk of stale, wasted or lost data?"
   explanation: "Hot read-heavy data is what caches are for. The others risk staleness, wasted memory, or data loss."
   difficulty: 2
   tags: [fundamentals]

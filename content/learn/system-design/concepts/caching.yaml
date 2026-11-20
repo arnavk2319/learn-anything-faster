@@ -4,6 +4,7 @@ title: Caching
 summary: Where caches sit, the read and write patterns, eviction, invalidation and the failure modes that bite in production.
 stage: basic
 order: 5
+estMin: 25
 topicIds: []
 prerequisites: []
 status: approved
