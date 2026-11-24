@@ -96,7 +96,7 @@ levels:
         }
     - id: caching-sim
       type: sim
-      sim: { ref: cache-aside-read }
+      ref: cache-aside-read
       src:
         {
           kind: gap,
@@ -182,10 +182,10 @@ levels:
       items:
         - q: "Redis is single-threaded. How does it reach 100k ops/s?"
           a: "Command execution is single-threaded but in-memory, with I/O multiplexing, no lock contention and very cheap operations. Scale further with sharding (Redis Cluster) and replicas."
-      src:
-        {
-          kind: guide,
-          guide: system-design-concepts,
-          heading: "5. Caching",
-          quote: "Command execution is single-threaded but in-memory",
-        }
+          src:
+            {
+              kind: guide,
+              guide: system-design-concepts,
+              heading: "5. Caching",
+              quote: "Command execution is single-threaded but in-memory",
+            }

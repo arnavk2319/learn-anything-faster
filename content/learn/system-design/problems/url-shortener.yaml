@@ -179,7 +179,7 @@ blocks:
       }
   - id: us-sim
     type: sim
-    sim: { ref: url-shortener-redirect }
+    ref: url-shortener-redirect
     src:
       { kind: gap, note: "Animation derived from the stated read path; timings are illustrative." }
   - id: us-read-path
